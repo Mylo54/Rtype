@@ -15,5 +15,6 @@
 #include <list>
 
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 #endif /* !CLIENT_HPP_ */
