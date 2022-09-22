@@ -10,13 +10,14 @@
 
 #include <iostream>
 #include <vector>
+#include <optional>
 
 namespace eng
 {
     template <typename Component>
     class SparseArray {
         public:
-            using OptionalComponent = Component;
+            using OptionalComponent = std::optional<Component>;
             using Container = typename std::vector<OptionalComponent>;
             using Iterator = typename Container::iterator;
         public:
@@ -37,10 +38,7 @@ namespace eng
 
             // Remove a Component
             void erase(size_t pos) {
-                Iterator it = _data.begin();
-                for (int i = 0; i != pos; it++, i++);
-                _data.erase(it);
-                std::cout << "[DEBUG]" << std::endl;
+                _data.erase(begin() + pos);
             }
 
             // Get the size of the sparse array
@@ -50,9 +48,11 @@ namespace eng
 
             // Insert the Component at pos index, erasing the old value or
             // resizing if needed
+            // Crash inside function
             OptionalComponent &insertAt(size_t pos, Component const &c) {
-                while (pos <= size())
-                    _data.push_back(nullptr);
+                while (pos <= size()) {
+                    _data.push_back({});
+                }
                 erase(pos);
                 _data[pos] = c;
                 return _data[pos];
