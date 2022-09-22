@@ -4,25 +4,10 @@ include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_BUILD_TYPE Release)
 
-
-set(SFML_VERSION "2.5.1")
-
-FetchContent_Declare(
-    sfml
-    GIT_REPOSITORY "https://github.com/SFML/SFML.git"
-    GIT_TAG        "${SFML_VERSION}"
-)
-
-FetchContent_GetProperties(sfml)
-if(NOT sfml_POPULATED)
-    FetchContent_Populate(sfml)
-    add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR})
-endif()
 
 Project (Rutabaga)
-
+add_subdirectory(dependencies)
 FILE(GLOB_RECURSE SRCS src/Game/Client/*.cpp)
 
 add_executable(Rutabaga ${SRCS})
