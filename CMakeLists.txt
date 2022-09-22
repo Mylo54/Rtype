@@ -23,7 +23,7 @@ endif()
 
 Project (Rutabaga)
 
-FILE(GLOB_RECURSE SRCS src/Client/*.cpp)
+FILE(GLOB_RECURSE SRCS src/Game/Client/*.cpp)
 
 add_executable(Rutabaga ${SRCS})
 
