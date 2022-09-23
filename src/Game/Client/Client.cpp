@@ -7,10 +7,10 @@
 
 #include "Client.hpp"
 
-Client::Client()
+rt::Client::Client()
 {
 }
 
-Client::~Client()
+rt::Client::~Client()
 {
 }

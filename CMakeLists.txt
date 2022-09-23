@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 Project (Rutabaga)
 add_subdirectory(dependencies)
-FILE(GLOB_RECURSE SRCS src/Game/Client/*.cpp)
+FILE(GLOB_RECURSE SRCS src/Game/*.cpp)
 
 add_executable(Rutabaga ${SRCS})
 

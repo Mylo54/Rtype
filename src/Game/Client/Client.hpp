@@ -24,8 +24,8 @@ namespace rt {
             Client();
         private:
         protected:
-    }
-}
+    };
+};
 
 
 #endif /* !CLIENT_HPP_ */
