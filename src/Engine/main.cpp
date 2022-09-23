@@ -16,8 +16,8 @@ int sparseTest(void)
     eng::SparseArray<std::string> myArray;
     std::string a = "bonjour";
 
-    myArray.insertAt(0, a);
-    std::cout << "destr" << std::endl;
+    myArray.insertAt(15, a);
+    std::cout << myArray[14].value_or("coucou") << std::endl;
     return 0;
 }
 
@@ -37,7 +37,7 @@ int optionnalVectorTest(void)
         std::cout << "myVector: " << it->value_or("nothing") << std::endl;
     }
     std::cout << "DEBUG" << std::endl;
-    myVector.erase(myVector.begin() + 1);
+    myVector.at(0).reset();
     for (auto it = myVector.begin(); it != myVector.end(); it++) {
         std::cout << "myVector: " << it->value_or("nothing") << std::endl;
     }

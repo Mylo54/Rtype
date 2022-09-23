@@ -18,7 +18,7 @@ namespace eng
     class SparseArray {
         public:
             using OptionalComponent = std::optional<Component>;
-            using Container = typename std::vector<OptionalComponent>;
+            using Container = std::vector<OptionalComponent>;
             using Iterator = typename Container::iterator;
         public:
             SparseArray() {}
@@ -38,7 +38,7 @@ namespace eng
 
             // Remove a Component
             void erase(size_t pos) {
-                _data.erase(begin() + pos);
+                _data.at(pos).reset();
             }
 
             // Get the size of the sparse array
@@ -46,17 +46,21 @@ namespace eng
                 return _data.size();
             }
 
+            // Provide access to the data contained in the array
+            OptionalComponent &operator[](size_t id) {
+                return _data[id];
+            }
+
             // Insert the Component at pos index, erasing the old value or
             // resizing if needed
             // Crash inside function
-            int insertAt(size_t pos, Component const &c) {
-                while (pos <= size()) {
+            OptionalComponent &insertAt(size_t pos, Component const &c) {
+                while (pos >= size()) {
                     _data.push_back({});
                 }
                 erase(pos);
-                _data.insert(_data.begin() + pos, ) = c;
-                std::cout << "[debug]" << std::endl;
-                return 0;
+                _data.at(pos) = c;
+                return _data[pos];
             }
 
             // Take a reference to an optional component and return its index
@@ -72,7 +76,7 @@ namespace eng
             }
         protected:
         private:
-            Container _data;
+            std::vector<std::optional<Component>> _data;
     };
 } // namespace eng
 
