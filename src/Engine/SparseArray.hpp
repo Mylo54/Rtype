@@ -49,13 +49,14 @@ namespace eng
             // Insert the Component at pos index, erasing the old value or
             // resizing if needed
             // Crash inside function
-            OptionalComponent &insertAt(size_t pos, Component const &c) {
+            int insertAt(size_t pos, Component const &c) {
                 while (pos <= size()) {
                     _data.push_back({});
                 }
                 erase(pos);
-                _data[pos] = c;
-                return _data[pos];
+                _data.insert(_data.begin() + pos, ) = c;
+                std::cout << "[debug]" << std::endl;
+                return 0;
             }
 
             // Take a reference to an optional component and return its index
