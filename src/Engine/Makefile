@@ -13,8 +13,12 @@ OBJ	=	$(SRC:.cpp=.o)
 
 all:	$(NAME)
 
+CXX	=	g++ -g
+
+CXXFLAGS	=	-std=c++17
+
 $(NAME):	$(OBJ)
-	g++ -o engine $(OBJ)
+	$(CXX) -o $(NAME) $(OBJ)
 
 clean:
 	rm -rf $(OBJ)
