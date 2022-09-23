@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: test_linux_compile
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -7,7 +7,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: install deps
-        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev
+        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev
       - name: build
         run: |
           mkdir build
