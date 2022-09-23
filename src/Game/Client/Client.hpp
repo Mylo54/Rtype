@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2022
-** indie
+** rtype
 ** File description:
-** IEngine
+** Client
 */
 
 #ifndef CLIENT_HPP_
@@ -16,5 +16,16 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+
+namespace rt {
+    class Client {
+        public:
+            ~Client();
+            Client();
+        private:
+        protected:
+    }
+}
+
 
 #endif /* !CLIENT_HPP_ */

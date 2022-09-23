@@ -1,11 +1,10 @@
 /*
 ** EPITECH PROJECT, 2022
-** B-CPP-500-NCY-5-1-rtype-clovis.schneider
+** rtype
 ** File description:
-** main of Client
+** main
 */
 
-#include "client.hpp"
 
 int main(int argc, char **argv)
 {
