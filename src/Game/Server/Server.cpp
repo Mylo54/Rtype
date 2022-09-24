@@ -7,10 +7,10 @@
 
 #include "Server.hpp"
 
-Server::Server()
+rt::Server::Server()
 {
 }
 
-Server::~Server()
+rt::Server::~Server()
 {
 }

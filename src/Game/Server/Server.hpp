@@ -8,13 +8,15 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
-class Server {
-    public:
-        Server();
-        ~Server();
+namespace rt {
+    class Server {
+        public:
+            Server();
+            ~Server();
 
-    protected:
-    private:
+        protected:
+        private:
+    };
 };
 
 #endif /* !SERVER_HPP_ */
