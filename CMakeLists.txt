@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 17)
 
+#set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ./) #added to try and fix freetype missing, puts the exe at root
 
+set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
+set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 
 Project (Rutabaga)

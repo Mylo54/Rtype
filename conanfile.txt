@@ -1,0 +1,19 @@
+[requires]
+sfml/2.5.1
+asio/1.24.0
+
+[options]
+*:shared = True
+sfml:graphics=True
+sfml:window=True
+sfml:audio=True
+sfml:network=True
+
+[imports]
+bin, *.dll -> bin
+lib, *.so* -> lib
+
+[generators]
+cmake
+cmake_paths
+cmake_find_package
