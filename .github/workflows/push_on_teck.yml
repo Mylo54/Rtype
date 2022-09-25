@@ -2,7 +2,7 @@ name: Mirroring
 
 on: 
   workflow_run:
-    workflows: ["Linux-Compile"]
+    workflows: [test_linux_compile]
     types: [completed]
 
 jobs:
