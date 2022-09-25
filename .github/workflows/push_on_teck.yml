@@ -1,0 +1,20 @@
+name: Mirroring
+
+on: [push, delete]
+
+jobs:
+  build_linux:
+    uses: ./.github/workflows/test_linux_compile.yml
+  to_Epitech:
+    needs: [build_linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            git@github.com:EpitechPromo2025/B-CPP-500-NCY-5-1-rtype-clovis.schneider.git
+          ssh_private_key:
+            ${{ secrets.EPITECH_SSH_PRIVATE_KEY }}
