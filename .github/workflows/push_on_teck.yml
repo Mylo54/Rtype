@@ -5,7 +5,7 @@ on: [push, delete]
 jobs:
   build_linux:
     uses: ./.github/workflows/test_linux_compile.yml
-  to_gitlab:
+  to_Epitech:
     needs: [build_linux]
     runs-on: ubuntu-latest
     steps:
