@@ -5,6 +5,8 @@ on: [push, delete]
 jobs:
   build_linux:
     uses: ./.github/workflows/test_linux_compile.yml
+  build_windows:
+    uses: ./.github/workflows/test_windows_compile.yml
   to_Epitech:
     needs: [build_linux]
     runs-on: ubuntu-latest

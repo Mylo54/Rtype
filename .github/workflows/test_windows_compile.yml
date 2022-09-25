@@ -1,5 +1,5 @@
 name: test_windows_compile
-on: [push]
+on: [workflow_call]
 jobs:
   Windows-Compile:
     runs-on: windows-latest
