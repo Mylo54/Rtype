@@ -1,16 +1,14 @@
 name: Mirroring
 
-on: [push, delete]
+on: 
+  workflow_run:
+    workflows: [Linux-Compile]
+    types: [completed]
 
-jobs:
-  test_to_build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: build
-        run: echo "maybe when can build it'll work"
   to_gitlab:
     runs-on: ubuntu-latest
-    steps:                                              # <-- must use actions/checkout before mirroring!
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -18,5 +16,5 @@ jobs:
         with:
           target_repo_url:
             git@github.com:EpitechPromo2025/B-CPP-500-NCY-5-1-rtype-clovis.schneider.git
-          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
+          ssh_private_key:
             ${{ secrets.EPITECH_SSH_PRIVATE_KEY }}
