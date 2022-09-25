@@ -1,5 +1,5 @@
 name: test_linux_compile
-on: [push]
+on: [workflow_call]
 jobs:
   Linux-Compile:
     runs-on: ubuntu-latest

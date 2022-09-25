@@ -1,12 +1,12 @@
 name: Mirroring
 
-on: 
-  workflow_run:
-    workflows: [test_linux_compile]
-    types: [completed]
+on: [push, delete]
 
 jobs:
+  build_linux:
+    uses: ./.github/workflows/test_linux_compile.yml
   to_gitlab:
+    needs: [build_linux]
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
