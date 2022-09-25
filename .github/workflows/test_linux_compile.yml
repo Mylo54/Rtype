@@ -2,7 +2,6 @@ name: test_linux_compile
 on: [push]
 jobs:
   Linux-Compile:
-    name: test ubuntu compile
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code

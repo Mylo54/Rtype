@@ -2,8 +2,9 @@ name: Mirroring
 
 on: 
   workflow_run:
-    workflows: [Linux-Compile]
+    workflows: ["Linux-Compile"]
     types: [completed]
+
 jobs:
   to_gitlab:
     runs-on: ubuntu-latest
