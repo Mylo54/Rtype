@@ -7,7 +7,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: install deps
-        run: sudo apt update && sudo apt install -y cmake
+        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
