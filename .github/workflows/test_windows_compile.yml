@@ -10,8 +10,6 @@ jobs:
         uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
         run: conan profile new default --detect
-      - name: Update profile
-        run: conan profile update settings.compiler.libcxx=libstdc++11 default
       - name: build
         run: |
           mkdir build
