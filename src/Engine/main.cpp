@@ -6,9 +6,11 @@
 */
 
 #include "SparseArray.hpp"
+#include "Registry.hpp"
 #include <iostream>
 #include <optional>
 #include <vector>
+#include <typeindex>
 
 
 int sparseTest(void)
@@ -44,8 +46,28 @@ int optionnalVectorTest(void)
     return 0;
 }
 
+int registryTest(void)
+{
+    eng::Registry reg;
+    eng::SparseArray<int> arrA;
+
+    reg.registerComponents(arrA);
+    return (0);
+}
+
+int anyTest(void)
+{
+    std::any myAny;
+    int myInt = 5;
+
+    myAny = myInt;
+    if (typeid(myInt) == myAny.type())
+        std::cout << "yes" << std::endl;
+    return(0);
+}
+
 int main(void)
 {
-    sparseTest();
+    anyTest();
     return 0;
 }

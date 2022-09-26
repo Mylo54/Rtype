@@ -27,7 +27,7 @@ namespace eng
                 _containers[typeid(Component)] = a;
             }
 
-            // Retrieve the array storing a Component 
+            // Retrieve the array storing a Component
             template <typename Component>
             SparseArray<Component> &getComponents(std::type_index t) {
                 return _containers[t];
