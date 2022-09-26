@@ -24,6 +24,8 @@ namespace eng
             // Adds a new component array to the associatives container
             template <typename Component>
             void registerComponents(SparseArray<Component> &a) {
+                // still a bad way, we need to store the REFERENCE of a
+                // but casted as an "std::any" type
                 _containers[typeid(SparseArray<Component>)] = getAnyArray<Component>(a);
             }
 
