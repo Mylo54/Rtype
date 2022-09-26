@@ -1,8 +1,8 @@
-name: test_windows_compile
+name: test_macos_compile
 on: [workflow_call]
 jobs:
-  Windows-Compile:
-    runs-on: windows-latest
+  Macos-Compile:
+    runs-on: macos-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
