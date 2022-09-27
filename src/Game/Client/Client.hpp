@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Client
+** Client 
 */
 
 #ifndef CLIENT_HPP_

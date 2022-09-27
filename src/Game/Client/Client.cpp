@@ -9,6 +9,7 @@
 
 rt::Client::Client()
 {
+    
 }
 
 rt::Client::~Client()
