@@ -49,25 +49,34 @@ int optionnalVectorTest(void)
 int registryTest(void)
 {
     eng::Registry reg;
-    eng::SparseArray<int> arrA;
+    eng::SparseArray<std::string> arrA;
 
+    arrA.insertAt(0, "Bonjour");
+    arrA.insertAt(2, "Comment allez vous?");
     reg.registerComponents(arrA);
+    std::cout << "registered component" << std::endl;
+    auto fromReg = reg.getComponents<std::string>();
+    for (int i = 0; i < 3; i++)
+        std::cout << fromReg[i].value_or("empty") << std::endl;
     return (0);
 }
 
 int anyTest(void)
 {
-    std::any myAny;
-    int myInt = 5;
+    eng::SparseArray<std::string> myArray;
+    std::any myArrayAny = &myArray;
 
-    myAny = myInt;
-    if (typeid(myInt) == myAny.type())
-        std::cout << "yes" << std::endl;
+    myArray.insertAt(0, "Bonjour");
+    myArray.insertAt(1, "Comment allez vous?");
+    myArray.insertAt(2, {});
+    myArray.insertAt(3, "Et vous?");
+    myArray[0] = "hello";
+    // This println should display "hello" and not "bonjour"
     return(0);
 }
 
 int main(void)
 {
-    anyTest();
+    registryTest();
     return 0;
 }

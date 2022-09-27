@@ -23,36 +23,25 @@ namespace eng
 
             // Adds a new component array to the associatives container
             template <typename Component>
-            void registerComponents(SparseArray<Component> &a) {
-                // still a bad way, we need to store the REFERENCE of a
-                // but casted as an "std::any" type
-                _containers[typeid(SparseArray<Component>)] = getAnyArray<Component>(a);
+            void registerComponents(SparseArray<Component> a) {
+                _containers[typeid(SparseArray<Component>)] = a;
             }
 
             // Retrieve a reference to the array storing Components
             template <typename Component>
-            SparseArray<Component> &getComponents(std::type_index t) {
-                // Cast the SparseArray<std::any> into SparseArray<Component>
-                // using std::any_cast
-                // return a **REFERENCE** OF THE ARRAY IN THE MAP casted in Component type
+            SparseArray<Component> &getComponents(void) {
+                std::type_index t = typeid(SparseArray<Component>);
+                std::any &res = _containers[t];
+
+                return std::any_cast<SparseArray<Component> &>(res);
             }
 
         protected:
         private:
-            // Returns a copy of the sparse array with the std::any type
-            template <typename Component>
-            eng::SparseArray<std::any> getAnyArray(eng::SparseArray<Component> &a)
-            {
-                eng::SparseArray<std::any> res;
-                int i = 0;
-
-                for (auto it = a.begin(); it != a.end(); i++, it++) {
-                    res.insertAt(i, it->value());
-                }
-                return (res);
-            }
-
-            std::unordered_map<std::type_index, SparseArray<std::any>> _containers;
+            // A map storing every array of components
+            // Key: type index
+            // Val: std::any -> SparseArray<Component>
+            std::unordered_map<std::type_index, std::any> _containers;
     };
 } // namespace eng
 
