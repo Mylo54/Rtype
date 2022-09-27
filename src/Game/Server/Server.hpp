@@ -8,6 +8,8 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
+#include <string>
+
 namespace rt {
     class Server {
         public:
