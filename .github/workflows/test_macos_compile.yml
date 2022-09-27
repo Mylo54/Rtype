@@ -1,8 +1,8 @@
-name: test_windows_compile
+name: test_macos_compile
 on: [workflow_call]
 jobs:
-  Windows-Compile:
-    runs-on: windows-latest
+  Macos-Compile:
+    runs-on: macos-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -13,7 +13,7 @@ jobs:
       - name: build
         run: |
           mkdir build
-          cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .
+          cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build . 
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
