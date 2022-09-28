@@ -12,7 +12,7 @@
 #include "SparseArray.hpp"
 #include <unordered_map>
 #include <typeindex>
-#include <queue>
+#include <stack>
 #include <functional>
 #include <any>
 
@@ -31,7 +31,7 @@ namespace eng
                 _containers[typeid(SparseArray<Component>)] = a;
 
                 /// @todo Here this line should push a function to erase a component at a specified index
-                //_erasers.push_back(/*here*/;
+                //_erasers.push_back(/*here*/);
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -45,14 +45,33 @@ namespace eng
                 return std::any_cast<SparseArray<Component> &>(res);
             }
 
-            /// @brief Spawns a new entity
+            /// @brief Spawns a new entity while keeping the arrays small
             /// @return The entity
             Entity spawnEntity() {
-                // Not sure abt the return and should have an accessible id (ie. _idsTaken)
-                return (Entity(rand()));
+                size_t res = _maxEntity + 1;
+
+                if (_freeIds.size() > 1) {
+                    res = _freeIds.top();
+                    _freeIds.pop();
+                }
+                return (Entity(res));
             }
+
+            /// @brief What will it be usefull for???
+            /// @param idx The index
+            /// @return The entity
             Entity entityFromIndex(std::size_t idx);
-            void killEntity(Entity const &e);
+            
+            /// @brief Remove an entity and it's previously attached components
+            /// @param e The Entity
+            void killEntity(Entity const &e) {
+                /// @todo Remove all component associated to the entity here
+
+                if (e.getId() == _maxEntity)
+                    _maxEntity--;
+                else
+                    _freeIds.push(e.getId());
+            }
 
             /// @brief Store a component with association by id of the entity
             /// @tparam Component The type of your component
@@ -70,6 +89,9 @@ namespace eng
 
         protected:
         private:
+            /// @brief The highest entity number
+            size_t _maxEntity;
+
             /// @brief A map storing every array of components
             std::unordered_map<std::type_index, std::any> _containers;
 
@@ -77,7 +99,7 @@ namespace eng
             std::vector<std::function<void(Registry &, Entity const &)>> _erasers;
 
             /// @brief A queue storing every ids already taken (not very sure)
-            std::queue<size_t> _idsTaken;
+            std::stack<size_t> _freeIds;
     };
 } // namespace eng
 
