@@ -1,5 +1,5 @@
 [requires]
-sfml/2.5.1@bincrafters/stable
+sfml/2.5.1
 asio/1.24.0
 
 [options]
