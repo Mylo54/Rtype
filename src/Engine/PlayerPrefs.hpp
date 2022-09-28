@@ -20,7 +20,7 @@ namespace eng
 
             // Sets the string value of the preference identified by the given key.
             void setString(std::string key, std::string value);
-            // Sets the int value of the preference identified by the given key.
+            // Sets the int value of the preference identified by the given key
             void setInt(std::string key, int value);
             // Sets the float value of the preference identified by the given key.
             void setFloat(std::string key, float value);
