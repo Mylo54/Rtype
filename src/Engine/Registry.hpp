@@ -18,9 +18,6 @@
 
 namespace eng
 {
-    
-    template<typename Component>
-    void erase(Registry &r, Entity const &e);
     class Registry {
         public:
             Registry() {}
@@ -34,7 +31,7 @@ namespace eng
                 _containers[typeid(SparseArray<Component>)] = a;
 
                 /// @todo Here this line should push a function to erase a component at a specified index
-                _erasers.push_back(erase<Component>);
+                //_erasers.push_back(/*here*/;
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -73,15 +70,6 @@ namespace eng
 
         protected:
         private:
-
-            /// @brief Erase a component at an index in associative array
-            /// @tparam Component The component type
-            /// @param r The registry from which to erase it
-            /// @param e The entity (index)
-            template<typename Component>
-            void erase(Registry &r, Entity const &e) {
-                r.getComponents<Component>()->erase(e.getId());
-            }
             /// @brief A map storing every array of components
             std::unordered_map<std::type_index, std::any> _containers;
 
