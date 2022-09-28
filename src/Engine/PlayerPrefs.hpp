@@ -21,6 +21,11 @@ namespace eng
             /// @brief load player preferences list from file to _strmap.
             void loadPrefs();
 
+            /// @brief Returns the value corresponding to key in the preference file if it exists.
+            /// @param key key of the preference to get
+            /// @return 
+            std::string getPref(std::string key);
+
             /// @brief Sets the string value of the preference identified by the given key.
             /// @param key key of the preference to set
             /// @param value value to set
@@ -36,16 +41,19 @@ namespace eng
             /// @param value value to set
             void setPref(std::string key, float value);
 
-            /// @brief Returns the value corresponding to key in the preference file if it exists.
-            /// @param key key of the preference to get
-            /// @return 
-            std::string getPref(std::string key);
+            /// @brief Set the path to the player preferences file
+            /// @param path new path to the file
+            void setPath(std::string path);
+            /// @brief Get the path to the player preferences file
+            std::string getPath();
         protected:
         private:
             /// @brief map containing player preferences <key, value>
             std::map<std::string, std::string> _strmap;
             /// @brief path to the player preferences file
             std::string _path;
+
+            void loadPref(const std::string str);
     };
 } // namespace eng
 
