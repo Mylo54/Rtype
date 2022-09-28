@@ -26,20 +26,27 @@ namespace eng
             /// @return 
             std::string getPref(std::string key);
 
+            /// @brief Sets the string value of the preference identified by the given key in the file
+            /// @param key key of the preference to set
+            /// @param value value to set
+            void savePref(std::string key, std::string value);
+
+
             /// @brief Sets the string value of the preference identified by the given key.
             /// @param key key of the preference to set
             /// @param value value to set
-            void setPref(std::string key, std::string value);
+            /// @param saved if true : save the change in the file
+            void setPref(std::string key, std::string value, bool saved = false);
 
             /// @brief Sets the int value of the preference identified by the given key.
             /// @param key key of the preference to set
             /// @param value value to set
-            void setPref(std::string key, int value);
+            void setPref(std::string key, int value, bool saved = false);
 
             /// @brief Sets the float value of the preference identified by the given key.
             /// @param key key of the preference to set
             /// @param value value to set
-            void setPref(std::string key, float value);
+            void setPref(std::string key, float value, bool saved = false);
 
             /// @brief Set the path to the player preferences file
             /// @param path new path to the file
@@ -54,6 +61,8 @@ namespace eng
             std::string _path;
 
             void loadPref(const std::string str);
+
+            bool prefLineMatch(const std::string str, std::string key);
     };
 } // namespace eng
 

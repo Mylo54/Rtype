@@ -8,6 +8,7 @@
 #include "PlayerPrefs.hpp"
 #include <fstream>
 #include <regex>
+#include <cstdio>
 
 eng::PlayerPrefs::PlayerPrefs()
 {
@@ -46,17 +47,51 @@ void eng::PlayerPrefs::loadPrefs()
     file.close();
 }
 
-void eng::PlayerPrefs::setPref(std::string key, std::string value)
+bool eng::PlayerPrefs::prefLineMatch(const std::string str, std::string key)
 {
-    this->_strmap[key] = value;
+    std::regex keyRgx(key + ".*");
+    std::smatch match;
+
+    if (std::regex_search(str.begin(), str.end(), match, keyRgx)) return true;
+    return false;
+} 
+
+void eng::PlayerPrefs::savePref(std::string key, std::string value)
+{
+    std::ifstream filein(_path);
+    std::ofstream fileout("tmp.txt");
+    std::string str;
+
+    if(!filein || !fileout) {
+        std::cerr << "Error opening files!" << std::endl;
+        return;
+    }
+
+    while(getline(filein, str))
+    {
+        if (prefLineMatch(str, key))
+            str = key + "\t\t[" + value + "]";
+        str += "\n";
+        fileout << str;
+    }
+    filein.close();
+    fileout.close();
+    remove(_path.c_str());
+    std::rename("tmp.txt", _path.c_str());
 }
 
-void eng::PlayerPrefs::setPref(std::string key, int value)
+void eng::PlayerPrefs::setPref(std::string key, std::string value, bool saved)
+{
+    this->_strmap[key] = value;
+    if (saved) savePref(key, value);
+}
+
+void eng::PlayerPrefs::setPref(std::string key, int value, bool saved)
 {
     // this->_intmap[key] = value;
 }
 
-void eng::PlayerPrefs::setPref(std::string key, float value)
+void eng::PlayerPrefs::setPref(std::string key, float value, bool saved)
 {
     // this->_floatmap[key] = value;
 }
@@ -65,7 +100,6 @@ std::string eng::PlayerPrefs::getPref(std::string key)
 {
     if (_strmap.count(key) > 0)
         return _strmap[key];
-        // return "azs";
     return "Key not found";
 }
 

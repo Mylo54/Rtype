@@ -1,4 +1,4 @@
-UP      [z]
+UP		[z]
 DOWN    [s]
 LEFT    [q]
 RIGHT   [d]
