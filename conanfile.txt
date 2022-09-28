@@ -1,5 +1,5 @@
 [requires]
-sfml/2.5.1
+sfml/2.5.1@bincrafters/stable
 asio/1.24.0
 
 [options]
@@ -8,6 +8,7 @@ sfml:graphics=True
 sfml:window=True
 sfml:audio=True
 sfml:network=True
+
 
 [imports]
 bin, *.dll -> bin
