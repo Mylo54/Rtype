@@ -24,36 +24,38 @@ namespace eng
             SparseArray() {}
             ~SparseArray() {}
 
-            // Returns an iterator that points at the beginning of the
-            // Components Container
+            /// @return an iterator that points at the beginning of the Components Container
             Iterator begin() {
                 return _data.begin();
             }
 
-            // Returns an iterator that points at the end of the
-            // Components Container
+            /// @return an iterator that points at the end of the Components Container
             Iterator end() {
                 return _data.end();
             }
 
-            // Remove a Component
+            /// @brief Remove a Component
+            /// @param pos the index of the component
             void erase(size_t pos) {
                 _data.at(pos).reset();
             }
 
-            // Get the size of the sparse array
-            size_t size(void) {
+            /// @return The size of the array
+            size_t size() {
                 return _data.size();
             }
 
-            // Provide access to the data contained in the array
+            /// @brief Provide access to the Component contained in the array
+            /// @param id The index of the Component
+            /// @return A reference to the component stored in the array
             OptionalComponent &operator[](size_t id) {
                 return _data[id];
             }
 
-            // Insert the Component at pos index, erasing the old value or
-            // resizing if needed
-            // Crash inside function
+            /// @brief Insert the Component, erasing the old value or resizing if needed
+            /// @param pos The index of the component
+            /// @param c The component
+            /// @return A reference to the component stored in the array
             OptionalComponent &insertAt(size_t pos, Component const &c) {
                 while (pos >= size()) {
                     _data.push_back({});
@@ -63,8 +65,9 @@ namespace eng
                 return _data[pos];
             }
 
-            // Take a reference to an optional component and return its index
-            // If it isn't present it returns -1
+            /// @brief Get the index of a Component
+            /// @param c The component
+            /// @return The index of 'c'
             size_t getIndex(OptionalComponent const &c) {
                 size_t res = 0;
 
