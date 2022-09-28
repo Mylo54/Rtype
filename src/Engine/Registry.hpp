@@ -31,7 +31,8 @@ namespace eng
                 _containers[typeid(SparseArray<Component>)] = a;
 
                 /// @todo Here this line should push a function to erase a component at a specified index
-                //_erasers.push_back(/*here*/);
+                /// this currently doesn't work
+                //_erasers.push_back(&Registery::erase<Component>);
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -89,6 +90,15 @@ namespace eng
 
         protected:
         private:
+            /// @brief Erase a component at an index in associative array
+            /// @tparam Component The component type
+            /// @param r The registry from which to erase it
+            /// @param e The entity (index)
+            template<typename Component>
+            void erase(Registry &r, Entity const &e) {
+                r.getComponents<Component>()->erase(e.getId());
+            }
+
             /// @brief The highest entity number
             size_t _maxEntity;
 
