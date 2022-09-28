@@ -18,27 +18,34 @@ namespace eng
             PlayerPrefs();
             ~PlayerPrefs();
 
-            // Sets the string value of the preference identified by the given key.
-            void setString(std::string key, std::string value);
-            // Sets the int value of the preference identified by the given key
-            void setInt(std::string key, int value);
-            // Sets the float value of the preference identified by the given key.
-            void setFloat(std::string key, float value);
+            /// @brief load player preferences list from file to _strmap.
+            void loadPrefs();
 
-            // Returns the value corresponding to key in the preference file if it exists.
-            std::string getString(std::string key);
-            // Returns the value corresponding to key in the preference file if it exists.
-            float getFloat(std::string key);
-            // Returns the value corresponding to key in the preference file if it exists.
-            int getInt(std::string key);
+            /// @brief Sets the string value of the preference identified by the given key.
+            /// @param key key of the preference to set
+            /// @param value value to set
+            void setPref(std::string key, std::string value);
 
-            // Save all player preferences in a file on disk
-            bool save();
+            /// @brief Sets the int value of the preference identified by the given key.
+            /// @param key key of the preference to set
+            /// @param value value to set
+            void setPref(std::string key, int value);
+
+            /// @brief Sets the float value of the preference identified by the given key.
+            /// @param key key of the preference to set
+            /// @param value value to set
+            void setPref(std::string key, float value);
+
+            /// @brief Returns the value corresponding to key in the preference file if it exists.
+            /// @param key key of the preference to get
+            /// @return 
+            std::string getPref(std::string key);
         protected:
         private:
+            /// @brief map containing player preferences <key, value>
             std::map<std::string, std::string> _strmap;
-            std::map<std::string, int> _intmap;
-            std::map<std::string, float> _floatmap;
+            /// @brief path to the player preferences file
+            std::string _path;
     };
 } // namespace eng
 
