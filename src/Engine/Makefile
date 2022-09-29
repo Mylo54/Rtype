@@ -8,7 +8,8 @@
 NAME	= engine
 
 SRC	=	main.cpp		\
-		PlayerPrefs.cpp
+		PlayerPrefs.cpp	\
+		Entity.cpp
 
 OBJ	=	$(SRC:.cpp=.o)	
 

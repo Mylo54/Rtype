@@ -46,33 +46,83 @@ int optionnalVectorTest(void)
     return 0;
 }
 
+template<typename T>
+int add(int a, int b)
+{
+    typeid(T);
+    return (a + b);
+}
+
+template<typename T>
+int sub(int a, int b)
+{
+    typeid(T);
+    return (a - b);
+}
+
+class FunTest
+{
+    public:
+        FunTest() {}
+        ~FunTest() {}
+
+        template<typename T>
+        void addFunc() {
+            _myFuncs.push_back([](int a, int b) -> int {
+                if (typeid(int) == typeid(T))
+                    std::cout << "this functions was templated with an int" << std::endl;
+                return (a + b);
+            });
+        }
+
+        void playsFuncs() {
+            for (int i = 0; i < _myFuncs.size(); i++) {
+                std::cout << i << " + 2 = " << _myFuncs[i](i, 2) << std::endl;
+            }
+        }
+    private:
+        std::vector<std::function<int(int, int)>> _myFuncs;
+};
+
+int functionsTest(void)
+{
+    std::vector<std::function<int (int, int)>> myFunctions;
+
+    myFunctions.push_back(add<std::string>);
+    myFunctions.push_back(sub<int>);
+
+    std::cout << myFunctions.begin()->operator()(54, 54) << std::endl;
+    return (0);
+}
+
 int registryTest(void)
 {
     eng::Registry reg;
     eng::SparseArray<std::string> arrA;
+    eng::SparseArray<int> arrB;
+    int intA = 5;
+    int intB = 666;
 
     arrA.insertAt(0, "Bonjour");
     arrA.insertAt(2, "Comment allez vous?");
-    reg.registerComponents(arrA);
-    std::cout << "registered component" << std::endl;
-    auto fromReg = reg.getComponents<std::string>();
-    for (int i = 0; i < 3; i++)
-        std::cout << fromReg[i].value_or("empty") << std::endl;
+    reg.registerComponents<std::string>(arrA);
+    reg.registerComponents<int>(arrB);
+
+    // weird
+    //reg.addComponent<std::string>(eng::Entity(1), "addComponent");
+    //reg.addComponent<int>(eng::Entity(1), intA);
+    //reg.addComponent<int>(eng::Entity(2), intB);
+    for (int i = 0; i < reg.getComponents<std::string>().size(); i++) {
+        std::cout << reg.getComponents<std::string>()[i].value_or("empty") << std::endl;
+        std::cout << reg.getComponents<int>()[i].value_or(-1) << std::endl;
+    }
+    reg.killEntity(eng::Entity(0));
+    reg.killEntity(eng::Entity(2));
+    for (int i = 0; i < reg.getComponents<std::string>().size(); i++) {
+        std::cout << reg.getComponents<std::string>()[i].value_or("empty") << std::endl;
+        std::cout << reg.getComponents<int>()[i].value_or(-1) << std::endl;
+    }
     return (0);
-}
-
-int anyTest(void)
-{
-    eng::SparseArray<std::string> myArray;
-    std::any myArrayAny = &myArray;
-
-    myArray.insertAt(0, "Bonjour");
-    myArray.insertAt(1, "Comment allez vous?");
-    myArray.insertAt(2, {});
-    myArray.insertAt(3, "Et vous?");
-    myArray[0] = "hello";
-    // This println should display "hello" and not "bonjour"
-    return(0);
 }
 
 int main(void)

@@ -24,15 +24,15 @@ namespace eng
             ~Registry() {}
 
             /// @brief Adds a new component array to the associatives containers
+            /// and adds a new function to erase a specified index
             /// @tparam Component The type of Components you want to get
             /// @param a Your array of Components
             template <typename Component>
             void registerComponents(SparseArray<Component> a) {
                 _containers[typeid(SparseArray<Component>)] = a;
-
-                /// @todo Here this line should push a function to erase a component at a specified index
-                /// this currently doesn't work
-                //_erasers.push_back(&Registery::erase<Component>);
+                _erasers.push_back([](Registry &r, const Entity &e) -> void {
+                    r.getComponents<Component>().erase(e.getId());
+                });
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -61,12 +61,16 @@ namespace eng
             /// @brief What will it be usefull for???
             /// @param idx The index
             /// @return The entity
-            Entity entityFromIndex(std::size_t idx);
+            Entity entityFromIndex(std::size_t idx) {
+                return (Entity(idx));
+            }
             
             /// @brief Remove an entity and it's previously attached components
             /// @param e The Entity
             void killEntity(Entity const &e) {
-                /// @todo Remove all component associated to the entity here
+                for (int i = 0; i < _erasers.size(); i++) {
+                    _erasers[i](*this, e);
+                }
 
                 if (e.getId() == _maxEntity)
                     _maxEntity--;
@@ -81,6 +85,7 @@ namespace eng
             /// @return A reference to the array containing the component
             template <typename Component>
             SparseArray<Component> &addComponent(Entity const &to, Component &&c) {
+                /// @todo &&c is still weird
                 return (getComponents<Component>()->insertAt(to.getId(), c));
             }
 
