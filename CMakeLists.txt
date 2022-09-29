@@ -23,7 +23,7 @@ if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string und
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 # add_subdirectory(dependencies)
-FILE(GLOB_RECURSE SRCS src/Game/*.cpp)
+FILE(GLOB_RECURSE SRCS src/*.cpp)
 
 add_executable(Rutabaga ${SRCS})
 
