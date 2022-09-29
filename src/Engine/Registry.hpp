@@ -62,6 +62,8 @@ namespace eng
             /// @param idx The index
             /// @return The entity
             Entity entityFromIndex(std::size_t idx) {
+                if (idx > _maxEntity)
+                    _maxEntity = idx;
                 return (Entity(idx));
             }
             
@@ -96,7 +98,7 @@ namespace eng
         protected:
         private:
             /// @brief The highest entity number
-            size_t _maxEntity;
+            size_t _maxEntity = 0;
 
             /// @brief A map storing every array of components
             std::unordered_map<std::type_index, std::any> _containers;
