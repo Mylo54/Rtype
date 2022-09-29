@@ -109,9 +109,9 @@ int registryTest(void)
     reg.registerComponents<int>(arrB);
 
     // weird
-    //reg.addComponent<std::string>(eng::Entity(1), "addComponent");
-    //reg.addComponent<int>(eng::Entity(1), intA);
-    //reg.addComponent<int>(eng::Entity(2), intB);
+    reg.addComponent<std::string>(eng::Entity(1), "addComponent");
+    reg.addComponent<int>(eng::Entity(1), 5);
+    reg.addComponent<int>(eng::Entity(2), std::forward<int>(intB));
     for (int i = 0; i < reg.getComponents<std::string>().size(); i++) {
         std::cout << reg.getComponents<std::string>()[i].value_or("empty") << std::endl;
         std::cout << reg.getComponents<int>()[i].value_or(-1) << std::endl;

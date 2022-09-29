@@ -85,8 +85,8 @@ namespace eng
             /// @return A reference to the array containing the component
             template <typename Component>
             SparseArray<Component> &addComponent(Entity const &to, Component &&c) {
-                /// @todo &&c is still weird
-                return (getComponents<Component>()->insertAt(to.getId(), c));
+                getComponents<Component>().insertAt(to.getId(), c);
+                return (getComponents<Component>());
             }
 
             /// @brief I don't know what this function is for, also idk wtf params is...
@@ -95,15 +95,6 @@ namespace eng
 
         protected:
         private:
-            /// @brief Erase a component at an index in associative array
-            /// @tparam Component The component type
-            /// @param r The registry from which to erase it
-            /// @param e The entity (index)
-            template<typename Component>
-            void erase(Registry &r, Entity const &e) {
-                r.getComponents<Component>()->erase(e.getId());
-            }
-
             /// @brief The highest entity number
             size_t _maxEntity;
 
