@@ -9,6 +9,7 @@ sfml:window=True
 sfml:audio=True
 sfml:network=True
 
+
 [imports]
 bin, *.dll -> bin
 lib, *.so* -> lib

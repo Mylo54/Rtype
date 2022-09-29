@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     const float FPS = 60.0f; //The desired FPS. (The number of updates each second).
     bool redraw = true;      //Do I redraw everything on the screen?
 
-    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "Hello");
+    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "Rutabaga");
     window.setFramerateLimit(FPS);
     sf::Clock clock;
     sf::CircleShape circle(10.0f);
