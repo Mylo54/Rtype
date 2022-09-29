@@ -1,26 +1,20 @@
-/*
-** EPITECH PROJECT, 2022
-** B-CPP-500-NCY-5-1-rtype-clovis.schneider
-** File description:
-** main of Client
-*/
 
-#include "Client.hpp"
 
-rt::Client::Client()
-{
-}
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
 
-rt::Client::~Client()
-{
-}
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 int main(int argc, char **argv)
 {
     const float FPS = 60.0f; //The desired FPS. (The number of updates each second).
     bool redraw = true;      //Do I redraw everything on the screen?
 
-    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "CLIENT");
+    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "ENGINE");
     window.setFramerateLimit(FPS);
     sf::Clock clock;
     sf::CircleShape circle(10.0f);
