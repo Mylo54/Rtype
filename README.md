@@ -8,11 +8,11 @@ This project aims to create an online multiplayer R-Type game. We had to impleme
 For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www.hardcoregaming101.net/r-type/).
 
 ## Installation :
-- Linux:
+### Linux:
 ```comment on instale sur Linux```
-- Windows:
+### Windows:
 ```comment on instale sur Windows```
-- MacOS:
+### MacOS:
 ```comment on instale sur MacOS```
 
 
