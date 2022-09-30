@@ -9,7 +9,8 @@ NAME	= engine
 
 SRC	=	main.cpp		\
 		PlayerPrefs.cpp	\
-		Entity.cpp
+		Entity.cpp		\
+		Registry.cpp
 
 OBJ	=	$(SRC:.cpp=.o)	
 
@@ -20,7 +21,7 @@ CXX	=	g++ -g
 CXXFLAGS	=	-std=c++17
 
 $(NAME):	$(OBJ)
-	$(CXX) -o $(NAME) $(OBJ)
+	$(CXX) -o $(NAME) $(OBJ) -lsfml-graphics
 
 clean:
 	rm -rf $(OBJ)

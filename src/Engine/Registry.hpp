@@ -20,8 +20,8 @@ namespace eng
 {
     class Registry {
         public:
-            Registry() {}
-            ~Registry() {}
+            Registry();
+            ~Registry();
 
             /// @brief Adds a new component array to the associatives containers
             /// and adds a new function to erase a specified index
@@ -94,6 +94,12 @@ namespace eng
             /// @brief I don't know what this function is for, also idk wtf params is...
             template <typename Component, typename... Params>
             typename SparseArray<Component>::reference_type emplaceComponent(Entity const &to, Params &&...p);
+            /// @brief enable/disable the debug mode
+            /// @param isEnable new value of debugMode
+            void setDebugMode(bool isEnable);
+            /// @brief get true if debug mode is enabled, false otherwise
+            /// @return the value of debugMode
+            bool getDebugMode();
 
         protected:
         private:
@@ -108,6 +114,7 @@ namespace eng
 
             /// @brief A queue storing every ids already taken (not very sure)
             std::stack<size_t> _freeIds;
+            bool _debugMode = false;
     };
 } // namespace eng
 
