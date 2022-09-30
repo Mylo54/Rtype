@@ -15,6 +15,8 @@
 #include <stack>
 #include <functional>
 #include <any>
+#include <ctime>
+#include <iostream>
 
 namespace eng
 {
@@ -33,7 +35,9 @@ namespace eng
                 _erasers.push_back([](Registry &r, const Entity &e) -> void {
                     r.getComponents<Component>().erase(e.getId());
                 });
-                // if (_debugMode)
+                if (_debugMode)
+                    log(_name + ": addition of a new component array of type "
+                    + typeid(SparseArray<Component>).name());
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -43,7 +47,9 @@ namespace eng
             SparseArray<Component> &getComponents() {
                 std::type_index t = typeid(SparseArray<Component>);
                 std::any &res = _containers[t];
-
+                if (_debugMode)
+                    log(_name + ": getting of component array "
+                    + typeid(SparseArray<Component>).name());
                 return std::any_cast<SparseArray<Component> &>(res);
             }
 
@@ -57,6 +63,9 @@ namespace eng
                     _freeIds.pop();
                 } else
                     _maxEntity++;
+                if (_debugMode)
+                    log(_name + ": creation of a new entity of id "
+                    + std::to_string(res));
                 return (Entity(res));
             }
 
@@ -80,6 +89,9 @@ namespace eng
                     _maxEntity--;
                 else
                     _freeIds.push(e.getId());
+                if (_debugMode)
+                    log(_name + ": deletion of all component of id "
+                    + std::to_string(e.getId()));
             }
 
             /// @brief Store a component with association by id of the entity
@@ -102,7 +114,12 @@ namespace eng
             /// @brief get true if debug mode is enabled, false otherwise
             /// @return the value of debugMode
             bool getDebugMode();
-            void log();
+            /// @brief Set the name of the Registry
+            /// @param name new name of the registry
+            void setName(std::string name);
+            /// @brief Get the name of the registry
+            /// @return 
+            std::string getName();
         protected:
         private:
             /// @brief The highest entity number
@@ -116,7 +133,13 @@ namespace eng
 
             /// @brief A queue storing every ids already taken (not very sure)
             std::stack<size_t> _freeIds;
+            /// @brief If true : log activated
             bool _debugMode = false;
+            /// @brief Name of the Registry
+            std::string _name;
+            /// @brief Save actions on the registry in a log file
+            /// @param log The message to log
+            void log(std::string log);
     };
 } // namespace eng
 

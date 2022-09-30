@@ -27,13 +27,15 @@ class Velocity {
         float y;
 };
 
-eng::Registry createRegistry()
+eng::Registry createRegistry(bool isDebugMode, std::string name)
 {
     eng::Registry res;
+    res.setName(name);
     eng::SparseArray<Position> position;
     eng::SparseArray<Velocity> velocity;
     eng::SparseArray<sf::Sprite> drawable;
 
+    if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
     res.registerComponents(velocity);
     res.registerComponents(drawable);
@@ -60,7 +62,11 @@ void position_system(eng::Registry &r)
 // Not very working...
 int main(int argc, char **argv)
 {
-    eng::Registry reg = createRegistry();
+    eng::Registry reg;
+    reg.setName("Registry1");
+    for (int i = 1; i < argc; i++)
+        if (strcmp(argv[i], "-debug") == 0) reg.setDebugMode(true);
+    reg = createRegistry(true, reg.getName());
     eng::Entity baba = reg.spawnEntity();
     eng::Entity boubou = reg.spawnEntity();
 
@@ -76,5 +82,7 @@ int main(int argc, char **argv)
     position_system(reg);
     std::cout << "baba pos:" << reg.getComponents<Position>()[baba.getId()].value().x;
     std::cout << ", " << reg.getComponents<Position>()[baba.getId()].value().y << std::endl;
+
+    // reg.killEntity(baba);
     return 0;
 }
