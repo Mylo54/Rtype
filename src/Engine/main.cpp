@@ -47,13 +47,15 @@ class Drawable {
 #include "Registry.hpp"
 #include <string.h>
 
-eng::Registry createRegistry()
+eng::Registry createRegistry(bool isDebugMode, std::string name)
 {
     eng::Registry res;
+    res.setName(name);
     eng::SparseArray<Position> position;
     eng::SparseArray<Velocity> velocity;
     eng::SparseArray<Drawable> drawable;
 
+    if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
     res.registerComponents(velocity);
     res.registerComponents(drawable);
@@ -130,7 +132,11 @@ void log_system(eng::Registry &r)
 
 int main(int argc, char **argv)
 {
-    eng::Registry reg = createRegistry();
+    eng::Registry reg;
+    reg.setName("Registry1");
+    for (int i = 1; i < argc; i++)
+        if (strcmp(argv[i], "-debug") == 0) reg.setDebugMode(true);
+    reg = createRegistry(true, reg.getName());
     eng::Entity baba = reg.spawnEntity();
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     w.setFramerateLimit(60);
