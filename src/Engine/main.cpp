@@ -9,6 +9,11 @@
 #include "SparseArray.hpp"
 #include "SFML/Graphics.hpp"
 #include <string.h>
+#include <cstdio>
+#include <fstream>
+
+std::string logPath = "";
+extern std::string logPath;
 
 class Position {
     public:
@@ -59,13 +64,31 @@ void position_system(eng::Registry &r)
     }
 }
 
+void newLogPath(void)
+{
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    logPath = std::to_string(ltm->tm_mday) + "-" +
+    std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(1900 + ltm->tm_year)
+    + "_" + std::to_string(5 + ltm->tm_hour) + "h"
+    + std::to_string(ltm->tm_min) + "m" + std::to_string(ltm->tm_sec)
+    + "s.log";
+    std::ofstream out(logPath.c_str());
+    out << "Log from this run:\n";
+    out.close();
+}
+
 // Not very working...
 int main(int argc, char **argv)
 {
     eng::Registry reg;
+
     reg.setName("Registry1");
     for (int i = 1; i < argc; i++)
-        if (strcmp(argv[i], "-debug") == 0) reg.setDebugMode(true);
+        if (strcmp(argv[i], "-debug") == 0) {
+            reg.setDebugMode(true);
+            newLogPath();
+        }
     reg = createRegistry(true, reg.getName());
     eng::Entity baba = reg.spawnEntity();
     eng::Entity boubou = reg.spawnEntity();
@@ -82,7 +105,5 @@ int main(int argc, char **argv)
     position_system(reg);
     std::cout << "baba pos:" << reg.getComponents<Position>()[baba.getId()].value().x;
     std::cout << ", " << reg.getComponents<Position>()[baba.getId()].value().y << std::endl;
-
-    // reg.killEntity(baba);
     return 0;
 }
