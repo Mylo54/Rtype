@@ -5,10 +5,13 @@
 ** main
 */
 
-#include "Registry.hpp"
-#include "SparseArray.hpp"
+#include <iostream>
 #include "SFML/Graphics.hpp"
-#include <string.h>
+#include "SFML/Config.hpp"
+#include "SFML/System.hpp"
+#include "SFML/Window.hpp"
+#include "SFML/Audio.hpp"
+#include "SFML/Main.hpp"
 
 class Position {
     public:
@@ -27,12 +30,29 @@ class Velocity {
         float y;
 };
 
+class Drawable {
+    public:
+        Drawable(std::string textureFilePath, sf::RenderWindow &pwindow) : window(pwindow) 
+        {
+            texture->loadFromFile(textureFilePath);
+            sprite.setTexture(*texture);
+        }
+        sf::RenderWindow &window;
+        sf::Texture *texture = new sf::Texture;
+        sf::Sprite sprite;
+};
+
+
+#include "SparseArray.hpp"
+#include "Registry.hpp"
+#include <string.h>
+
 eng::Registry createRegistry()
 {
     eng::Registry res;
     eng::SparseArray<Position> position;
     eng::SparseArray<Velocity> velocity;
-    eng::SparseArray<sf::Sprite> drawable;
+    eng::SparseArray<Drawable> drawable;
 
     res.registerComponents(position);
     res.registerComponents(velocity);
@@ -57,24 +77,84 @@ void position_system(eng::Registry &r)
     }
 }
 
-// Not very working...
+void draw_system(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &sprites = r.getComponents<Drawable>();
+
+    // Clear
+    for (int i = 0;i < sprites.size(); i++)
+        if (sprites[i].has_value()) {
+            sprites[i].value().window.clear(sf::Color::Red);
+            break;
+        }
+
+    // Draw
+    for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
+        auto &pos = positions[i];
+        auto &spr = sprites[i];
+
+        if (pos.has_value() && spr.has_value()) {
+            spr.value().sprite.setPosition({pos.value().x, pos.value().y});
+            spr.value().window.draw(spr.value().sprite);
+        }
+    }
+
+    // Display
+    for (int i = 0;i < sprites.size(); i++) {
+        auto &spr = sprites[i];
+
+        if (spr.has_value()) {
+            spr.value().window.display();
+            break;
+        }
+    }
+}
+
+void log_system(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &velocities = r.getComponents<Velocity>();
+
+    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
+        auto &pos = positions[i];
+        auto &vel = velocities[i];
+
+        if (pos.has_value() && vel.has_value()) {
+            std::cout << i << ": pos = {" << pos.value().x << ", " << pos.value().y;
+            std::cout << ", " << pos.value().z << "}, vel = {" << vel.value().x;
+            std::cout << ", " << vel.value().y << "}" << std::endl;
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     eng::Registry reg = createRegistry();
     eng::Entity baba = reg.spawnEntity();
-    eng::Entity boubou = reg.spawnEntity();
-
+    sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
+    w.setFramerateLimit(60);
+    
+    //test sfml
+    /*
+    sf::Texture txt;
+    txt.loadFromFile("../assets/samus2.png");
+    sf::Sprite spr(txt);
+    */
     reg.addComponent<Position>(baba, Position(0, 0, 0));
-    reg.addComponent<Velocity>(baba, Velocity(5, 5));
-    reg.addComponent<Position>(boubou, Position(5, 5, 0));
-    reg.addComponent<Velocity>(boubou, Velocity(0, 0));
+    reg.addComponent<Velocity>(baba, Velocity(1, 1));
+    reg.addComponent<Drawable>(baba, Drawable("../assets/samus2.png", w));
 
-    std::cout << "baba id =" << baba.getId() << std::endl;
-    std::cout << "boubou id =" << boubou.getId() << std::endl;
-    std::cout << "baba pos:" << reg.getComponents<Position>()[baba.getId()].value().x;
-    std::cout << ", " << reg.getComponents<Position>()[baba.getId()].value().y << std::endl;
-    position_system(reg);
-    std::cout << "baba pos:" << reg.getComponents<Position>()[baba.getId()].value().x;
-    std::cout << ", " << reg.getComponents<Position>()[baba.getId()].value().y << std::endl;
+    while (w.isOpen())
+    {
+        sf::Event event;
+        while (w.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                w.close();
+        }
+        position_system(reg);
+        draw_system(reg);
+    }
     return 0;
 }
