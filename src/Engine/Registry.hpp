@@ -33,6 +33,7 @@ namespace eng
                 _erasers.push_back([](Registry &r, const Entity &e) -> void {
                     r.getComponents<Component>().erase(e.getId());
                 });
+                // if (_debugMode)
             }
 
             /// @brief Retrieve a reference to the array storing Components
@@ -100,7 +101,7 @@ namespace eng
             /// @brief get true if debug mode is enabled, false otherwise
             /// @return the value of debugMode
             bool getDebugMode();
-
+            void log();
         protected:
         private:
             /// @brief The highest entity number
