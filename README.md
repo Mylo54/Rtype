@@ -60,6 +60,24 @@ For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www
         merge Network
 ```
 
+## Project distribution :
+```mermaid
+    journey
+        title RType
+        section Engine
+            Player Preferences: 5: Clovis, Vivant
+            ECS: 1: Clovis, Vivant
+        section Compilation
+            Windows: 3: Damien
+            Linux: 5: Damien
+            MasOS: 7: Damien
+        section Formation
+            Formation: 3: Chloé
+        section Documentation
+            GitHub Action: 2: Mylo
+            README: 7: Mylo
+```
+
 ## Team
 
 The team is composed of :
