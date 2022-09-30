@@ -163,6 +163,7 @@ int main(int argc, char **argv)
         }
     reg = createRegistry(true, reg.getName());
     eng::Entity baba = reg.spawnEntity();
+    eng::Entity boubou = reg.spawnEntity();
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     w.setFramerateLimit(60);
     
