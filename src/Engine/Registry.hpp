@@ -49,12 +49,13 @@ namespace eng
             /// @brief Spawns a new entity while keeping the arrays small
             /// @return The entity
             Entity spawnEntity() {
-                size_t res = _maxEntity + 1;
+                size_t res = _maxEntity;
 
                 if (_freeIds.size() > 1) {
                     res = _freeIds.top();
                     _freeIds.pop();
-                }
+                } else
+                    _maxEntity++;
                 return (Entity(res));
             }
 
