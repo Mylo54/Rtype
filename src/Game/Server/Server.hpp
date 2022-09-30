@@ -8,7 +8,14 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
+#include <list>
+
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace rt {
     class Server {

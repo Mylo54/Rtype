@@ -1,27 +1,20 @@
-/*
-** EPITECH PROJECT, 2022
-** rtype
-** File description:
-** Server
-*/
 
-#include "Server.hpp"
 
-rt::Server::Server()
-{
-    
-}
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
 
-rt::Server::~Server()
-{
-}
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 int main(int argc, char **argv)
 {
     const float FPS = 60.0f; //The desired FPS. (The number of updates each second).
     bool redraw = true;      //Do I redraw everything on the screen?
 
-    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "SERVEUR");
+    sf::RenderWindow window(sf::VideoMode(300, 300, 32), "ENGINE");
     window.setFramerateLimit(FPS);
     sf::Clock clock;
     sf::CircleShape circle(10.0f);

@@ -7,6 +7,14 @@ This project aims to create an online multiplayer R-Type game. We had to impleme
 
 For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www.hardcoregaming101.net/r-type/).
 
+## Installation :
+### Linux:
+```comment on instale sur Linux```
+### Windows:
+```comment on instale sur Windows```
+### MacOS:
+```comment on instale sur MacOS```
+
 
 ## Network :
 - [ ] A network game: each player use a distinct client on the network, connecting to a server having final authorithy on what is really happening in the game.
@@ -29,7 +37,28 @@ For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www
 - [ ] The server MUST notify each client when a monster spawns, is destroyed, fires, kills a player, and so on.. 
 
 ## Architecture :
-
+```mermaid
+    gitGraph
+        commit id: "stable on prod"
+        branch Build-Experimenting
+        branch Engine
+        branch Network
+        checkout Build-Experimenting
+        commit id: "CMake" type: HIGHLIGHT
+        commit id: "Create GitHub Action" type: HIGHLIGHT
+        commit id: "first compile prototype using only cmake_fetch" type: HIGHLIGHT
+        commit id: "working cross plateform using fetch" type: HIGHLIGHT
+        commit id: "overall rework of compilation now using conan" type: HIGHLIGHT
+        checkout Engine
+        commit id: "ECS done" type: HIGHLIGHT
+        commit id: "Player Preferences" type: HIGHLIGHT
+        checkout Network
+        commit id: "AutreTruc" type: HIGHLIGHT
+        checkout main
+        merge Build-Experimenting
+        merge Engine
+        merge Network
+```
 
 ## Team
 
