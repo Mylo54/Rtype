@@ -8,7 +8,7 @@
 #include "Registry.hpp"
 #include "SparseArray.hpp"
 #include "SFML/Graphics.hpp"
-#include "unistd.h"
+#include <string.h>
 
 class Position {
     public:
@@ -58,7 +58,7 @@ void position_system(eng::Registry &r)
 }
 
 // Not very working...
-int main(void)
+int main(int argc, char **argv)
 {
     eng::Registry reg = createRegistry();
     eng::Entity baba = reg.spawnEntity();
