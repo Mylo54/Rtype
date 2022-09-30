@@ -17,6 +17,8 @@
 #include <any>
 #include <ctime>
 #include <iostream>
+#include <fstream>
+#include <cstdio>
 
 namespace eng
 {
@@ -122,6 +124,10 @@ namespace eng
             std::string getName();
         protected:
         private:
+            /// @brief Save actions on the registry in a log file
+            /// @param log The message to log
+            void log(std::string msg);
+
             /// @brief The highest entity number
             size_t _maxEntity = 0;
 
@@ -137,9 +143,6 @@ namespace eng
             bool _debugMode = false;
             /// @brief Name of the Registry
             std::string _name;
-            /// @brief Save actions on the registry in a log file
-            /// @param log The message to log
-            void log(std::string log);
     };
 } // namespace eng
 
