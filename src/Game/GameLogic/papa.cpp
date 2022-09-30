@@ -7,7 +7,7 @@
 
 #include "../Client/Client.hpp"
 
-int main(int argc, char **argv)
+int papa(int argc, char **argv)
 {
     const float FPS = 60.0f; //The desired FPS. (The number of updates each second).
     bool redraw = true;      //Do I redraw everything on the screen?
