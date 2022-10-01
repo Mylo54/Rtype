@@ -20,8 +20,9 @@ namespace rt {
 
         protected:
         private:
-        int _lobbyID;
-        std::string _roomName;
+            int _lobbyID;
+            std::string _roomName;
+        
             
     };
 };
