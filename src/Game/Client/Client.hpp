@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <boost/asio.hpp>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -20,8 +21,10 @@
 namespace rt {
     class Client {
         public:
+            Client(int port);
             ~Client();
-            Client();
+
+            void run();
         private:
         protected:
     };

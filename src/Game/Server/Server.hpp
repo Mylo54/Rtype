@@ -14,6 +14,7 @@
 #include <vector>
 #include <list>
 #include <locale>
+#include <boost/asio.hpp>
 #include <string.h>
 
 
@@ -33,6 +34,7 @@ namespace rt {
 
         protected:
         private:
+            
     };
 };
 
