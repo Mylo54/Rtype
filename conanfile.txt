@@ -9,6 +9,7 @@ sfml:graphics=True
 sfml:window=True
 sfml:audio=True
 sfml:network=True
+boost:shared=True
 
 
 [imports]
