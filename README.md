@@ -9,9 +9,14 @@
         <img src="https://img.shields.io/badge/MADE%20WITH-CONAN-blueviolet" /></a>
 <a href="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" alt="Cmake">
         <img src="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" /></a>
-[![Actions Status: Linux compile](https://github.com/ruby/ruby/workflows/Linux/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Linux")
-[![Actions Status: Windows compile](https://github.com/ruby/ruby/workflows/Windows/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Windows")
 
+[![Linux compile](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml)
+
+[![Windows compile](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml)
+
+[![MacOS compile](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml)
+
+[![Mirroring](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml)
 
 A 3rd year Epitech Project.
 
