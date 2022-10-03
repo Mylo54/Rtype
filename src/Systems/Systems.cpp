@@ -74,11 +74,13 @@ void rtp::Systems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &sprites = r.getComponents<Drawable>();
+    float delta = 0;
 
-    // Clear
+    // Clear & get deltaTime
     for (int i = 0;i < sprites.size(); i++)
         if (sprites[i].has_value()) {
             sprites[i].value().window.clear(sf::Color::Red);
+            delta = sprites[i].value().clock.getElapsedTime().asSeconds();
             break;
         }
 
@@ -89,10 +91,15 @@ void rtp::Systems::drawSystem(eng::Registry &r)
 
         if (pos.has_value() && spr.has_value()) {
             sf::IntRect rect = spr.value().sprite.getTextureRect();
-            if (spr.value().sheetDirection == 1) {
+            if (spr.value().sheetDirection != 0) {
+                spr.value().nextFrame -= delta;
+            }
+            // Animate to the right
+            if (spr.value().sheetDirection == 1 && spr.value().nextFrame <= 0) {
                 rect.left += rect.width;
                 if (rect.left >= spr.value().sizeX)
                     rect.left = 0;
+                spr.value().nextFrame = spr.value().frameTime;
             }
             spr.value().sprite.setTextureRect(rect);
             spr.value().sprite.setPosition({pos.value().x, pos.value().y});
@@ -106,6 +113,7 @@ void rtp::Systems::drawSystem(eng::Registry &r)
 
         if (spr.has_value()) {
             spr.value().window.display();
+            spr.value().clock.restart();
             break;
         }
     }
