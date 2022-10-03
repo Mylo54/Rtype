@@ -1,7 +1,17 @@
 
 # R-TYPE
 
-[![Actions Status: Windows](https://github.com/ruby/ruby/workflows/Windows/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Windows")
+<a href="https://img.shields.io/badge/MADE%20WITH-SFML-brightgreen" alt="SFML">
+        <img src="https://img.shields.io/badge/MADE%20WITH-SFML-brightgreen" /></a>
+<a href="https://img.shields.io/badge/MADE%20WITH-C%2B%2B-ff69b4" alt="C++">
+        <img src="https://img.shields.io/badge/MADE%20WITH-C%2B%2B-ff69b4" /></a>
+<a href="https://img.shields.io/badge/MADE%20WITH-CONAN-blueviolet" alt="Conan">
+        <img src="https://img.shields.io/badge/MADE%20WITH-CONAN-blueviolet" /></a>
+<a href="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" alt="Cmake">
+        <img src="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" /></a>
+[![Actions Status: Linux compile](https://github.com/ruby/ruby/workflows/Linux/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Linux")
+[![Actions Status: Windows compile](https://github.com/ruby/ruby/workflows/Windows/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Windows")
+
 
 A 3rd year Epitech Project.
 
