@@ -8,7 +8,8 @@ This project aims to create an online multiplayer R-Type game. We had to impleme
 For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www.hardcoregaming101.net/r-type/).
 
 ## Installation :
-First of all, you need to install Conan
+First of all, you need to install Conan.
+
 Then...
 
 **Linux:**
