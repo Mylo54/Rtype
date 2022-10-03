@@ -10,16 +10,20 @@ For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www
 ## Installation :
 First of all, you need to install Conan
 Then...
+
 **Linux:**
-```mkdir build
+```
+mkdir build
 cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
 ```
 **Windows:**
-```mkdir build
+```
+mkdir build
 cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .
 ```
 **MacOS:**
-```mkdir build
+```
+mkdir build
 cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
 ```
 
