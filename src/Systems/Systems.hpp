@@ -8,11 +8,11 @@
 #ifndef SYSTEMS_HPP_
 #define SYSTEMS_HPP_
 
-#include "Engine/Registry.hpp"
-#include "Components/Drawable.hpp"
-#include "Components/Controllable.hpp"
-#include "Components/Position.hpp"
-#include "Components/Velocity.hpp"
+#include "../Engine/Registry.hpp"
+#include "../Components/Drawable.hpp"
+#include "../Components/Controllable.hpp"
+#include "../Components/Position.hpp"
+#include "../Components/Velocity.hpp"
 
 namespace rtp
 {

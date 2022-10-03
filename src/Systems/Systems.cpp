@@ -36,6 +36,7 @@ void rtp::Systems::controlSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<Velocity>();
     auto &controllables = r.getComponents<Controllable>();
+    float speed = 1;
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
         auto &ctrl = controllables[i];
@@ -44,26 +45,26 @@ void rtp::Systems::controlSystem(eng::Registry &r)
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                vel.value().x = vel.value().x - 1;
+                vel.value().x = vel.value().x - speed;
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                vel.value().x = vel.value().x + 1;
+                vel.value().x = vel.value().x + speed;
             else {
                 if (vel.value().x > 0)
-                    vel.value().x--;
+                    vel.value().x -= speed;
                 else if (vel.value().x < 0)
-                    vel.value().x++;
+                    vel.value().x += speed;
             }
             
             // Up & Down
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                vel.value().y = vel.value().y - 1;
+                vel.value().y = vel.value().y - speed;
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                vel.value().y = vel.value().y + 1;
+                vel.value().y = vel.value().y + speed;
             else {
                 if (vel.value().y > 0)
-                    vel.value().y--;
+                    vel.value().y -= speed;
                 else if (vel.value().y < 0)
-                    vel.value().y++;
+                    vel.value().y += speed;
             }
         }
     }

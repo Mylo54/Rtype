@@ -6,9 +6,9 @@
 */
 
 #include "iostream"
-#include "Components/Components.hpp"
-#include "Systems.hpp"
-#include "Engine/Registry.hpp"
+#include "../Components/Components.hpp"
+#include "../Systems/Systems.hpp"
+#include "../Engine/Registry.hpp"
 #include <string.h>
 
 std::string logPath = "";
@@ -59,6 +59,7 @@ int main(int argc, char **argv)
     reg = createRegistry(true, reg.getName());
     eng::Entity baba = reg.spawnEntity();
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
+    w.setFramerateLimit(60);
 
     reg.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
