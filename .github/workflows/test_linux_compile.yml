@@ -1,4 +1,4 @@
-name: test_linux_compile
+name: Linux compile
 on: [workflow_call]
 jobs:
   Linux-Compile:

@@ -1,4 +1,4 @@
-name: test_macos_compile
+name: MacOS compile
 on: [workflow_call]
 jobs:
   Macos-Compile:
