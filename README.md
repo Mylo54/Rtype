@@ -1,6 +1,8 @@
 
 # R-TYPE
 
+[![Actions Status: Windows](https://github.com/ruby/ruby/workflows/Windows/badge.svg)](https://github.com/ruby/ruby/actions?query=workflow%3A"Windows")
+
 A 3rd year Epitech Project.
 
 This project aims to create an online multiplayer R-Type game. We had to implement a multi-threaded server using Asio and a graphical client in SFML.
