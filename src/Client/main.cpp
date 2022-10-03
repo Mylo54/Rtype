@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 
     reg.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    reg.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, 1, sf::IntRect(0, 0, 65, 49)));
+    reg.addComponent<rtp::Drawable>(baba, rtp::Drawable("../../assets/platypus_spaceship.png", w, 1, sf::IntRect(0, 0, 65, 49)));
     reg.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
 
     while (w.isOpen())
