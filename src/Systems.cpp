@@ -1,0 +1,127 @@
+/*
+** EPITECH PROJECT, 2022
+** rtype
+** File description:
+** Systems
+*/
+
+#include "Systems.hpp"
+
+rtp::Systems::Systems()
+{
+}
+
+rtp::Systems::~Systems()
+{
+}
+
+void rtp::Systems::logSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &velocities = r.getComponents<Velocity>();
+
+    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
+        auto &pos = positions[i];
+        auto &vel = velocities[i];
+
+        if (pos.has_value() && vel.has_value()) {
+            std::cout << i << ": pos = {" << pos.value().x << ", " << pos.value().y;
+            std::cout << ", " << pos.value().z << "}, vel = {" << vel.value().x;
+            std::cout << ", " << vel.value().y << "}" << std::endl;
+        }
+    }
+}
+
+void rtp::Systems::controlSystem(eng::Registry &r)
+{
+    auto &velocities = r.getComponents<Velocity>();
+    auto &controllables = r.getComponents<Controllable>();
+
+    for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
+        auto &ctrl = controllables[i];
+        auto &vel = velocities[i];
+
+        if (vel.has_value() && ctrl.has_value()) {
+            // Left & Right
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                vel.value().x = vel.value().x - 1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                vel.value().x = vel.value().x + 1;
+            else {
+                if (vel.value().x > 0)
+                    vel.value().x--;
+                else if (vel.value().x < 0)
+                    vel.value().x++;
+            }
+            
+            // Up & Down
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                vel.value().y = vel.value().y - 1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                vel.value().y = vel.value().y + 1;
+            else {
+                if (vel.value().y > 0)
+                    vel.value().y--;
+                else if (vel.value().y < 0)
+                    vel.value().y++;
+            }
+        }
+    }
+}
+
+void rtp::Systems::drawSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &sprites = r.getComponents<Drawable>();
+
+    // Clear
+    for (int i = 0;i < sprites.size(); i++)
+        if (sprites[i].has_value()) {
+            sprites[i].value().window.clear(sf::Color::Red);
+            break;
+        }
+
+    // Draw & update sheets
+    for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
+        auto &pos = positions[i];
+        auto &spr = sprites[i];
+
+        if (pos.has_value() && spr.has_value()) {
+            sf::IntRect rect = spr.value().sprite.getTextureRect();
+            if (spr.value().sheetDirection == 1) {
+                rect.left += rect.width;
+                if (rect.left >= spr.value().sizeX)
+                    rect.left = 0;
+            }
+            spr.value().sprite.setTextureRect(rect);
+            spr.value().sprite.setPosition({pos.value().x, pos.value().y});
+            spr.value().window.draw(spr.value().sprite);
+        }
+    }
+
+    // Display
+    for (int i = 0;i < sprites.size(); i++) {
+        auto &spr = sprites[i];
+
+        if (spr.has_value()) {
+            spr.value().window.display();
+            break;
+        }
+    }
+}
+
+void rtp::Systems::positionSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &velocities = r.getComponents<Velocity>();
+
+    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
+        auto &pos = positions[i];
+        auto &vel = velocities[i];
+
+        if (pos.has_value() && vel.has_value()) {
+            pos.value().x += vel.value().x;
+            pos.value().y += vel.value().y;
+        }
+    }
+}
