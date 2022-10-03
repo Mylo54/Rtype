@@ -8,28 +8,30 @@ This project aims to create an online multiplayer R-Type game. We had to impleme
 For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www.hardcoregaming101.net/r-type/).
 
 ## Installation :
-1. First of all, you need to install Conan
+First of all, you need to install Conan
 Then...
-### Linux:
+**Linux:**
 ```mkdir build
-cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .```
-### Windows:
+cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
+```
+**Windows:**
 ```mkdir build
-cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .```
-### MacOS:
+cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .
+```
+**MacOS:**
 ```mkdir build
-cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .```
+cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
+```
 
-
-## Team
+## Team :
 The team is composed of :
 
-chloe.lere@epitech.eu 
+* chloe.lere@epitech.eu 
 
-clovis.schneider@epitech.eu
+* clovis.schneider@epitech.eu
 
-vivant.garrigues@epitech.eu
+* vivant.garrigues@epitech.eu
 
-mylo.jeandat@epitech.eu
+* mylo.jeandat@epitech.eu
 
-damien.demontis@epitech.eu
+* damien.demontis@epitech.eu
