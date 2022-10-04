@@ -9,6 +9,7 @@
 #include "../Components/Components.hpp"
 #include "../Systems/Systems.hpp"
 #include "../Engine/Registry.hpp"
+#include "../Engine/Engine.hpp"
 #include <string.h>
 #include <array>
 
