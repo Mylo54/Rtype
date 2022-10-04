@@ -26,9 +26,11 @@ include_directories(
 
 #####    CLIENT
 
-FILE(GLOB_RECURSE SRCS_CLIENT src/Game/Client/*.cpp)
+FILE(GLOB_RECURSE ENGINE_CLIENT src/Engine/*.cpp)
+FILE(GLOB_RECURSE SYSTEMS src/Systems/*.cpp)
+FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 
-add_executable(Client-Rutabaga ${SRCS_CLIENT})
+add_executable(Client-Rutabaga ${ENGINE_CLIENT} ${SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rutabaga PUBLIC
@@ -48,7 +50,7 @@ target_link_libraries(
 
 #####    SERVER
 
-FILE(GLOB_RECURSE SRCS_SERVER src/Game/Server/*.cpp)
+FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 
 add_executable(Server-Rutabaga ${SRCS_SERVER})
 
@@ -59,28 +61,6 @@ target_include_directories(
 
 target_link_libraries(
   Server-Rutabaga
-  PRIVATE
-  ${CONAN_LIBS}
-  sfml-graphics
-  sfml-system
-  sfml-window
-  sfml-audio
-  sfml-network
-)
-
-#####    ENGINE (temporary)
-
-FILE(GLOB_RECURSE SRCS_ENGINE src/Engine/*.cpp)
-
-add_executable(Engine-Rutabaga ${SRCS_ENGINE})
-
-target_include_directories(
-  Engine-Rutabaga PUBLIC
-  ${CONAN_INCLUDE_DIRECTORIES}
-)
-
-target_link_libraries(
-  Engine-Rutabaga
   PRIVATE
   ${CONAN_LIBS}
   sfml-graphics

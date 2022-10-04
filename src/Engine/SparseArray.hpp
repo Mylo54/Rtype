@@ -61,7 +61,7 @@ namespace eng
                     _data.push_back({});
                 }
                 erase(pos);
-                _data.at(pos) = c;
+                _data[pos].emplace(c);
                 return _data[pos];
             }
 
