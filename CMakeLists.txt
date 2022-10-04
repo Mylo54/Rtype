@@ -22,9 +22,9 @@ if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string und
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-if(MSVC)
-    add_compile_options(std:c++17)
-endif()
+#if(MSVC)
+#    add_compile_options(std:c++17)
+#endif()
 
 include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
