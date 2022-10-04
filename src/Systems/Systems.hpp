@@ -21,9 +21,20 @@ namespace rtp
             Systems();
             ~Systems();
 
+            /// @brief A system who applies velocities on positions
+            /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
+
+            /// @brief A system who draws every drawable entity
+            /// @param r The Registry on which to apply the system 
             void drawSystem(eng::Registry &r);
+
+            /// @brief A system who handle controllable entities
+            /// @param r The Registry on which to apply the system 
             void controlSystem(eng::Registry &r);
+
+            /// @brief A system that logs every loggable component
+            /// @param r The Registry on which to apply the system 
             void logSystem(eng::Registry &r);
         protected:
         private:
