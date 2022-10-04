@@ -12,6 +12,7 @@
 #include "../Engine/Engine.hpp"
 #include <cstring>
 #include <string>
+#include <sstream>
 #include <array>
 
 std::string logPath = "";
