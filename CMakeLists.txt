@@ -16,9 +16,12 @@ find_package(asio REQUIRED)
 find_package(Threads REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
-    message(STATUS "GNUCXX detected, proceed ")
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
+
+if(MSVC)
+    add_compile_options(std:c++17)
+endif()
 
 include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
@@ -41,11 +44,6 @@ target_link_libraries(
   Client-Rutabaga
   PRIVATE
   ${CONAN_LIBS}
-  sfml-graphics
-  sfml-system
-  sfml-window
-  sfml-audio
-  sfml-network
 )
 
 #####    SERVER
@@ -63,9 +61,4 @@ target_link_libraries(
   Server-Rutabaga
   PRIVATE
   ${CONAN_LIBS}
-  sfml-graphics
-  sfml-system
-  sfml-window
-  sfml-audio
-  sfml-network
 )
