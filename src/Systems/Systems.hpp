@@ -9,16 +9,13 @@
 #define SYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
-#include "../Components/Drawable.hpp"
-#include "../Components/Controllable.hpp"
-#include "../Components/Position.hpp"
-#include "../Components/Velocity.hpp"
+#include "../Components/Components.hpp"
 
 namespace rtp
 {
     class Systems {
         public:
-            Systems();
+            Systems(sf::RenderWindow &w, sf::Clock &c);
             ~Systems();
 
             /// @brief A system who applies velocities on positions
@@ -37,6 +34,14 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void clearSystem(eng::Registry &r);
 
+            /// @brief A system who handles the shooting
+            /// @param r The Registry on which to apply the system
+            void shootSystem(eng::Registry &r);
+
+            /// @brief A system who handles inputs for shooting
+            /// @param r The registry on which to apply the system
+            void controlFireSystem(eng::Registry &r);
+
             /// @brief A system who displays the screen
             /// @param r The Registry on which to apply the system
             void displaySystem(eng::Registry &r);
@@ -46,6 +51,8 @@ namespace rtp
             void logSystem(eng::Registry &r);
         protected:
         private:
+            sf::RenderWindow &_w;
+            sf::Clock &_c;
     };
 } // namespace rtp
 

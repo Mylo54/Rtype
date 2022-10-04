@@ -24,12 +24,14 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     eng::SparseArray<rtp::Velocity> velocity;
     eng::SparseArray<rtp::Drawable> drawable;
     eng::SparseArray<rtp::Controllable> control;
+    eng::SparseArray<rtp::Shooter> shooter;
 
     if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
     res.registerComponents(velocity);
     res.registerComponents(drawable);
     res.registerComponents(control);
+    res.registerComponents(shooter);
     return (res);
 }
 
@@ -87,7 +89,8 @@ int main(int argc, char **argv)
 {
     eng::Registry reg;
     sf::Clock c;
-    rtp::Systems systems;
+    sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
+    rtp::Systems systems(w, c);
 
     reg.setName("Registry1");
     for (int i = 1; i < argc; i++)
@@ -96,13 +99,13 @@ int main(int argc, char **argv)
             newLogPath();
         }
     reg = createRegistry(true, reg.getName());
-    sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     std::vector<eng::Entity> bgs = makeBackgrounds(reg, w, c);
     eng::Entity baba = reg.spawnEntity();
     w.setFramerateLimit(60);
 
     reg.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
+    reg.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
     reg.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
     reg.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
 
@@ -116,6 +119,9 @@ int main(int argc, char **argv)
         }
         systems.controlSystem(reg);
         systems.positionSystem(reg);
+        systems.controlFireSystem(reg);
+        systems.shootSystem(reg);
+        // This will be a component, don't worry ^^
         if (reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x <= -1920)
             reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x = 1920;
         if (reg.getComponents<rtp::Position>()[bgs[1].getId()].value().x <= -1920)

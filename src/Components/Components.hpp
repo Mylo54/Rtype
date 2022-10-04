@@ -12,5 +12,6 @@
 #include "Controllable.hpp"
 #include "Position.hpp"
 #include "Velocity.hpp"
+#include "Shooter.hpp"
 
 #endif /* !COMPONENTS_HPP_ */
