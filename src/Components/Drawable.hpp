@@ -30,7 +30,7 @@ namespace rtp
             Drawable(std::string textureFilePath,
             sf::RenderWindow &pwindow,
             sf::Clock &pclock,
-            bool pSheetDirection = 0,
+            int pSheetDirection = 0,
             sf::IntRect rect = {0, 0, 0, 0},
             float pFrameTime = 1) : window(pwindow), clock(pclock) {
                 sheetDirection = pSheetDirection;

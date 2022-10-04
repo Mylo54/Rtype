@@ -33,6 +33,14 @@ namespace rtp
             /// @param r The Registry on which to apply the system 
             void controlSystem(eng::Registry &r);
 
+            /// @brief A system who clears the screen
+            /// @param r The Registry on which to apply the system
+            void clearSystem(eng::Registry &r);
+
+            /// @brief A system who displays the screen
+            /// @param r The Registry on which to apply the system
+            void displaySystem(eng::Registry &r);
+
             /// @brief A system that logs every loggable component
             /// @param r The Registry on which to apply the system 
             void logSystem(eng::Registry &r);

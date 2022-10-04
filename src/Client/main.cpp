@@ -10,6 +10,7 @@
 #include "../Systems/Systems.hpp"
 #include "../Engine/Registry.hpp"
 #include <string.h>
+#include <array>
 
 std::string logPath = "";
 extern std::string logPath;
@@ -45,6 +46,42 @@ void newLogPath(void)
     out.close();
 }
 
+std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w, sf::Clock &c)
+{
+    eng::Entity fg1 = reg.spawnEntity();
+    eng::Entity fg2 = reg.spawnEntity();
+    eng::Entity mg1 = reg.spawnEntity();
+    eng::Entity mg2 = reg.spawnEntity();
+    eng::Entity bg1 = reg.spawnEntity();
+    eng::Entity bg2 = reg.spawnEntity();
+    std::vector<eng::Entity> bgs = {fg1, fg2, mg1, mg2, bg1, bg2};
+
+    // Foregrounds
+    reg.addComponent<rtp::Position>(fg1, rtp::Position(0, 0, 0));
+    reg.addComponent<rtp::Velocity>(fg1, rtp::Velocity(-20, 0));
+    reg.addComponent<rtp::Drawable>(fg1, rtp::Drawable("../assets/foreground.png", w, c));
+    reg.addComponent<rtp::Position>(fg2, rtp::Position(1920, 0, 0));
+    reg.addComponent<rtp::Velocity>(fg2, rtp::Velocity(-20, 0));
+    reg.addComponent<rtp::Drawable>(fg2, rtp::Drawable("../assets/foreground.png", w, c));
+
+    // Middlegrounds
+    reg.addComponent<rtp::Position>(mg1, rtp::Position(0, 0, 0));
+    reg.addComponent<rtp::Velocity>(mg1, rtp::Velocity(-10, 0));
+    reg.addComponent<rtp::Drawable>(mg1, rtp::Drawable("../assets/middleground.png", w, c));
+    reg.addComponent<rtp::Position>(mg2, rtp::Position(1920, 0, 0));
+    reg.addComponent<rtp::Velocity>(mg2, rtp::Velocity(-10, 0));
+    reg.addComponent<rtp::Drawable>(mg2, rtp::Drawable("../assets/middleground.png", w, c));
+    
+    // Backgrounds
+    reg.addComponent<rtp::Position>(bg1, rtp::Position(0, 0, 0));
+    reg.addComponent<rtp::Velocity>(bg1, rtp::Velocity(-5, 0));
+    reg.addComponent<rtp::Drawable>(bg1, rtp::Drawable("../assets/background.png", w, c));
+    reg.addComponent<rtp::Position>(bg2, rtp::Position(1920, 0, 0));
+    reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
+    reg.addComponent<rtp::Drawable>(bg2, rtp::Drawable("../assets/background.png", w, c));
+    return bgs;
+}
+
 int main(int argc, char **argv)
 {
     eng::Registry reg;
@@ -58,8 +95,9 @@ int main(int argc, char **argv)
             newLogPath();
         }
     reg = createRegistry(true, reg.getName());
-    eng::Entity baba = reg.spawnEntity();
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
+    std::vector<eng::Entity> bgs = makeBackgrounds(reg, w, c);
+    eng::Entity baba = reg.spawnEntity();
     w.setFramerateLimit(60);
 
     reg.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
@@ -77,7 +115,21 @@ int main(int argc, char **argv)
         }
         systems.controlSystem(reg);
         systems.positionSystem(reg);
+        if (reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x = 1920;
+        if (reg.getComponents<rtp::Position>()[bgs[1].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[1].getId()].value().x = 1920;
+        if (reg.getComponents<rtp::Position>()[bgs[2].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[2].getId()].value().x = 1920;
+        if (reg.getComponents<rtp::Position>()[bgs[3].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[3].getId()].value().x = 1920;
+        if (reg.getComponents<rtp::Position>()[bgs[4].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[4].getId()].value().x = 1920;
+        if (reg.getComponents<rtp::Position>()[bgs[5].getId()].value().x <= -1920)
+            reg.getComponents<rtp::Position>()[bgs[5].getId()].value().x = 1920;
+        systems.clearSystem(reg);
         systems.drawSystem(reg);
+        systems.displaySystem(reg);
     }
     return 0;
 }

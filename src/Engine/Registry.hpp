@@ -139,8 +139,10 @@ namespace eng
 
             /// @brief A queue storing every ids already taken (not very sure)
             std::stack<size_t> _freeIds;
+
             /// @brief If true : log activated
             bool _debugMode = false;
+
             /// @brief Name of the Registry
             std::string _name;
     };

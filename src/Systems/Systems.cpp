@@ -70,19 +70,36 @@ void rtp::Systems::controlSystem(eng::Registry &r)
     }
 }
 
+void rtp::Systems::clearSystem(eng::Registry &r)
+{
+    auto sprites = r.getComponents<Drawable>();
+
+    for (int i = 0; i < sprites.size(); i++) {
+        if (sprites[i].has_value()) {
+            sprites[i].value().window.clear();
+            break;
+        }
+    }
+}
+
+void rtp::Systems::displaySystem(eng::Registry &r)
+{
+    auto sprites = r.getComponents<Drawable>();
+
+    for (int i = 0; i < sprites.size(); i++) {
+        if (sprites[i].has_value()) {
+            sprites[i].value().window.display();
+            sprites[i].value().clock.restart();
+            break;
+        }
+    }
+}
+
 void rtp::Systems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &sprites = r.getComponents<Drawable>();
     float delta = 0;
-
-    // Clear & get deltaTime
-    for (int i = 0;i < sprites.size(); i++)
-        if (sprites[i].has_value()) {
-            sprites[i].value().window.clear(sf::Color::Red);
-            delta = sprites[i].value().clock.getElapsedTime().asSeconds();
-            break;
-        }
 
     // Draw & update sheets
     for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
@@ -104,17 +121,6 @@ void rtp::Systems::drawSystem(eng::Registry &r)
             spr.value().sprite.setTextureRect(rect);
             spr.value().sprite.setPosition({pos.value().x, pos.value().y});
             spr.value().window.draw(spr.value().sprite);
-        }
-    }
-
-    // Display
-    for (int i = 0;i < sprites.size(); i++) {
-        auto &spr = sprites[i];
-
-        if (spr.has_value()) {
-            spr.value().window.display();
-            spr.value().clock.restart();
-            break;
         }
     }
 }
