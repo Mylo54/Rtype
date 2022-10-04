@@ -11,6 +11,7 @@
 #include "../Engine/Registry.hpp"
 #include "../Engine/Engine.hpp"
 #include <string.h>
+#include <string>
 #include <array>
 
 std::string logPath = "";
