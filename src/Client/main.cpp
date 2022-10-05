@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     manag.addRegistry(reg);
     eng::Registry &r = manag.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
-    eng::Entity baba = reg.spawnEntity();
+    eng::Entity baba = r.spawnEntity();
     w.setFramerateLimit(60);
 
     r.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
@@ -129,15 +129,18 @@ int main(int argc, char **argv)
             if (event.type == sf::Event::Closed)
                 w.close();
         }
-        systems.controlSystem(reg);
-        systems.positionSystem(reg);
-        systems.controlFireSystem(reg);
-        systems.shootSystem(reg);
-        systems.clearSystem(reg);
-        systems.backgroundSystem(reg);
-        systems.drawSystem(reg);
-        systems.playSoundSystem(reg);
-        systems.displaySystem(reg);
+        //systems.receiveData(r);
+        systems.controlSystem(r);
+        systems.controlMovementSystem(r);
+        systems.controlFireSystem(r);
+        systems.positionSystem(r);
+        systems.shootSystem(r);
+        //systems.sendData(r);
+        systems.clearSystem(r);
+        systems.backgroundSystem(r);
+        systems.drawSystem(r);
+        systems.playSoundSystem(r);
+        systems.displaySystem(r);
     }
     return 0;
 }

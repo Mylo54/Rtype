@@ -34,9 +34,38 @@ void rtp::Systems::logSystem(eng::Registry &r)
 
 void rtp::Systems::controlSystem(eng::Registry &r)
 {
+    auto &controllables = r.getComponents<Controllable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            // up and down
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                ctrl.value().yAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                ctrl.value().yAxis = 1;
+            else
+                ctrl.value().yAxis = 0;
+            
+            // left and right
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                ctrl.value().xAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                ctrl.value().xAxis = 1;
+            else
+                ctrl.value().xAxis = 0;
+            
+            // shoot
+            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        }
+    }
+}
+
+void rtp::Systems::controlMovementSystem(eng::Registry &r)
+{
     auto &velocities = r.getComponents<Velocity>();
     auto &controllables = r.getComponents<Controllable>();
-    float speed = 1;
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
         auto &ctrl = controllables[i];
@@ -44,28 +73,14 @@ void rtp::Systems::controlSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                vel.value().x = vel.value().x - speed;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                vel.value().x = vel.value().x + speed;
-            else {
-                if (vel.value().x > 0)
-                    vel.value().x -= speed;
-                else if (vel.value().x < 0)
-                    vel.value().x += speed;
-            }
-            
+            vel.value().x += ctrl.value().xAxis * 2;
+            vel.value().x += (vel.value().x > 0) ? -1 : 0;
+            vel.value().x += (vel.value().x < 0) ? 1 : 0;
+
             // Up & Down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                vel.value().y = vel.value().y - speed;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                vel.value().y = vel.value().y + speed;
-            else {
-                if (vel.value().y > 0)
-                    vel.value().y -= speed;
-                else if (vel.value().y < 0)
-                    vel.value().y += speed;
-            }
+            vel.value().y += ctrl.value().yAxis * 2;
+            vel.value().y += (vel.value().y > 0) ? -1 : 0;
+            vel.value().y += (vel.value().y < 0) ? 1 : 0;
         }
     }
 }
@@ -211,11 +226,13 @@ void rtp::Systems::sendData(eng::Registry &r)
         auto ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            // Inputs will be inside the ctrl.value() object
-            std::cout << "I send the inputs" << std::endl;
+            std::cout << "[Packet Start]" << std::endl;
+            std::cout << "x:"<< ctrl.value().xAxis << std::endl;
+            std::cout << "y:"<< ctrl.value().yAxis << std::endl;
+            std::cout << "s:"<< ctrl.value().shoot << std::endl;
+            std::cout << "[Packet End]" << std::endl;
         }
     }
-
 }
 
 void rtp::Systems::receiveData(eng::Registry &r)

@@ -26,7 +26,7 @@ namespace rtp
             /// @param r The Registry on which to apply the system 
             void drawSystem(eng::Registry &r);
 
-            /// @brief A system who handle controllable entities
+            /// @brief A system who handles inputs and stores actions
             /// @param r The Registry on which to apply the system 
             void controlSystem(eng::Registry &r);
 
@@ -41,6 +41,10 @@ namespace rtp
             /// @brief A system who handles inputs for shooting
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
+
+            /// @brief A system who handle movement on controllable entities
+            /// @param r The registry on which to apply the system
+            void controlMovementSystem(eng::Registry &r);
 
             /// @brief A system who displays the screen
             /// @param r The Registry on which to apply the system

@@ -18,6 +18,9 @@ namespace rtp
             ~Controllable() {}
 
             sf::RenderWindow &window;
+            int xAxis;
+            int yAxis;
+            bool shoot;
         protected:
         private:
     };
