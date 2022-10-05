@@ -81,6 +81,7 @@ void rtp::Systems::displaySystem(eng::Registry &r)
     _c.restart();
 }
 
+// Needs to change some things here...
 void rtp::Systems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -127,6 +128,24 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
     }
 }
 
+void rtp::Systems::backgroundSystem(eng::Registry &r)
+{
+    auto &bgs = r.getComponents<Background>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
+        auto &pos = poss[i];
+        auto &bg = bgs[i];
+
+        if (pos.has_value() && bg.has_value()) {
+            if (pos.value().x <= -1920)
+                pos.value().x = 1920;
+            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
+            _w.draw(bg.value().sprite);
+        }
+    }
+}
+
 void rtp::Systems::shootSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -146,6 +165,23 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
                 r.addComponent(bullet, rtp::Drawable("../assets/bullet.png", _w, _c));
+                r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
+            }
+        }
+    }
+}
+
+void rtp::Systems::playSoundSystem(eng::Registry &r)
+{
+    auto &sounds = r.getComponents<AudioSource>();
+
+    for (int i = 0; i < sounds.size(); i++) {
+        auto &snd = sounds[i];
+
+        if (snd.has_value()) {
+            if (snd.value().toPlay) {
+                snd.value().toPlay = false;
+                snd.value().sound.play();
             }
         }
     }
