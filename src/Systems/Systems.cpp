@@ -165,6 +165,23 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
                 r.addComponent(bullet, rtp::Drawable("../assets/bullet.png", _w, _c));
+                r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
+            }
+        }
+    }
+}
+
+void rtp::Systems::playSoundSystem(eng::Registry &r)
+{
+    auto &sounds = r.getComponents<AudioSource>();
+
+    for (int i = 0; i < sounds.size(); i++) {
+        auto &snd = sounds[i];
+
+        if (snd.has_value()) {
+            if (snd.value().toPlay) {
+                snd.value().toPlay = false;
+                snd.value().sound.play();
             }
         }
     }

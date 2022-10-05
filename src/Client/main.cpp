@@ -26,6 +26,7 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     eng::SparseArray<rtp::Controllable> control;
     eng::SparseArray<rtp::Shooter> shooter;
     eng::SparseArray<rtp::Background> backgrounds;
+    eng::SparseArray<rtp::AudioSource> sounds;
 
     if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
@@ -34,6 +35,7 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     res.registerComponents(control);
     res.registerComponents(shooter);
     res.registerComponents(backgrounds);
+    res.registerComponents(sounds);
     return (res);
 }
 
@@ -126,6 +128,7 @@ int main(int argc, char **argv)
         systems.clearSystem(reg);
         systems.backgroundSystem(reg);
         systems.drawSystem(reg);
+        systems.playSoundSystem(reg);
         systems.displaySystem(reg);
     }
     return 0;

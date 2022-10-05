@@ -53,6 +53,10 @@ namespace rtp
             /// @brief A system that logs every loggable component
             /// @param r The Registry on which to apply the system 
             void logSystem(eng::Registry &r);
+
+            /// @brief A system that plays every sounds set to play
+            /// @param r The Registry on which to apply the system
+            void playSoundSystem(eng::Registry &r);
         protected:
         private:
             sf::RenderWindow &_w;
