@@ -10,6 +10,19 @@
 
 #include <stack>
 #include "Registry.hpp"
+#include "Entity.hpp"
+#include "SparseArray.hpp"
+#include "Log.hpp"
+#include <unordered_map>
+#include <typeindex>
+#include <stack>
+#include <functional>
+#include <any>
+#include <ctime>
+#include <iostream>
+#include <fstream>
+#include <cstdio>
+#include "Components.hpp"
 
 namespace eng
 {
@@ -19,7 +32,7 @@ namespace eng
             ~RegistryManager();
             /// @brief Add a registry to the top of _regs stack
             /// @param reg registry to add
-            void addRegistry(eng::Registry &reg);
+            void addRegistry(std::string name);
             /// @brief Remove the top Registry of _regs stack
             void popRegistry();
             /// @brief Get the top element of registry stack

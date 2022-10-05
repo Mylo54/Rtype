@@ -18,29 +18,6 @@
 std::string logPath = "";
 extern std::string logPath;
 
-eng::Registry createRegistry(bool isDebugMode, std::string name)
-{
-    eng::Registry res;
-    res.setName(name);
-    eng::SparseArray<rtp::Position> position;
-    eng::SparseArray<rtp::Velocity> velocity;
-    eng::SparseArray<rtp::Drawable> drawable;
-    eng::SparseArray<rtp::Controllable> control;
-    eng::SparseArray<rtp::Shooter> shooter;
-    eng::SparseArray<rtp::Background> backgrounds;
-    eng::SparseArray<rtp::AudioSource> sounds;
-
-    if (isDebugMode) res.setDebugMode(true);
-    res.registerComponents(position);
-    res.registerComponents(velocity);
-    res.registerComponents(drawable);
-    res.registerComponents(control);
-    res.registerComponents(shooter);
-    res.registerComponents(backgrounds);
-    res.registerComponents(sounds);
-    return (res);
-}
-
 void newLogPath(void)
 {
     time_t now = time(0);
@@ -93,7 +70,7 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
 
 int main(int argc, char **argv)
 {
-    eng::Registry reg;
+    eng::RegistryManager manage;
     sf::Clock c;
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     rtp::Systems systems(w, c);
@@ -104,6 +81,7 @@ int main(int argc, char **argv)
             reg.setDebugMode(true);
             newLogPath();
         }
+    manage.addRegistry("Registry56");
     reg = createRegistry(true, reg.getName());
     std::vector<eng::Entity> bgs = makeBackgrounds(reg, w, c);
     eng::Entity baba = reg.spawnEntity();
