@@ -13,5 +13,6 @@
 #include "Position.hpp"
 #include "Velocity.hpp"
 #include "Shooter.hpp"
+#include "Background.hpp"
 
 #endif /* !COMPONENTS_HPP_ */

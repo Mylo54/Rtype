@@ -25,6 +25,7 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     eng::SparseArray<rtp::Drawable> drawable;
     eng::SparseArray<rtp::Controllable> control;
     eng::SparseArray<rtp::Shooter> shooter;
+    eng::SparseArray<rtp::Background> backgrounds;
 
     if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
@@ -32,6 +33,7 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     res.registerComponents(drawable);
     res.registerComponents(control);
     res.registerComponents(shooter);
+    res.registerComponents(backgrounds);
     return (res);
 }
 
@@ -62,26 +64,26 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
     // Foregrounds
     reg.addComponent<rtp::Position>(fg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(fg1, rtp::Velocity(-20, 0));
-    reg.addComponent<rtp::Drawable>(fg1, rtp::Drawable("../assets/foreground.png", w, c));
+    reg.addComponent<rtp::Background>(fg1, rtp::Background("../assets/foreground.png"));
     reg.addComponent<rtp::Position>(fg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(fg2, rtp::Velocity(-20, 0));
-    reg.addComponent<rtp::Drawable>(fg2, rtp::Drawable("../assets/foreground.png", w, c));
+    reg.addComponent<rtp::Background>(fg2, rtp::Background("../assets/foreground.png"));
 
     // Middlegrounds
     reg.addComponent<rtp::Position>(mg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(mg1, rtp::Velocity(-10, 0));
-    reg.addComponent<rtp::Drawable>(mg1, rtp::Drawable("../assets/middleground.png", w, c));
+    reg.addComponent<rtp::Background>(mg1, rtp::Background("../assets/middleground.png"));
     reg.addComponent<rtp::Position>(mg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(mg2, rtp::Velocity(-10, 0));
-    reg.addComponent<rtp::Drawable>(mg2, rtp::Drawable("../assets/middleground.png", w, c));
+    reg.addComponent<rtp::Background>(mg2, rtp::Background("../assets/middleground.png"));
     
     // Backgrounds
     reg.addComponent<rtp::Position>(bg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(bg1, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Drawable>(bg1, rtp::Drawable("../assets/background.png", w, c));
+    reg.addComponent<rtp::Background>(bg1, rtp::Background("../assets/background.png"));
     reg.addComponent<rtp::Position>(bg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Drawable>(bg2, rtp::Drawable("../assets/background.png", w, c));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background("../assets/background.png"));
     return bgs;
 }
 
@@ -121,20 +123,8 @@ int main(int argc, char **argv)
         systems.positionSystem(reg);
         systems.controlFireSystem(reg);
         systems.shootSystem(reg);
-        // This will be a component, don't worry ^^
-        if (reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[0].getId()].value().x = 1920;
-        if (reg.getComponents<rtp::Position>()[bgs[1].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[1].getId()].value().x = 1920;
-        if (reg.getComponents<rtp::Position>()[bgs[2].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[2].getId()].value().x = 1920;
-        if (reg.getComponents<rtp::Position>()[bgs[3].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[3].getId()].value().x = 1920;
-        if (reg.getComponents<rtp::Position>()[bgs[4].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[4].getId()].value().x = 1920;
-        if (reg.getComponents<rtp::Position>()[bgs[5].getId()].value().x <= -1920)
-            reg.getComponents<rtp::Position>()[bgs[5].getId()].value().x = 1920;
         systems.clearSystem(reg);
+        systems.backgroundSystem(reg);
         systems.drawSystem(reg);
         systems.displaySystem(reg);
     }

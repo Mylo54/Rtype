@@ -81,6 +81,7 @@ void rtp::Systems::displaySystem(eng::Registry &r)
     _c.restart();
 }
 
+// Needs to change some things here...
 void rtp::Systems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -123,6 +124,24 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  {
                 sht.value().shoot = true;
             }
+        }
+    }
+}
+
+void rtp::Systems::backgroundSystem(eng::Registry &r)
+{
+    auto &bgs = r.getComponents<Background>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
+        auto &pos = poss[i];
+        auto &bg = bgs[i];
+
+        if (pos.has_value() && bg.has_value()) {
+            if (pos.value().x <= -1920)
+                pos.value().x = 1920;
+            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
+            _w.draw(bg.value().sprite);
         }
     }
 }
