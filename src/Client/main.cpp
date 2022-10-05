@@ -102,7 +102,6 @@ int main(int argc, char **argv)
             if (event.type == sf::Event::Closed)
                 w.close();
         }
-<<<<<<< HEAD
         //systems.receiveData(r);
         systems.controlSystem(r);
         systems.controlMovementSystem(r);
@@ -110,12 +109,6 @@ int main(int argc, char **argv)
         systems.positionSystem(r);
         systems.shootSystem(r);
         //systems.sendData(r);
-=======
-        systems.controlSystem(r);
-        systems.positionSystem(r);
-        systems.controlFireSystem(r);
-        systems.shootSystem(r);
->>>>>>> e3aadb85ed63fbded3a1d59acd41965ed542bac8
         systems.clearSystem(r);
         systems.backgroundSystem(r);
         systems.drawSystem(r);
