@@ -8,6 +8,7 @@
 #include "Log.hpp"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 eng::Log::Log()
 {
@@ -21,16 +22,16 @@ std::string eng::Log::createPath()
 {
     time_t now = time(0);
     tm* ltm = localtime(&now);
-    std::string path = std::to_string(ltm->tm_mday) + "-" +
-    std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(1900 + ltm->tm_year)
-    + "_" + std::to_string(5 + ltm->tm_hour) + "h"
-    + std::to_string(ltm->tm_min) + "m" + std::to_string(ltm->tm_sec)
-    + "s.log";
+    std::stringstream path;
+    path << (ltm->tm_mday) << "-" <<
+    (1 + ltm->tm_mon) << "-" << (1900 + ltm->tm_year) << "_"
+    << (5 + ltm->tm_hour) << "h" << (ltm->tm_min) << "m" << (ltm->tm_sec)
+    << "s.log";
     
-    std::ofstream out(path.c_str());
+    std::ofstream out(path.str());
     out << "Log from this run:\n";
     out.close();
-    return path;
+    return path.str();
 }
 
 void eng::Log::setPath(std::string path)

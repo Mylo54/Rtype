@@ -164,7 +164,7 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 eng::Entity bullet = r.spawnEntity();
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
-                r.addComponent(bullet, rtp::Drawable("../assets/bullet.png", _w, _c));
+                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath, _w, _c));
                 r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
             }
         }
@@ -201,4 +201,26 @@ void rtp::Systems::positionSystem(eng::Registry &r)
             pos.value().y += vel.value().y;
         }
     }
+}
+
+void rtp::Systems::sendData(eng::Registry &r)
+{
+    auto &controllables = r.getComponents<Controllable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            // Inputs will be inside the ctrl.value() object
+            std::cout << "I send the inputs" << std::endl;
+        }
+    }
+
+}
+
+void rtp::Systems::receiveData(eng::Registry &r)
+{
+    // Read the buffer of values received from the server
+    // For every entity having the "Synced" component (not existing yet),
+    // Emplace new values (Position, health, Velocities, etc ...)
 }

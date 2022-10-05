@@ -10,6 +10,7 @@
 #include "../Systems/Systems.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Engine/RegistryManager.hpp"
+#include <string.h>
 #include <cstring>
 #include <string>
 #include <sstream>
@@ -74,24 +75,24 @@ int main(int argc, char **argv)
     sf::Clock c;
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     rtp::Systems systems(w, c);
+    eng::Log log;
 
-    reg.setName("Registry1");
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
-            reg.setDebugMode(true);
-            newLogPath();
+            manage.setDebugMode(true);
+            manage.setLogPath(log.createPath());
         }
     manage.addRegistry("Registry56");
-    reg = createRegistry(true, reg.getName());
-    std::vector<eng::Entity> bgs = makeBackgrounds(reg, w, c);
-    eng::Entity baba = reg.spawnEntity();
+    eng::Registry &r = manage.getTop();
+    std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
+    eng::Entity baba = r.spawnEntity();
     w.setFramerateLimit(60);
 
-    reg.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
-    reg.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    reg.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
-    reg.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
-    reg.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
+    r.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
+    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
+    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
+    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
 
     while (w.isOpen())
     {
@@ -101,15 +102,15 @@ int main(int argc, char **argv)
             if (event.type == sf::Event::Closed)
                 w.close();
         }
-        systems.controlSystem(reg);
-        systems.positionSystem(reg);
-        systems.controlFireSystem(reg);
-        systems.shootSystem(reg);
-        systems.clearSystem(reg);
-        systems.backgroundSystem(reg);
-        systems.drawSystem(reg);
-        systems.playSoundSystem(reg);
-        systems.displaySystem(reg);
+        systems.controlSystem(r);
+        systems.positionSystem(r);
+        systems.controlFireSystem(r);
+        systems.shootSystem(r);
+        systems.clearSystem(r);
+        systems.backgroundSystem(r);
+        systems.drawSystem(r);
+        systems.playSoundSystem(r);
+        systems.displaySystem(r);
     }
     return 0;
 }
