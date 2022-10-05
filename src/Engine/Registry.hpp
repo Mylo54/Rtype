@@ -10,6 +10,7 @@
 
 #include "Entity.hpp"
 #include "SparseArray.hpp"
+#include "Log.hpp"
 #include <unordered_map>
 #include <typeindex>
 #include <stack>
@@ -37,8 +38,8 @@ namespace eng
                 _erasers.push_back([](Registry &r, const Entity &e) -> void {
                     r.getComponents<Component>().erase(e.getId());
                 });
-                if (_debugMode)
-                    log(_name + ": addition of a new component array of type "
+                if (getDebugMode())
+                    _log.log(_name + ": addition of a new component array of type "
                     + typeid(SparseArray<Component>).name());
             }
 
@@ -49,8 +50,8 @@ namespace eng
             SparseArray<Component> &getComponents() {
                 std::type_index t = typeid(SparseArray<Component>);
                 std::any &res = _containers[t];
-                if (_debugMode)
-                    log(_name + ": getting of component array "
+                if (getDebugMode())
+                    _log.log(_name + ": getting of component array "
                     + typeid(SparseArray<Component>).name());
                 return std::any_cast<SparseArray<Component> &>(res);
             }
@@ -65,9 +66,10 @@ namespace eng
                     _freeIds.pop();
                 } else
                     _maxEntity++;
-                if (_debugMode)
-                    log(_name + ": creation of a new entity of id "
+                if (getDebugMode()) {
+                    _log.log(_name + ": creation of a new entity of id "
                     + std::to_string(res));
+                }
                 return (Entity(res));
             }
 
@@ -91,8 +93,8 @@ namespace eng
                     _maxEntity--;
                 else
                     _freeIds.push(e.getId());
-                if (_debugMode)
-                    log(_name + ": deletion of all component of id "
+                if (getDebugMode())
+                    _log.log(_name + ": deletion of all component of id "
                     + std::to_string(e.getId()));
             }
 
@@ -104,6 +106,10 @@ namespace eng
             template <typename Component>
             SparseArray<Component> &addComponent(Entity const &to, Component &&c) {
                 getComponents<Component>().insertAt(to.getId(), c);
+                if (getDebugMode()) {
+                    _log.log(_name + ": adding of component to id "
+                    + std::to_string(to.getId()));
+                }
                 return (getComponents<Component>());
             }
 
@@ -122,11 +128,15 @@ namespace eng
             /// @brief Get the name of the registry
             /// @return 
             std::string getName();
+            /// @brief Set the path to the logging file
+            /// @param path 
+            void setLogPath(std::string path);
+            
+            std::string getLogPath();
         protected:
         private:
-            /// @brief Save actions on the registry in a log file
-            /// @param log The message to log
-            void log(std::string msg);
+            /// @brief Log object for archiving
+            eng::Log _log;
 
             /// @brief The highest entity number
             size_t _maxEntity = 0;
