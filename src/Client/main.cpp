@@ -28,8 +28,8 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     eng::SparseArray<rtp::Drawable> drawable;
     eng::SparseArray<rtp::Controllable> control;
     eng::SparseArray<rtp::Shooter> shooter;
-    // eng::SparseArray<rtp::Background> backgrounds;
-    // eng::SparseArray<rtp::AudioSource> sounds;
+    eng::SparseArray<rtp::Background> backgrounds;
+    eng::SparseArray<rtp::AudioSource> sounds;
 
     if (isDebugMode) res.setDebugMode(true);
     res.registerComponents(position);
@@ -37,8 +37,8 @@ eng::Registry createRegistry(bool isDebugMode, std::string name)
     res.registerComponents(drawable);
     res.registerComponents(control);
     res.registerComponents(shooter);
-    // res.registerComponents(backgrounds);
-    // res.registerComponents(sounds);
+    res.registerComponents(backgrounds);
+    res.registerComponents(sounds);
     return (res);
 }
 
@@ -69,26 +69,26 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
     // Foregrounds
     reg.addComponent<rtp::Position>(fg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(fg1, rtp::Velocity(-20, 0));
-    // reg.addComponent<rtp::Background>(fg1, rtp::Background("../assets/foreground.png"));
+    reg.addComponent<rtp::Background>(fg1, rtp::Background("../assets/foreground.png"));
     reg.addComponent<rtp::Position>(fg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(fg2, rtp::Velocity(-20, 0));
-    // reg.addComponent<rtp::Background>(fg2, rtp::Background("../assets/foreground.png"));
+    reg.addComponent<rtp::Background>(fg2, rtp::Background("../assets/foreground.png"));
 
     // Middlegrounds
     reg.addComponent<rtp::Position>(mg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(mg1, rtp::Velocity(-10, 0));
-    // reg.addComponent<rtp::Background>(mg1, rtp::Background("../assets/middleground.png"));
+    reg.addComponent<rtp::Background>(mg1, rtp::Background("../assets/middleground.png"));
     reg.addComponent<rtp::Position>(mg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(mg2, rtp::Velocity(-10, 0));
-    // reg.addComponent<rtp::Background>(mg2, rtp::Background("../assets/middleground.png"));
+    reg.addComponent<rtp::Background>(mg2, rtp::Background("../assets/middleground.png"));
     
     // Backgrounds
     reg.addComponent<rtp::Position>(bg1, rtp::Position(0, 0, 0));
     reg.addComponent<rtp::Velocity>(bg1, rtp::Velocity(-5, 0));
-    // reg.addComponent<rtp::Background>(bg1, rtp::Background("../assets/background.png"));
+    reg.addComponent<rtp::Background>(bg1, rtp::Background("../assets/background.png"));
     reg.addComponent<rtp::Position>(bg2, rtp::Position(1920, 0, 0));
     reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
-    // reg.addComponent<rtp::Background>(bg2, rtp::Background("../assets/background.png"));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background("../assets/background.png"));
     return bgs;
 }
 
@@ -110,15 +110,16 @@ int main(int argc, char **argv)
     reg = createRegistry(true, reg.getName());
 
     manag.addRegistry(reg);
-    std::vector<eng::Entity> bgs = makeBackgrounds(manag.getTop(), w, c);
+    eng::Registry &r = manag.getTop();
+    std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
     eng::Entity baba = reg.spawnEntity();
     w.setFramerateLimit(60);
 
-    manag.getTop().addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
-    manag.getTop().addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    manag.getTop().addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
-    manag.getTop().addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
-    manag.getTop().addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
+    r.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
+    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
+    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
+    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
 
     while (w.isOpen())
     {
@@ -133,9 +134,9 @@ int main(int argc, char **argv)
         systems.controlFireSystem(reg);
         systems.shootSystem(reg);
         systems.clearSystem(reg);
-        // systems.backgroundSystem(reg);
+        systems.backgroundSystem(reg);
         systems.drawSystem(reg);
-        // systems.playSoundSystem(reg);
+        systems.playSoundSystem(reg);
         systems.displaySystem(reg);
     }
     return 0;
