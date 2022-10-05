@@ -57,6 +57,14 @@ namespace rtp
             /// @brief A system that plays every sounds set to play
             /// @param r The Registry on which to apply the system
             void playSoundSystem(eng::Registry &r);
+
+            /// @brief A system which sends data to the server
+            /// @param r The Registry on which to apply the system
+            void sendData(eng::Registry &r);
+            
+            /// @brief A system which receive and write data in the registry
+            /// @param r The Registry on which to apply the system
+            void receiveData(eng::Registry &r);
         protected:
         private:
             sf::RenderWindow &_w;
