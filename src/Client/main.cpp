@@ -19,29 +19,6 @@
 std::string logPath = "";
 extern std::string logPath;
 
-eng::Registry createRegistry(bool isDebugMode, std::string name)
-{
-    eng::Registry res;
-    res.setName(name);
-    eng::SparseArray<rtp::Position> position;
-    eng::SparseArray<rtp::Velocity> velocity;
-    eng::SparseArray<rtp::Drawable> drawable;
-    eng::SparseArray<rtp::Controllable> control;
-    eng::SparseArray<rtp::Shooter> shooter;
-    eng::SparseArray<rtp::Background> backgrounds;
-    eng::SparseArray<rtp::AudioSource> sounds;
-
-    if (isDebugMode) res.setDebugMode(true);
-    res.registerComponents(position);
-    res.registerComponents(velocity);
-    res.registerComponents(drawable);
-    res.registerComponents(control);
-    res.registerComponents(shooter);
-    res.registerComponents(backgrounds);
-    res.registerComponents(sounds);
-    return (res);
-}
-
 void newLogPath(void)
 {
     time_t now = time(0);
@@ -94,23 +71,19 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
 
 int main(int argc, char **argv)
 {
-    eng::Registry reg;
-    eng::RegistryManager manag;
+    eng::RegistryManager manage;
     sf::Clock c;
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     rtp::Systems systems(w, c);
     eng::Log log;
 
-    reg.setName("Registry1");
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
-            manag.setDebugMode(true);
-            manag.setLogPath(log.createPath());
+            manage.setDebugMode(true);
+            manage.setLogPath(log.createPath());
         }
-    reg = createRegistry(true, reg.getName());
-
-    manag.addRegistry(reg);
-    eng::Registry &r = manag.getTop();
+    manage.addRegistry("Registry56");
+    eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
     eng::Entity baba = r.spawnEntity();
     w.setFramerateLimit(60);
@@ -129,6 +102,7 @@ int main(int argc, char **argv)
             if (event.type == sf::Event::Closed)
                 w.close();
         }
+<<<<<<< HEAD
         //systems.receiveData(r);
         systems.controlSystem(r);
         systems.controlMovementSystem(r);
@@ -136,6 +110,12 @@ int main(int argc, char **argv)
         systems.positionSystem(r);
         systems.shootSystem(r);
         //systems.sendData(r);
+=======
+        systems.controlSystem(r);
+        systems.positionSystem(r);
+        systems.controlFireSystem(r);
+        systems.shootSystem(r);
+>>>>>>> e3aadb85ed63fbded3a1d59acd41965ed542bac8
         systems.clearSystem(r);
         systems.backgroundSystem(r);
         systems.drawSystem(r);
