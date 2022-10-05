@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -v")
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
 set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
@@ -16,9 +19,12 @@ find_package(asio REQUIRED)
 find_package(Threads REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
-    message(STATUS "GNUCXX detected, proceed ")
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
+
+#if(MSVC)
+#    add_compile_options(std:c++17)
+#endif()
 
 include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
@@ -41,11 +47,6 @@ target_link_libraries(
   Client-Rutabaga
   PRIVATE
   ${CONAN_LIBS}
-  sfml-graphics
-  sfml-system
-  sfml-window
-  sfml-audio
-  sfml-network
 )
 
 #####    SERVER
@@ -63,9 +64,4 @@ target_link_libraries(
   Server-Rutabaga
   PRIVATE
   ${CONAN_LIBS}
-  sfml-graphics
-  sfml-system
-  sfml-window
-  sfml-audio
-  sfml-network
 )
