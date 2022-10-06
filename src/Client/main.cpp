@@ -9,6 +9,7 @@
 #include "../Components/Components.hpp"
 #include "../Systems/Systems.hpp"
 #include "../Engine/Registry.hpp"
+#include "../Engine/IRegistry.hpp"
 #include "../Engine/RegistryManager.hpp"
 #include <string.h>
 #include <cstring>
@@ -52,7 +53,7 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
     return bgs;
 }
 
-void setRegistry(eng::RegistryManager &m, std::string name)
+void setRegistry(eng::RegistryManager &m)
 {
     eng::Registry &reg = m.getTop();
     eng::SparseArray<rtp::Position> position;
@@ -63,9 +64,6 @@ void setRegistry(eng::RegistryManager &m, std::string name)
     eng::SparseArray<rtp::Background> backgrounds;
     eng::SparseArray<rtp::AudioSource> sounds;
 
-    reg.setName(name);
-    reg.setDebugMode(m.getDebugMode());
-    reg.setLogPath(m.getLogPath());
     reg.registerComponents(position);
     reg.registerComponents(velocity);
     reg.registerComponents(drawable);
@@ -82,14 +80,15 @@ int main(int argc, char **argv)
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     rtp::Systems systems(w, c);
     eng::Log log;
+    // eng::IRegistry ireg;
 
-    manage.getRegistries().push(eng::Registry());
-    setRegistry(manage, "r1");
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
             manage.setDebugMode(true);
-            // manage.createLogPath();
+            manage.createLogPath();
         }
+    manage.addRegistry("r1");
+    setRegistry(manage);
     eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
     eng::Entity baba = r.spawnEntity();
