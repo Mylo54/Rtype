@@ -275,3 +275,8 @@ void rtp::Systems::receiveData(eng::Registry &r)
     // For every entity having the "Synced" component (not existing yet),
     // Emplace new values (Position, health, Velocities, etc ...)
 }
+
+void rtp::Systems::bulletAgainstEnemy(eng::Registry &r)
+{
+    auto &colliders = r.getComponents<RectCollider>();
+}

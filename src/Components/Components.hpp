@@ -15,5 +15,6 @@
 #include "Shooter.hpp"
 #include "Background.hpp"
 #include "AudioSource.hpp"
+#include "RectCollider.hpp"
 
 #endif /* !COMPONENTS_HPP_ */
