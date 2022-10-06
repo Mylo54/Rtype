@@ -32,11 +32,21 @@ include_directories(
 
 #####    CLIENT
 
-FILE(GLOB_RECURSE ENGINE_CLIENT src/Engine/*.cpp)
+FILE(GLOB_RECURSE ENGINE src/Engine/*.cpp)
+FILE(GLOB_RECURSE ENGINE_HPP src/Engine/*.hpp)
 FILE(GLOB_RECURSE SYSTEMS src/Systems/*.cpp)
-FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
+FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp src/Client/*.hpp)
 
-add_executable(Client-Rutabaga ${ENGINE_CLIENT} ${SYSTEMS} ${SRCS_CLIENT})
+###### toolsclient.so
+
+# add_library(Engine SHARED ${ENGINE} ${ENGINE_HPP})
+
+
+
+
+##### client-Rutabaga
+
+add_executable(Client-Rutabaga ${ENGINE} ${SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rutabaga PUBLIC
