@@ -1,4 +1,4 @@
-name: test_windows_compile
+name: Windows compile
 on: [workflow_call]
 jobs:
   Windows-Compile:
