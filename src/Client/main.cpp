@@ -73,6 +73,31 @@ void setRegistry(eng::RegistryManager &m)
     reg.registerComponents(sounds);
 }
 
+eng::Entity makePlayer(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
+{
+    eng::Entity baba = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(baba, rtp::Position(200, 540, 0));
+    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
+    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
+    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
+
+    return baba;
+}
+
+eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
+{
+    eng::Entity res = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(res, rtp::Position(1920, rand() % 1080, 0));
+    r.addComponent<rtp::Velocity>(res, rtp::Velocity(-5, 0));
+    r.addComponent<rtp::Drawable>(res, rtp::Drawable("../assets/flyers.png", w, c, 3, sf::IntRect(0, 0, 40, 16), 0.005));
+
+    r.getComponents<rtp::Drawable>()[res.getId()].value().sprite.setScale(2, 2);
+    return res;
+}
+
 int main(int argc, char **argv)
 {
     eng::RegistryManager manage;
@@ -81,6 +106,7 @@ int main(int argc, char **argv)
     rtp::Systems systems(w, c);
     eng::Log log;
     // eng::IRegistry ireg;
+    srand(time(0));
 
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
@@ -89,17 +115,14 @@ int main(int argc, char **argv)
         }
     manage.addRegistry("r1");
     setRegistry(manage);
+    manage.addRegistry("r1");
+    setRegistry(manage);
     eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
-    eng::Entity baba = r.spawnEntity();
     w.setFramerateLimit(60);
 
-    r.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
-    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
-    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
-    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
-
+    eng::Entity baba = makePlayer(r, w, c);
+    eng::Entity enemy = makeEnemy(r, w, c);
     while (w.isOpen())
     {
         sf::Event event;
