@@ -119,6 +119,13 @@ void rtp::Systems::drawSystem(eng::Registry &r)
                     rect.left = 0;
                 spr.value().nextFrame = spr.value().frameTime;
             }
+            // Animate downward
+            if (spr.value().sheetDirection == 3 && spr.value().nextFrame <= 0) {
+                rect.top += rect.height;
+                if (rect.top >= spr.value().sizeY)
+                    rect.top = 0;
+                spr.value().nextFrame = spr.value().frameTime;
+            }
             spr.value().sprite.setTextureRect(rect);
             spr.value().sprite.setPosition({pos.value().x, pos.value().y});
             _w.draw(spr.value().sprite);
