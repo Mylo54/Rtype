@@ -13,7 +13,7 @@
 namespace rt {
     class Lobby {
         public:
-            Lobby();
+            Lobby(std::string lobbyName = "R-TYPE SERVER");
             ~Lobby();
             
             
@@ -21,6 +21,7 @@ namespace rt {
         protected:
         private:
             int _lobbyID;
+            std::string _lobbyName;
             std::string _roomName;
         
             

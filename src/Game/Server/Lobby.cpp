@@ -7,7 +7,7 @@
 
 #include "Lobby.hpp"
 
-rt::Lobby::Lobby()
+rt::Lobby::Lobby(std::string lobbyName) : _lobbyName(lobbyName)
 {
     
 }
