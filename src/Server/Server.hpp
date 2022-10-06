@@ -24,18 +24,33 @@
 #include "../Engine/RegistryManager.hpp"
 
 namespace rtp {
+
+    enum ACTIONTYPE {
+        OK,
+        KO,
+        CONNECT,
+        CREATE_LOBBY,
+        LIST_LOBBIES,
+        JOIN_LOBBY,
+        PLAYER_JOINED_LOBBY,
+        START_GAME
+    };
+
     class Server {
         public:
             Server(int port);
             ~Server();
 
             void run();
+            bool isConnected();
 
             // Liste des méthodes à implémenter :
 
 
         protected:
         private:
+            bool _connect;
+            int _clientPort;
             
     };
 };

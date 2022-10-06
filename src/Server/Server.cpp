@@ -9,11 +9,17 @@
 
 rtp::Server::Server(int port)
 {
-    
+    this->_connect = false;
+    this->_clientPort = 0;
 }
 
 rtp::Server::~Server()
 {
+}
+
+bool rtp::Server::isConnected()
+{
+    return this->_connect;
 }
 
 void rtp::Server::run()
@@ -26,6 +32,7 @@ void rtp::Server::run()
         char recv_str[1024] = {};
         socket.receive_from(boost::asio::buffer(recv_str), client);
         std::cout << client << ": " << recv_str << '\n';
+        this->_clientPort = client.port();
     }
 }
 
@@ -57,13 +64,9 @@ int main(int ac, char **av)
         std::cerr << error.what() << std::endl;
     }
 
+    //sert à rien pour l'instant cf l.29
     eng::RegistryManager manage;
 
-    for (int i = 1; i < ac; i++)
-        if (strcmp(av[i], "-debug") == 0) {
-            manage.setDebugMode(true);
-            manage.createLogPath();
-        }
     manage.addRegistry("r1");
     eng::Registry &reg = manage.getTop();
     rtp::SystemsServer systems;

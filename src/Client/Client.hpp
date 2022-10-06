@@ -16,6 +16,18 @@
 #include <boost/asio.hpp>
 
 namespace rtp {
+
+    enum ACTIONTYPE {
+        OK,
+        KO,
+        CONNECT,
+        CREATE_LOBBY,
+        LIST_LOBBIES,
+        JOIN_LOBBY,
+        PLAYER_JOINED_LOBBY,
+        START_GAME
+    };
+
     class Client {
         public:
             Client(int port);
