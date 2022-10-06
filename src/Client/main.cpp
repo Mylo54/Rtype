@@ -56,21 +56,14 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
 void setRegistry(eng::RegistryManager &m)
 {
     eng::Registry &reg = m.getTop();
-    eng::SparseArray<rtp::Position> position;
-    eng::SparseArray<rtp::Velocity> velocity;
-    eng::SparseArray<rtp::Drawable> drawable;
-    eng::SparseArray<rtp::Controllable> control;
-    eng::SparseArray<rtp::Shooter> shooter;
-    eng::SparseArray<rtp::Background> backgrounds;
-    eng::SparseArray<rtp::AudioSource> sounds;
 
-    reg.registerComponents(position);
-    reg.registerComponents(velocity);
-    reg.registerComponents(drawable);
-    reg.registerComponents(control);
-    reg.registerComponents(shooter);
-    reg.registerComponents(backgrounds);
-    reg.registerComponents(sounds);
+    reg.registerComponents(eng::SparseArray<rtp::Position>());
+    reg.registerComponents(eng::SparseArray<rtp::Velocity>());
+    reg.registerComponents(eng::SparseArray<rtp::Drawable>());
+    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
+    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
+    reg.registerComponents(eng::SparseArray<rtp::Background>());
+    reg.registerComponents(eng::SparseArray<rtp::AudioSource>());
 }
 
 eng::Entity makePlayer(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
