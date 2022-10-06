@@ -10,7 +10,7 @@ jobs:
   build_macos:
     uses: ./.github/workflows/test_macos_compile.yml
   to_Epitech:
-    needs: [build_linux, build_windows, build_macos]
+    needs: [build_linux, build_windows] # removed macos, to be brought back.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
