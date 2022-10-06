@@ -16,6 +16,7 @@
 #include <string>
 #include <sstream>
 #include <array>
+#include "Client.hpp"
 
 std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w, sf::Clock &c)
 {
@@ -100,6 +101,8 @@ eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
 
 int main(int argc, char **argv)
 {
+    rtp::Client client(3232);
+    client.run();
     eng::RegistryManager manage;
     sf::Clock c;
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
