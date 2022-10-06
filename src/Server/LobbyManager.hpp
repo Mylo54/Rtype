@@ -12,7 +12,7 @@
 #include <iterator>
 #include <iostream>
 
-namespace rt {
+namespace rtp {
     class LobbyManager {
         public:
             LobbyManager();
@@ -24,7 +24,7 @@ namespace rt {
 
             /// @brief add lobby at the end of the list
             /// @return void
-            void addLobby(rt::Lobby lobby);
+            void addLobby(rtp::Lobby lobby);
 
             /// @brief remove lobby in the list depending on his position
             /// @return void
@@ -32,7 +32,7 @@ namespace rt {
 
         protected:
         private:
-            std::list<rt::Lobby> _listLobby;
+            std::list<rtp::Lobby> _listLobby;
             
     };
 };

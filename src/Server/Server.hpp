@@ -23,7 +23,7 @@
 #include "../Engine/IRegistry.hpp"
 #include "../Engine/RegistryManager.hpp"
 
-namespace rt {
+namespace rtp {
     class Server {
         public:
             Server(int port);

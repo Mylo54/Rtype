@@ -10,7 +10,7 @@
 
 #include "Server.hpp"
 
-namespace rt {
+namespace rtp {
     class Lobby {
         public:
             Lobby(std::string lobbyName = "R-TYPE SERVER");

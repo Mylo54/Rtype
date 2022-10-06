@@ -7,16 +7,16 @@
 
 #include "Server.hpp"
 
-rt::Server::Server(int port)
+rtp::Server::Server(int port)
 {
     
 }
 
-rt::Server::~Server()
+rtp::Server::~Server()
 {
 }
 
-void rt::Server::run()
+void rtp::Server::run()
 {
     boost::asio::io_context io_context;
 
@@ -50,7 +50,7 @@ int main(int ac, char **av)
     }
 
     try {
-        rt::Server srv(std::atoi(av[1]));
+        rtp::Server srv(std::atoi(av[1]));
         srv.run();
     }
     catch (const std::exception &error) {
