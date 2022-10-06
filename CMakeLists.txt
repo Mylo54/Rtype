@@ -17,6 +17,7 @@ conan_basic_setup()
 find_package(SFML 2.5.1 COMPONENTS window graphics system network audio REQUIRED)
 find_package(asio REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Boost REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
