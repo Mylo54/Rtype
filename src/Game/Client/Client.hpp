@@ -2,40 +2,33 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Server 
+** Client 
 */
 
-#ifndef SERVER_HPP_
-#define SERVER_HPP_
+#ifndef CLIENT_HPP_
+#define CLIENT_HPP_
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <list>
-#include <locale>
 #include <boost/asio.hpp>
-#include <string.h>
-
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
 namespace rt {
-    class Server {
+    class Client {
         public:
-            Server(int port);
-            ~Server();
+            Client(int port);
+            ~Client();
 
             void run();
-
-            // Liste des méthodes à implémenter :
-
-
-        protected:
         private:
-            
+        protected:
     };
 };
 
-#endif /* !SERVER_HPP_ */
+
+#endif /* !CLIENT_HPP_ */

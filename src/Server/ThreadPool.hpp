@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** ThreadPool
+** ThreadPool 
 */
 
 #ifndef THREADPOOL_HPP_
