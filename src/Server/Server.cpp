@@ -56,5 +56,29 @@ int main(int ac, char **av)
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;
     }
+
+    eng::RegistryManager manage;
+
+    for (int i = 1; i < ac; i++)
+        if (strcmp(av[i], "-debug") == 0) {
+            manage.setDebugMode(true);
+            manage.createLogPath();
+        }
+    manage.addRegistry("r1");
+    eng::Registry &reg = manage.getTop();
+    rtp::SystemsServer systems;
+
+    reg.registerComponents(eng::SparseArray<rtp::Position>());
+    reg.registerComponents(eng::SparseArray<rtp::Velocity>());
+
+    while (true) {
+        systems.positionSystemSrv(reg);
+        systems.controlSystemSrv(reg);
+        systems.controlMovementSystemSrv(reg);
+        systems.controlFireSystemSrv(reg);
+        systems.sendDataSrv(reg);
+        systems.receiveDataSrv(reg);
+    }
+
     return (0);
 }

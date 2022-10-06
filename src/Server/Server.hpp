@@ -17,9 +17,11 @@
 #include <boost/asio.hpp>
 #include <string.h>
 
-
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include "../Components/Components.hpp"
+#include "../SystemsServer/SystemsServer.hpp"
+#include "../Engine/Registry.hpp"
+#include "../Engine/IRegistry.hpp"
+#include "../Engine/RegistryManager.hpp"
 
 namespace rt {
     class Server {
