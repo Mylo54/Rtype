@@ -69,6 +69,29 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
     return bgs;
 }
 
+void setRegistry(eng::RegistryManager &m, std::string name)
+{
+    eng::Registry &reg = m.getTop();
+    eng::SparseArray<rtp::Position> position;
+    eng::SparseArray<rtp::Velocity> velocity;
+    eng::SparseArray<rtp::Drawable> drawable;
+    eng::SparseArray<rtp::Controllable> control;
+    eng::SparseArray<rtp::Shooter> shooter;
+    eng::SparseArray<rtp::Background> backgrounds;
+    eng::SparseArray<rtp::AudioSource> sounds;
+
+    reg.setName(name);
+    reg.setDebugMode(m.getDebugMode());
+    reg.setLogPath(m.getLogPath());
+    reg.registerComponents(position);
+    reg.registerComponents(velocity);
+    reg.registerComponents(drawable);
+    reg.registerComponents(control);
+    reg.registerComponents(shooter);
+    reg.registerComponents(backgrounds);
+    reg.registerComponents(sounds);
+}
+
 int main(int argc, char **argv)
 {
     eng::RegistryManager manage;
@@ -77,12 +100,13 @@ int main(int argc, char **argv)
     rtp::Systems systems(w, c);
     eng::Log log;
 
+    manage.getRegistries().push(eng::Registry());
+    setRegistry(manage, "r1");
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
             manage.setDebugMode(true);
             manage.setLogPath(log.createPath());
         }
-    manage.addRegistry("Registry56");
     eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
     eng::Entity baba = r.spawnEntity();
