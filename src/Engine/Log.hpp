@@ -16,8 +16,6 @@ namespace eng
         public:
             Log();
             ~Log();
-            /// @brief set a new file path based on time and date
-            std::string createPath();
             /// @brief set the path to the logging file
             /// @param path new path
             void setPath(std::string path);

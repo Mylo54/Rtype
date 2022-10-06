@@ -9,29 +9,13 @@
 #include "../Components/Components.hpp"
 #include "../Systems/Systems.hpp"
 #include "../Engine/Registry.hpp"
+#include "../Engine/IRegistry.hpp"
 #include "../Engine/RegistryManager.hpp"
 #include <string.h>
 #include <cstring>
 #include <string>
 #include <sstream>
 #include <array>
-
-std::string logPath = "";
-extern std::string logPath;
-
-void newLogPath(void)
-{
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    logPath = std::to_string(ltm->tm_mday) + "-" +
-    std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(1900 + ltm->tm_year)
-    + "_" + std::to_string(5 + ltm->tm_hour) + "h"
-    + std::to_string(ltm->tm_min) + "m" + std::to_string(ltm->tm_sec)
-    + "s.log";
-    std::ofstream out(logPath.c_str());
-    out << "Log from this run:\n";
-    out.close();
-}
 
 std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w, sf::Clock &c)
 {
@@ -69,6 +53,51 @@ std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w
     return bgs;
 }
 
+void setRegistry(eng::RegistryManager &m)
+{
+    eng::Registry &reg = m.getTop();
+    eng::SparseArray<rtp::Position> position;
+    eng::SparseArray<rtp::Velocity> velocity;
+    eng::SparseArray<rtp::Drawable> drawable;
+    eng::SparseArray<rtp::Controllable> control;
+    eng::SparseArray<rtp::Shooter> shooter;
+    eng::SparseArray<rtp::Background> backgrounds;
+    eng::SparseArray<rtp::AudioSource> sounds;
+
+    reg.registerComponents(position);
+    reg.registerComponents(velocity);
+    reg.registerComponents(drawable);
+    reg.registerComponents(control);
+    reg.registerComponents(shooter);
+    reg.registerComponents(backgrounds);
+    reg.registerComponents(sounds);
+}
+
+eng::Entity makePlayer(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
+{
+    eng::Entity baba = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(baba, rtp::Position(200, 540, 0));
+    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
+    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
+    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
+
+    return baba;
+}
+
+eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
+{
+    eng::Entity res = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(res, rtp::Position(1920, rand() % 1080, 0));
+    r.addComponent<rtp::Velocity>(res, rtp::Velocity(-5, 0));
+    r.addComponent<rtp::Drawable>(res, rtp::Drawable("../assets/flyers.png", w, c, 3, sf::IntRect(0, 0, 40, 16), 0.005));
+
+    r.getComponents<rtp::Drawable>()[res.getId()].value().sprite.setScale(2, 2);
+    return res;
+}
+
 int main(int argc, char **argv)
 {
     eng::RegistryManager manage;
@@ -76,24 +105,24 @@ int main(int argc, char **argv)
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "Rutabaga");
     rtp::Systems systems(w, c);
     eng::Log log;
+    // eng::IRegistry ireg;
+    srand(time(0));
 
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
             manage.setDebugMode(true);
-            manage.setLogPath(log.createPath());
+            manage.createLogPath();
         }
-    manage.addRegistry("Registry56");
+    manage.addRegistry("r1");
+    setRegistry(manage);
+    manage.addRegistry("r1");
+    setRegistry(manage);
     eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
-    eng::Entity baba = r.spawnEntity();
     w.setFramerateLimit(60);
 
-    r.addComponent<rtp::Position>(baba, rtp::Position(0, 0, 0));
-    r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
-    r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
-    r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
-
+    eng::Entity baba = makePlayer(r, w, c);
+    eng::Entity enemy = makeEnemy(r, w, c);
     while (w.isOpen())
     {
         sf::Event event;

@@ -8,22 +8,11 @@
 #ifndef REGISTRY_HPP_
 #define REGISTRY_HPP_
 
-#include "Entity.hpp"
-#include "SparseArray.hpp"
-#include "Log.hpp"
-#include <unordered_map>
-#include <typeindex>
-#include <stack>
-#include <functional>
-#include <any>
-#include <ctime>
-#include <iostream>
-#include <fstream>
-#include <cstdio>
+#include "IRegistry.hpp"
 
 namespace eng
 {
-    class Registry {
+    class Registry : public IRegistry {
         public:
             Registry();
             ~Registry();
@@ -50,9 +39,9 @@ namespace eng
             SparseArray<Component> &getComponents() {
                 std::type_index t = typeid(SparseArray<Component>);
                 std::any &res = _containers[t];
-                if (getDebugMode())
-                    _log.log(_name + ": getting of component array "
-                    + typeid(SparseArray<Component>).name());
+                // if (getDebugMode())
+                //     _log.log(_name + ": getting of component array "
+                //     + typeid(SparseArray<Component>).name());
                 return std::any_cast<SparseArray<Component> &>(res);
             }
 
@@ -132,6 +121,8 @@ namespace eng
             /// @param path 
             void setLogPath(std::string path);
             
+            /// @brief get the path to the logging file
+            /// @return path to the logging file
             std::string getLogPath();
         protected:
         private:
