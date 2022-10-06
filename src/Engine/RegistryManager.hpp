@@ -8,20 +8,7 @@
 #ifndef RegistryManager_HPP_
 #define RegistryManager_HPP_
 
-#include <stack>
-#include "Registry.hpp"
-#include "Entity.hpp"
-#include "SparseArray.hpp"
-#include "Log.hpp"
-#include <unordered_map>
-#include <typeindex>
-#include <stack>
-#include <functional>
-#include <any>
-#include <ctime>
-#include <iostream>
-#include <fstream>
-#include <cstdio>
+#include "IRegistryManager.hpp"
 
 namespace eng
 {

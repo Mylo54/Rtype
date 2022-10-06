@@ -12,7 +12,6 @@
 
 eng::RegistryManager::RegistryManager()
 {
-    createLogPath();
 }
 
 eng::RegistryManager::~RegistryManager()
