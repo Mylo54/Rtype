@@ -44,17 +44,17 @@ FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp src/Client/*.hpp)
 
 
 
-##### client-Rutabaga
+##### client-Rtype
 
-add_executable(Client-Rutabaga ${ENGINE} ${SYSTEMS} ${SRCS_CLIENT})
+add_executable(Client-Rtype ${ENGINE} ${SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
-  Client-Rutabaga PUBLIC
+  Client-Rtype PUBLIC
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
-  Client-Rutabaga
+  Client-Rtype
   PRIVATE
   ${CONAN_LIBS}
 )
@@ -62,16 +62,17 @@ target_link_libraries(
 #####    SERVER
 
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
+FILE(GLOB_RECURSE SYSTEMSSRV src/SystemsServer/*.cpp)
 
-add_executable(Server-Rutabaga ${SRCS_SERVER})
+add_executable(Server-Rtype ${SRCS_SERVER} ${ENGINE} ${SYSTEMSSRV})
 
 target_include_directories(
-  Server-Rutabaga PUBLIC
+  Server-Rtype PUBLIC
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
-  Server-Rutabaga
+  Server-Rtype
   PRIVATE
   ${CONAN_LIBS}
 )

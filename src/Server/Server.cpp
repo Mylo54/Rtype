@@ -57,7 +57,7 @@ int main(int ac, char **av)
         std::cerr << error.what() << std::endl;
     }
 
-    /*eng::RegistryManager manage;
+    eng::RegistryManager manage;
 
     for (int i = 1; i < ac; i++)
         if (strcmp(av[i], "-debug") == 0) {
@@ -72,13 +72,13 @@ int main(int ac, char **av)
     reg.registerComponents(eng::SparseArray<rtp::Velocity>());
 
     while (true) {
-        systems.positionSystemSrv(reg);
-        systems.controlSystemSrv(reg);
-        systems.controlMovementSystemSrv(reg);
-        systems.controlFireSystemSrv(reg);
-        systems.sendDataSrv(reg);
-        systems.receiveDataSrv(reg);
-    }*/
+        systems.positionSystem(reg);
+        systems.controlSystem(reg);
+        systems.controlMovementSystem(reg);
+        systems.controlFireSystem(reg);
+        systems.sendData(reg);
+        systems.receiveData(reg);
+    }
 
     return (0);
 }

@@ -20,27 +20,27 @@ namespace rtp {
 
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
-            void positionSystemSrv(eng::Registry &r);
+            void positionSystem(eng::Registry &r);
 
             /// @brief A system who handles inputs and stores actions
             /// @param r The Registry on which to apply the system 
-            void controlSystemSrv(eng::Registry &r);
+            void controlSystem(eng::Registry &r);
 
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
-            void controlMovementSystemSrv(eng::Registry &r);
+            void controlMovementSystem(eng::Registry &r);
 
             /// @brief A system who handles inputs for shooting
             /// @param r The registry on which to apply the system
-            void controlFireSystemSrv(eng::Registry &r);
+            void controlFireSystem(eng::Registry &r);
 
             /// @brief A system which sends data to the server
             /// @param r The Registry on which to apply the system
-            void sendDataSrv(eng::Registry &r);
+            void sendData(eng::Registry &r);
             
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
-            void receiveDataSrv(eng::Registry &r);
+            void receiveData(eng::Registry &r);
         protected:
         private:
     };
