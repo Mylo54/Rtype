@@ -1,5 +1,5 @@
 name: MacOS compile
-on: [push]
+on: [workflow_call]
 jobs:
   Macos-Compile:
     runs-on: macos-latest
