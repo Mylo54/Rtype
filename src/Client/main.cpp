@@ -130,6 +130,7 @@ int main(int argc, char **argv)
         systems.controlFireSystem(r);
         systems.positionSystem(r);
         systems.shootSystem(r);
+        systems.animateSystem(r);
         //systems.sendData(r);
         systems.clearSystem(r);
         systems.backgroundSystem(r);
