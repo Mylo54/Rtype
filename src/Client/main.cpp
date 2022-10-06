@@ -16,23 +16,6 @@
 #include <sstream>
 #include <array>
 
-std::string logPath = "";
-extern std::string logPath;
-
-void newLogPath(void)
-{
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    logPath = std::to_string(ltm->tm_mday) + "-" +
-    std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(1900 + ltm->tm_year)
-    + "_" + std::to_string(5 + ltm->tm_hour) + "h"
-    + std::to_string(ltm->tm_min) + "m" + std::to_string(ltm->tm_sec)
-    + "s.log";
-    std::ofstream out(logPath.c_str());
-    out << "Log from this run:\n";
-    out.close();
-}
-
 std::vector<eng::Entity> makeBackgrounds(eng::Registry &reg, sf::RenderWindow &w, sf::Clock &c)
 {
     eng::Entity fg1 = reg.spawnEntity();
@@ -105,7 +88,7 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-debug") == 0) {
             manage.setDebugMode(true);
-            manage.setLogPath(log.createPath());
+            // manage.createLogPath();
         }
     eng::Registry &r = manage.getTop();
     std::vector<eng::Entity> bgs = makeBackgrounds(r, w, c);
