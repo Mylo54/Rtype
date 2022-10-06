@@ -57,7 +57,7 @@ int main(int ac, char **av)
         std::cerr << error.what() << std::endl;
     }
 
-    eng::RegistryManager manage;
+    /*eng::RegistryManager manage;
 
     for (int i = 1; i < ac; i++)
         if (strcmp(av[i], "-debug") == 0) {
@@ -78,7 +78,7 @@ int main(int ac, char **av)
         systems.controlFireSystemSrv(reg);
         systems.sendDataSrv(reg);
         systems.receiveDataSrv(reg);
-    }
+    }*/
 
     return (0);
 }
