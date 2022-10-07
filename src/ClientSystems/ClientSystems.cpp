@@ -7,8 +7,13 @@
 
 #include "ClientSystems.hpp"
 
-rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c) : _w(w), _c(c)
+rtp::ClientSystems::ClientSystems(sf::RenderWindow &w,
+    sf::Clock &c,
+    std::string adress,
+    int port, 
+    boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _socket(socket)
 {
+    _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -263,11 +268,24 @@ void rtp::ClientSystems::sendData(eng::Registry &r)
         auto ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            std::cout << "[Packet Start]" << std::endl;
-            std::cout << "x:"<< ctrl.value().xAxis << std::endl;
-            std::cout << "y:"<< ctrl.value().yAxis << std::endl;
-            std::cout << "s:"<< ctrl.value().shoot << std::endl;
-            std::cout << "[Packet End]" << std::endl;
+            if (ctrl.value().shoot) {
+                boost::array<networkPayload, 1> data = {SHOT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().xAxis > 0) {
+                boost::array<networkPayload, 1> data = {RIGHT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().xAxis < 0) {
+                boost::array<networkPayload, 1> data = {LEFT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().yAxis > 0) {
+                boost::array<networkPayload, 1> data = {DOWN};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().yAxis < 0) {
+                boost::array<networkPayload, 1> data = {UP};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
         }
     }
 }

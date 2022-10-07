@@ -13,6 +13,7 @@ rtp::Client::Client(int port): _port(port)
     _setupRegistry(_manager.getTop());
     _addPlayer(_manager.getTop());
     _addBackgrounds(_manager.getTop());
+    _openSocket();
 }
 
 rtp::Client::~Client()
@@ -89,20 +90,21 @@ void rtp::Client::send()
 {
     std::cout << "WAITING TO SEND\n";
 
-    boost::asio::io_context io_context;
-    boost::asio::ip::udp::socket socket{io_context};
-    socket.open(boost::asio::ip::udp::v4());
-
     boost::array<networkPayload, 1> data_tbs = {DOWN};
-    socket.send_to(boost::asio::buffer(data_tbs),
+    _socket.send_to(boost::asio::buffer(data_tbs),
     boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
+}
+
+void rtp::Client::_openSocket()
+{
+    _socket.open(boost::asio::ip::udp::v4());
 }
 
 void rtp::Client::systemsLoop()
 {
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "RTYPE");
     sf::Clock c;
-    rtp::ClientSystems systems(w, c);
+    rtp::ClientSystems systems(w, c, "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     
     // TODO: make the loop speed not depend on framerate
@@ -125,7 +127,7 @@ void rtp::Client::systemsLoop()
         systems.controlSystem(r);
 
         // Send new events
-        //systems.sendData(r);
+        systems.sendData(r);
 
         // Update data
         systems.controlFireSystem(r);

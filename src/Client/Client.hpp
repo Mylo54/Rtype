@@ -15,35 +15,9 @@
 #include "../Components/ClientComps.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
 #include "../Engine/RegistryManager.hpp"
+#include "../NetworkStructs.hpp"
 
 namespace rtp {
-
-    enum ACTIONTYPE_PREGAME {
-        OK,
-        KO,
-        CONNECT,
-        CREATE_LOBBY,
-        LIST_LOBBIES,
-        JOIN_LOBBY,
-        PLAYER_JOINED_LOBBY,
-        START_GAME
-    };
-
-    enum ACTIONTYPE_INGAME {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT,
-        SHOT,
-        QUIT
-    };
-
-    typedef struct payload {
-        int ACTION_NAME;
-        size_t bodySize = 0;
-        void * body = NULL;
-    } networkPayload;
-
     class Client {
         public:
             Client(int port);
@@ -53,6 +27,9 @@ namespace rtp {
             void send();
         protected:
         private:
+            /// @brief Opens a udp socket
+            void _openSocket();
+
             /// @brief Setup the registry with every sparse array needed
             /// @param r The Registry to setup
             void _setupRegistry(eng::Registry &reg);
@@ -66,8 +43,11 @@ namespace rtp {
             /// @param reg The Registry on which to add the backgrounds
             /// @return A vector of entities, each representing a background
             std::vector<eng::Entity> _addBackgrounds(eng::Registry &reg);
+
             eng::RegistryManager _manager;
             int _port;
+            boost::asio::io_context _ioContext;
+            boost::asio::ip::udp::socket _socket{_ioContext};
     };
 }
 

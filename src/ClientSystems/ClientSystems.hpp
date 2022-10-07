@@ -9,13 +9,17 @@
 #define CLIENTSYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
+#include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 namespace rtp
 {
     class ClientSystems {
         public:
-            ClientSystems(sf::RenderWindow &w, sf::Clock &c);
+            ClientSystems(sf::RenderWindow &w, sf::Clock &c, std::string adress, int port,
+            boost::asio::ip::udp::socket &socket);
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
@@ -81,6 +85,8 @@ namespace rtp
         private:
             sf::RenderWindow &_w;
             sf::Clock &_c;
+            boost::asio::ip::udp::socket &_socket;
+            boost::asio::ip::udp::endpoint _endpoint;
     };
 } // namespace rtp
 
