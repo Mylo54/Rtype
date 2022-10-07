@@ -16,7 +16,7 @@
 #include <thread>
 #include <condition_variable>
 
-namespace rt {
+namespace rtp {
     class ThreadPool {
         public:
             ThreadPool(int size);

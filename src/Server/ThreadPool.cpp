@@ -7,7 +7,7 @@
 
 #include "ThreadPool.hpp"
 
-rt::ThreadPool::ThreadPool(int size)
+rtp::ThreadPool::ThreadPool(int size)
 {
     this->_size = size;
     this->_activeThread = 0;
@@ -18,7 +18,7 @@ rt::ThreadPool::ThreadPool(int size)
     }
 }
 
-rt::ThreadPool::~ThreadPool()
+rtp::ThreadPool::~ThreadPool()
 {
     this->_finished = 1;
     this->_cv.notify_all();
@@ -27,14 +27,14 @@ rt::ThreadPool::~ThreadPool()
     }
 }
 
-void rt::ThreadPool::addTask(std::function<int(void)> fct)
+void rtp::ThreadPool::addTask(std::function<int(void)> fct)
 {
     std::unique_lock<std::mutex> lk(this->_mutex);
     this->_tasks.push(fct);
     this->_cv.notify_all();
 }
 
-void rt::ThreadPool::executeTask()
+void rtp::ThreadPool::executeTask()
 {
     std::function<int(void)> fct;
 
@@ -55,12 +55,12 @@ void rt::ThreadPool::executeTask()
     }
 }
 
-int rt::ThreadPool::getActiveThread()
+int rtp::ThreadPool::getActiveThread()
 {
     return this->_activeThread;
 }
 
-std::queue<std::function<int(void)>> rt::ThreadPool::getFunctions()
+std::queue<std::function<int(void)>> rtp::ThreadPool::getFunctions()
 {
     return this->_tasks;
 }
