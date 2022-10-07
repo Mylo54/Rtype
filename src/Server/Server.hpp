@@ -15,6 +15,7 @@
 #include <list>
 #include <locale>
 #include <boost/asio.hpp>
+#include <boost/array.hpp>
 #include <string.h>
 
 #include "../Components/Components.hpp"
@@ -25,7 +26,7 @@
 
 namespace rtp {
 
-    enum ACTIONTYPE {
+        enum ACTIONTYPE_PREGAME {
         OK,
         KO,
         CONNECT,
@@ -34,6 +35,15 @@ namespace rtp {
         JOIN_LOBBY,
         PLAYER_JOINED_LOBBY,
         START_GAME
+    };
+
+    enum ACTIONTYPE_INGAME {
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT,
+        SHOT,
+        QUIT
     };
 
     class Server {

@@ -27,11 +27,20 @@ void rtp::Server::run()
     boost::asio::io_context io_context;
 
     for (;;) {
+        std::cout << "WAITING TO RECEIVE\n";
+        
+
+
         boost::asio::ip::udp::socket socket(io_context, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303});
         boost::asio::ip::udp::endpoint client;
-        char recv_str[1024] = {};
-        socket.receive_from(boost::asio::buffer(recv_str), client);
-        std::cout << client << ": " << recv_str << '\n';
+
+
+        boost::array<rtp::ACTIONTYPE_INGAME, 1> data_rec;
+
+
+
+        size_t len = socket.receive_from(boost::asio::buffer(data_rec), client);
+        std::cout << client << " sent us (" << len << "bytes): " << data_rec.at(0) << '\n';
         this->_clientPort = client.port();
     }
 }

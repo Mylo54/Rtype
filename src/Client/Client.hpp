@@ -14,10 +14,11 @@
 #include <vector>
 #include <list>
 #include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 namespace rtp {
 
-    enum ACTIONTYPE {
+    enum ACTIONTYPE_PREGAME {
         OK,
         KO,
         CONNECT,
@@ -26,6 +27,15 @@ namespace rtp {
         JOIN_LOBBY,
         PLAYER_JOINED_LOBBY,
         START_GAME
+    };
+
+    enum ACTIONTYPE_INGAME {
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT,
+        SHOT,
+        QUIT
     };
 
     class Client {
