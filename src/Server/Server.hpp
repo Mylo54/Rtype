@@ -18,6 +18,7 @@
 #include <boost/array.hpp>
 #include <string.h>
 
+#include "Lobby.hpp"
 #include "../Components/Components.hpp"
 #include "../SystemsServer/SystemsServer.hpp"
 #include "../Engine/Registry.hpp"
@@ -60,6 +61,18 @@ namespace rtp {
             void run();
             bool isConnected();
 
+            /// @brief get the number of lobby in the list
+            /// @return int
+            int getNumberLobby();
+
+            /// @brief add lobby at the end of the list
+            /// @return void
+            void addLobby(rtp::Lobby lobby);
+
+            /// @brief remove lobby in the list depending on his position
+            /// @return void
+            void removeLobby(int position);
+    
             // Liste des méthodes à implémenter :
 
 
@@ -67,6 +80,7 @@ namespace rtp {
         private:
             bool _connect;
             int _clientPort;
+            std::list<rtp::Lobby> _listLobby;
             
     };
 };

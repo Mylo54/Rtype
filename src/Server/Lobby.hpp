@@ -8,7 +8,15 @@
 #ifndef LOBBY_SERVER_HPP_
 #define LOBBY_SERVER_HPP_
 
-#include "Server.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <locale>
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+#include <string.h>
 
 namespace rtp {
     class Lobby {
@@ -23,8 +31,6 @@ namespace rtp {
             int _lobbyID;
             std::string _lobbyName;
             std::string _roomName;
-        
-            
     };
 };
 
