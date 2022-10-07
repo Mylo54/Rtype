@@ -17,14 +17,20 @@ namespace rtp
         public:
             Shooter(std::string pBulletSpritePath,
             float pSpeed,
-            std::vector<float> pShootPoint) : bulletSpritePath(pBulletSpritePath), speed(pSpeed), shootPoint(pShootPoint)
-            {}
+            float pFireRate,
+            std::vector<float> pShootPoint = {0, 0}) : bulletSpritePath(pBulletSpritePath), speed(pSpeed), shootPoint(pShootPoint)
+            {
+                // Hz to kHz
+                fireRate = (1 / pFireRate) / 100;
+            }
             ~Shooter() {}
 
             std::string bulletSpritePath;
             float speed;
+            float fireRate;
             std::vector<float> shootPoint;
             bool shoot = false;
+            float nextFire = 0;
         protected:
         private:
     };

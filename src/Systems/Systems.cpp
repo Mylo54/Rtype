@@ -96,18 +96,15 @@ void rtp::Systems::displaySystem(eng::Registry &r)
     _c.restart();
 }
 
-// Needs to change some things here...
-void rtp::Systems::drawSystem(eng::Registry &r)
+// Some changes to optimize would be good
+void rtp::Systems::animateSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
     auto &sprites = r.getComponents<Drawable>();
 
-    // Draw & update sheets
-    for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
-        auto &pos = positions[i];
+    for (int i = 0; i < sprites.size(); i++) {
         auto &spr = sprites[i];
 
-        if (pos.has_value() && spr.has_value()) {
+        if (spr.has_value()) {
             sf::IntRect rect = spr.value().sprite.getTextureRect();
             if (spr.value().sheetDirection != 0) {
                 spr.value().nextFrame -= _c.getElapsedTime().asSeconds();
@@ -119,6 +116,13 @@ void rtp::Systems::drawSystem(eng::Registry &r)
                     rect.left = 0;
                 spr.value().nextFrame = spr.value().frameTime;
             }
+            // Animate to the left
+            if (spr.value().sheetDirection == 2 && spr.value().nextFrame <= 0) {
+                rect.left -= rect.width;
+                if (rect.left < 0)
+                    rect.left = spr.value().sizeX;
+                spr.value().nextFrame = spr.value().frameTime;
+            }
             // Animate downward
             if (spr.value().sheetDirection == 3 && spr.value().nextFrame <= 0) {
                 rect.top += rect.height;
@@ -126,7 +130,29 @@ void rtp::Systems::drawSystem(eng::Registry &r)
                     rect.top = 0;
                 spr.value().nextFrame = spr.value().frameTime;
             }
+            // Animate upward
+            if (spr.value().sheetDirection == 4 && spr.value().nextFrame <= 0) {
+                rect.top -= rect.height;
+                if (rect.top < 0)
+                    rect.top = spr.value().sizeY;
+                spr.value().nextFrame = spr.value().frameTime;
+            }
             spr.value().sprite.setTextureRect(rect);
+        }
+    }
+}
+
+void rtp::Systems::drawSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &sprites = r.getComponents<Drawable>();
+
+    // Draw & update sheets
+    for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
+        auto &pos = positions[i];
+        auto &spr = sprites[i];
+
+        if (pos.has_value() && spr.has_value()) {
             spr.value().sprite.setPosition({pos.value().x, pos.value().y});
             _w.draw(spr.value().sprite);
         }
@@ -143,8 +169,12 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
         auto &ctrl = controllables[i];
 
         if (sht.has_value() && ctrl.has_value()) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  {
+            if (sht.value().nextFire > 0) {
+                sht.value().nextFire -= _c.getElapsedTime().asSeconds();
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
+                sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
     }
@@ -247,4 +277,9 @@ void rtp::Systems::receiveData(eng::Registry &r)
     // Read the buffer of values received from the server
     // For every entity having the "Synced" component (not existing yet),
     // Emplace new values (Position, health, Velocities, etc ...)
+}
+
+void rtp::Systems::bulletAgainstEnemy(eng::Registry &r)
+{
+    auto &colliders = r.getComponents<RectCollider>();
 }

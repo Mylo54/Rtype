@@ -22,6 +22,10 @@ namespace rtp
             /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
 
+            /// @brief A system who animate every animatable entity
+            /// @param r The Registry on which to apply the system 
+            void animateSystem(eng::Registry &r);
+
             /// @brief A system who draws every drawable entity
             /// @param r The Registry on which to apply the system 
             void drawSystem(eng::Registry &r);
@@ -69,6 +73,10 @@ namespace rtp
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
+
+            /// @brief A system which damage enemies colliding with a bullet
+            /// @param r The Registry on which to apply the system
+            void bulletAgainstEnemy(eng::Registry &r);
         protected:
         private:
             sf::RenderWindow &_w;
