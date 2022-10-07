@@ -2,21 +2,20 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** SystemsServer
+** ServerSystems
 */
 
-#ifndef SYSTEMSSERVER_HPP_
-#define SYSTEMSSERVER_HPP_
-
+#ifndef SERVERSYSTEMS_HPP_
+#define SERVERSYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
 
 namespace rtp {
-    class SystemsServer {
+    class ServerSystems {
         public:
-            SystemsServer();
-            ~SystemsServer();
+            ServerSystems();
+            ~ServerSystems();
 
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -46,4 +45,4 @@ namespace rtp {
     };
 };
 
-#endif /* !SYSTEMSSERVER_HPP_ */
+#endif /* !SERVERSYSTEMS_HPP_ */

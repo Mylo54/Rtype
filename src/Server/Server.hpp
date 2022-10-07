@@ -20,9 +20,7 @@
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
-#include "../ServerSystems/SystemsServer.hpp"
-#include "../Engine/Registry.hpp"
-#include "../Engine/IRegistry.hpp"
+#include "../ServerSystems/ServerSystems.hpp"
 #include "../Engine/RegistryManager.hpp"
 
 namespace rtp {

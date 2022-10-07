@@ -2,21 +2,21 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Systems
+** ClientSystems
 */
 
-#ifndef SYSTEMS_HPP_
-#define SYSTEMS_HPP_
+#ifndef CLIENTSYSTEMS_HPP_
+#define CLIENTSYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
 
 namespace rtp
 {
-    class Systems {
+    class ClientSystems {
         public:
-            Systems(sf::RenderWindow &w, sf::Clock &c);
-            ~Systems();
+            ClientSystems(sf::RenderWindow &w, sf::Clock &c);
+            ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -86,4 +86,4 @@ namespace rtp
 
 
 
-#endif /* !SYSTEMS_HPP_ */
+#endif /* !CLIENTSYSTEMS_HPP_ */

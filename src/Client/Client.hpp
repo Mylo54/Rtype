@@ -13,7 +13,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "../Components/ClientComps.hpp"
-#include "../ClientSystems/Systems.hpp"
+#include "../ClientSystems/ClientSystems.hpp"
 #include "../Engine/RegistryManager.hpp"
 
 namespace rtp {

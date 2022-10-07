@@ -102,7 +102,7 @@ void rtp::Client::systemsLoop()
 {
     sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "RTYPE");
     sf::Clock c;
-    rtp::Systems systems(w, c);
+    rtp::ClientSystems systems(w, c);
     eng::Registry &r = _manager.getTop();
     
     // TODO: make the loop speed not depend on framerate
