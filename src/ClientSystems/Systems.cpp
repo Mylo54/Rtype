@@ -216,8 +216,8 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 eng::Entity bullet = r.spawnEntity();
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
-                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath, _w, _c));
-                r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
+                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath));
+                r.addComponent(bullet, rtp::AudioSource("assets/fire.wav", true));
             }
         }
     }
