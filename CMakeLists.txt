@@ -31,23 +31,17 @@ include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
-#####    CLIENT
+#####   Files
 
 FILE(GLOB_RECURSE ENGINE src/Engine/*.cpp)
-FILE(GLOB_RECURSE ENGINE_HPP src/Engine/*.hpp)
-FILE(GLOB_RECURSE SYSTEMS src/Systems/*.cpp)
-FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp src/Client/*.hpp)
+FILE(GLOB_RECURSE CLIENT_SYSTEMS src/ClientSystems/*.cpp)
+FILE(GLOB_RECURSE SERVER_SYSTEMS src/ServerSystems/*.cpp)
+FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
+FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 
-###### toolsclient.so
+#####   CLIENT
 
-# add_library(Engine SHARED ${ENGINE} ${ENGINE_HPP})
-
-
-
-
-##### client-Rtype
-
-add_executable(Client-Rtype ${ENGINE} ${SYSTEMS} ${SRCS_CLIENT})
+add_executable(Client-Rtype ${ENGINE} ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rtype PUBLIC
@@ -62,10 +56,7 @@ target_link_libraries(
 
 #####    SERVER
 
-FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
-FILE(GLOB_RECURSE SYSTEMSSRV src/SystemsServer/*.cpp)
-
-add_executable(Server-Rtype ${SRCS_SERVER} ${ENGINE} ${SYSTEMSSRV})
+add_executable(Server-Rtype ${ENGINE} ${SERVER_SYSTEMS} ${SRCS_SERVER})
 
 target_include_directories(
   Server-Rtype PUBLIC

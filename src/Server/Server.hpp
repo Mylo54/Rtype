@@ -20,7 +20,7 @@
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
-#include "../SystemsServer/SystemsServer.hpp"
+#include "../ServerSystems/SystemsServer.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Engine/IRegistry.hpp"
 #include "../Engine/RegistryManager.hpp"

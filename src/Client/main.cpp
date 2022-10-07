@@ -7,7 +7,7 @@
 
 #include "iostream"
 #include "../Components/Components.hpp"
-#include "../Systems/Systems.hpp"
+#include "../ClientSystems/Systems.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Engine/IRegistry.hpp"
 #include "../Engine/RegistryManager.hpp"

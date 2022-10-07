@@ -15,7 +15,6 @@ rtp::Client::~Client()
 {
 }
 
-
 //UDP
 void rtp::Client::run()
 {
