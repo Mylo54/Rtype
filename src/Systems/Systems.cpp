@@ -142,7 +142,6 @@ void rtp::Systems::animateSystem(eng::Registry &r)
     }
 }
 
-// Needs to change some things here...
 void rtp::Systems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -170,8 +169,12 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
         auto &ctrl = controllables[i];
 
         if (sht.has_value() && ctrl.has_value()) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  {
+            if (sht.value().nextFire > 0) {
+                sht.value().nextFire -= _c.getElapsedTime().asSeconds();
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
+                sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
     }

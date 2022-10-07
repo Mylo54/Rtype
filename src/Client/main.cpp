@@ -72,7 +72,7 @@ eng::Entity makePlayer(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
 
     r.addComponent<rtp::Position>(baba, rtp::Position(200, 540, 0));
     r.addComponent<rtp::Velocity>(baba, rtp::Velocity(0, 0));
-    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, std::vector<float>({65, 25, 0})));
+    r.addComponent<rtp::Shooter>(baba, rtp::Shooter("../assets/bullet.png", 25.0, 4, std::vector<float>({65, 25, 0})));
     r.addComponent<rtp::Drawable>(baba, rtp::Drawable("../assets/platypus_spaceship.png", w, c, 1, sf::IntRect(0, 0, 65, 49), 0.005));
     r.addComponent<rtp::Controllable>(baba, rtp::Controllable(w));
 
