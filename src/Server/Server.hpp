@@ -26,7 +26,7 @@
 
 namespace rtp {
 
-        enum ACTIONTYPE_PREGAME {
+    enum ACTIONTYPE_PREGAME {
         OK,
         KO,
         CONNECT,
@@ -45,6 +45,12 @@ namespace rtp {
         SHOT,
         QUIT
     };
+
+    typedef struct payload {
+        int ACTION_NAME;
+        size_t bodySize = 0;
+        void * body = NULL;
+    } networkPayload;
 
     class Server {
         public:

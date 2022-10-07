@@ -26,8 +26,8 @@ void rtp::Client::run()
     boost::asio::ip::udp::socket socket{io_context};
     socket.open(boost::asio::ip::udp::v4());
 
-    boost::array<rtp::ACTIONTYPE_INGAME, 1> data_tbs = {DOWN};
-    socket.send_to( boost::asio::buffer(data_tbs),
+    boost::array<networkPayload, 1> data_tbs = {DOWN};
+    socket.send_to(boost::asio::buffer(data_tbs),
     boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
 }
 //port 3303

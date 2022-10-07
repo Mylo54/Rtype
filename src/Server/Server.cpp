@@ -27,21 +27,23 @@ void rtp::Server::run()
     boost::asio::io_context io_context;
 
     for (;;) {
-        std::cout << "WAITING TO RECEIVE\n";
-        
-
-
         boost::asio::ip::udp::socket socket(io_context, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303});
         boost::asio::ip::udp::endpoint client;
 
-
-        boost::array<rtp::ACTIONTYPE_INGAME, 1> data_rec;
-
-
+        std::cout << "WAITING TO RECEIVE\n";
+        boost::array<networkPayload, 1> data_rec;
 
         size_t len = socket.receive_from(boost::asio::buffer(data_rec), client);
-        std::cout << client << " sent us (" << len << "bytes): " << data_rec.at(0) << '\n';
         this->_clientPort = client.port();
+        std::cout << client << " on port " << this->_clientPort << " sent us (" << len << "bytes): " << data_rec[0].ACTION_NAME << " || the bodySize was " << data_rec[0].bodySize << " bytes." << std::endl;
+    
+    
+        // là dans le cas du TCP il faut réagir au ACTION_NAME reçu 
+        // puis envoyer une réponde en fonction de la réaction serveur.
+    
+    
+    
+    
     }
 }
 

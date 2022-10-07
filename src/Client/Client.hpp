@@ -38,6 +38,12 @@ namespace rtp {
         QUIT
     };
 
+    typedef struct payload {
+        int ACTION_NAME;
+        size_t bodySize = 0;
+        void * body = NULL;
+    } networkPayload;
+
     class Client {
         public:
             Client(int port);
