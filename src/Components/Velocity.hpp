@@ -12,7 +12,7 @@ namespace rtp
 {
     class Velocity {
         public:
-            Velocity(float _x, float _y): x(_x), y(_y) {} 
+            Velocity(float _x = 0, float _y = 0): x(_x), y(_y) {} 
             ~Velocity() {}
 
             float x;
