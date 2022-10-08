@@ -7,13 +7,10 @@
 
 #include "ClientSystems.hpp"
 
-rtp::ClientSystems::ClientSystems(sf::RenderWindow &w,
-    sf::Clock &c,
-    std::string adress,
-    int port, 
-    boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _socket(socket)
+rtp::ClientSystems::ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port, boost::asio::ip::udp::socket &socket) : _w(sf::RenderWindow(sf::VideoMode(dimWdw[0], dimWdw[1], dimWdw[2]), nameWdw)), _c(sf::Clock()), _socket(socket)
 {
     _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
+    _w.setFramerateLimit(60);
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -337,5 +334,18 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
                 }
             }
         }
+    }
+}
+
+bool rtp::ClientSystems::windowOpen()
+{
+    return this->_w.isOpen();
+}
+
+void rtp::ClientSystems::eventCloseWindow()
+{
+    while (this->_w.pollEvent(this->_event)) {
+        if (this->_event.type == sf::Event::Closed)
+            this->_w.close();
     }
 }

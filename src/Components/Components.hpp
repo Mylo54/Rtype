@@ -19,4 +19,7 @@
 #include "EnemyStats.hpp"
 #include "Bullet.hpp"
 
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+
 #endif /* !COMPONENTS_HPP_ */
