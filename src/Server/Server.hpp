@@ -57,6 +57,7 @@ namespace rtp {
             ~Server();
 
             void run();
+            void requestConnection();
             bool isConnected();
 
             /// @brief get the number of lobby in the list
@@ -79,7 +80,10 @@ namespace rtp {
             bool _connect;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
-            
+            boost::asio::io_context _ioContext;
+            boost::asio::ip::udp::endpoint _client;
+            boost::asio::ip::udp::socket _socket;
+            boost::array<networkPayload, 1> _dataRec;
     };
 };
 

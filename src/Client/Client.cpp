@@ -22,6 +22,7 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
+    send();
     systemsLoop();
 }
 
@@ -90,7 +91,7 @@ void rtp::Client::send()
 {
     std::cout << "WAITING TO SEND\n";
 
-    boost::array<networkPayload, 1> data_tbs = {DOWN};
+    boost::array<networkPayload, 1> data_tbs = {CONNECT};
     _socket.send_to(boost::asio::buffer(data_tbs),
     boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
 }
