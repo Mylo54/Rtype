@@ -37,7 +37,11 @@ namespace eng
             /// @brief Remove a Component
             /// @param pos the index of the component
             void erase(size_t pos) {
+                if (pos >= size())
+                    return;
                 _data.at(pos).reset();
+                while (_data[size() - 1].has_value() == false && size() > 0)
+                    _data.pop_back();
             }
 
             /// @return The size of the array
@@ -60,7 +64,8 @@ namespace eng
                 while (pos >= size()) {
                     _data.push_back({});
                 }
-                erase(pos);
+                if (_data[pos].has_value())
+                    erase(pos);
                 _data[pos].emplace(c);
                 return _data[pos];
             }

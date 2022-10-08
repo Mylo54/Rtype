@@ -116,6 +116,7 @@ int registryTest(void)
         std::cout << reg.getComponents<std::string>()[i].value_or("empty") << std::endl;
         std::cout << reg.getComponents<int>()[i].value_or(-1) << std::endl;
     }
+    std::cout << "baba" << std::endl;
     reg.killEntity(eng::Entity(0));
     reg.killEntity(eng::Entity(2));
     for (int i = 0; i < reg.getComponents<std::string>().size(); i++) {
