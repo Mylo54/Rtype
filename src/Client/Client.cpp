@@ -90,10 +90,19 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
 void rtp::Client::send()
 {
     std::cout << "WAITING TO SEND\n";
-
     boost::array<networkPayload, 1> data_tbs = {CONNECT};
     _socket.send_to(boost::asio::buffer(data_tbs),
     boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
+
+
+    boost::array<networkPayload, 1> dataRec;
+    boost::asio::ip::udp::endpoint endpoint;
+    size_t len = this->_socket.receive_from(boost::asio::buffer(dataRec), endpoint);
+    if (dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::OK) {
+        std::cout << "Connected to server" << std::endl;
+    } else {
+        send();
+    }
 }
 
 void rtp::Client::_openSocket()
