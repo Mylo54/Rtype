@@ -18,7 +18,7 @@ namespace rtp
 {
     class ClientSystems {
         public:
-            ClientSystems(sf::RenderWindow &w, sf::Clock &c, std::string adress, int port,
+            ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port,
             boost::asio::ip::udp::socket &socket);
             ~ClientSystems();
 
@@ -81,10 +81,18 @@ namespace rtp
             /// @brief A system which damage enemies colliding with a bullet
             /// @param r The Registry on which to apply the system
             void bulletAgainstEnemy(eng::Registry &r);
+            
+            /// @brief A system that lets you know if the window is open
+            bool windowOpen();
+
+            /// @brief A system who close the window
+            void eventCloseWindow();
+
         protected:
         private:
-            sf::RenderWindow &_w;
-            sf::Clock &_c;
+            sf::Event _event;
+            sf::RenderWindow _w;
+            sf::Clock _c;
             boost::asio::ip::udp::socket &_socket;
             boost::asio::ip::udp::endpoint _endpoint;
     };

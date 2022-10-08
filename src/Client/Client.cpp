@@ -112,26 +112,14 @@ void rtp::Client::_openSocket()
 
 void rtp::Client::systemsLoop()
 {
-    sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "RTYPE");
-    sf::Clock c;
-    rtp::ClientSystems systems(w, c, "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     
     // TODO: make the loop speed not depend on framerate
-    w.setFramerateLimit(60);
 
-    while (w.isOpen()) {
+    while (systems.windowOpen()) {
 
-        // TODO: make this a system or something, this needs to go out
-        //////////////////////////////////////////////////////////////
-        sf::Event event;
-        while (w.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                w.close();
-        }
-        //////////////////////////////////////////////////////////////
-
+        systems.eventCloseWindow();
         // Receive Inputs
         //systems.receiveData(r);
         systems.controlSystem(r);
