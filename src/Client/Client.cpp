@@ -12,7 +12,8 @@ rtp::Client::Client(int port): _port(port)
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     eng::Entity player = _addPlayer(_manager.getTop());
-    _addEnemy(_manager.getTop());
+    for (int i = 0; i < 10; i++)
+        _addEnemy(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _openSocket();
 }
@@ -23,7 +24,7 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    send();
+    // send();
     systemsLoop();
 }
 
@@ -57,14 +58,15 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
 eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
 {
     eng::Entity enemy = reg.spawnEntity();
+    float scale = (rand() % 10) + 1;
 
-    reg.addComponent<rtp::Position>(enemy, rtp::Position(1920, rand() % 1080, 0));
+    reg.addComponent<rtp::Position>(enemy, rtp::Position(1920 + (rand() % 2000), rand() % 1080, 0));
     reg.addComponent<rtp::Velocity>(enemy, rtp::Velocity(-5, 0));
     reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
-    reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40, 16));
-    reg.getComponents<rtp::Drawable>()[enemy.getId()].value().sprite.setScale(2, 2);
+    reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
 
+    reg.getComponents<rtp::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
     return enemy;
 }
 
@@ -152,6 +154,7 @@ void rtp::Client::systemsLoop()
         systems.positionSystem(r);
         systems.animateSystem(r);
         systems.playerBullets(r);
+        systems.killDeadEnemies(r);
 
         //Display & play sounds
         systems.playSoundSystem(r);

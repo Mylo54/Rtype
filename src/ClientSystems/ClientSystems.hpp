@@ -82,6 +82,10 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void playerBullets(eng::Registry &r);
 
+            /// @brief A system which kill dead enemies
+            /// @param r The Registry on which to apply the system
+            void killDeadEnemies(eng::Registry &r);
+
             /// @brief A system that lets you know if the window is open
             bool windowOpen();
 

@@ -288,6 +288,16 @@ void rtp::ClientSystems::sendData(eng::Registry &r)
     }
 }
 
+void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
+{
+    auto &ennemies = r.getComponents<EnemyStats>();
+
+    for (int i = 0; i < ennemies.size(); i++)
+        if (ennemies[i].has_value())
+            if (ennemies[i].value().health <= 0)
+                r.killEntity(eng::Entity(i));
+}
+
 void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
     // Read the buffer of values received from the server
