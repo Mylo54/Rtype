@@ -11,7 +11,8 @@ rtp::Client::Client(int port): _port(port)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
-    _addPlayer(_manager.getTop());
+    eng::Entity player = _addPlayer(_manager.getTop());
+    _addEnemy(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _openSocket();
 }
@@ -28,13 +29,16 @@ void rtp::Client::run()
 
 void rtp::Client::_setupRegistry(eng::Registry &reg)
 {
-    reg.registerComponents(eng::SparseArray<rtp::Position>());
     reg.registerComponents(eng::SparseArray<rtp::Velocity>());
+    reg.registerComponents(eng::SparseArray<rtp::Position>());
     reg.registerComponents(eng::SparseArray<rtp::Drawable>());
+    reg.registerComponents(eng::SparseArray<rtp::AudioSource>());
+    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::AudioSource>());
+    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
@@ -48,6 +52,20 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
 
     return player;
+}
+
+eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
+{
+    eng::Entity enemy = reg.spawnEntity();
+
+    reg.addComponent<rtp::Position>(enemy, rtp::Position(1920, rand() % 1080, 0));
+    reg.addComponent<rtp::Velocity>(enemy, rtp::Velocity(-5, 0));
+    reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+    reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
+    reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40, 16));
+    reg.getComponents<rtp::Drawable>()[enemy.getId()].value().sprite.setScale(2, 2);
+
+    return enemy;
 }
 
 std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
@@ -136,6 +154,7 @@ void rtp::Client::systemsLoop()
         systems.shootSystem(r);
         systems.positionSystem(r);
         systems.animateSystem(r);
+        systems.playerBullets(r);
 
         //Display & play sounds
         systems.playSoundSystem(r);

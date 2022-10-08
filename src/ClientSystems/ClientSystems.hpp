@@ -78,11 +78,17 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
 
-            /// @brief A system which damage enemies colliding with a bullet
+            /// @brief A system which damage enemies colliding a player's bullet
             /// @param r The Registry on which to apply the system
-            void bulletAgainstEnemy(eng::Registry &r);
+            void playerBullets(eng::Registry &r);
         protected:
         private:
+            /// @brief A short system which damage an enemy and destroys bullets
+            /// @param r The Registry on which to apply the system 
+            /// @param b The bullets data
+            /// @param p The Position of the bullet
+            void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
+
             sf::RenderWindow &_w;
             sf::Clock &_c;
             boost::asio::ip::udp::socket &_socket;

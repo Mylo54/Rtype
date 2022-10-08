@@ -16,5 +16,7 @@
 #include "Background.hpp"
 #include "AudioSource.hpp"
 #include "RectCollider.hpp"
+#include "EnemyStats.hpp"
+#include "Bullet.hpp"
 
 #endif /* !COMPONENTS_HPP_ */

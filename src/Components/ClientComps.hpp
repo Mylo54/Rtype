@@ -15,5 +15,6 @@
 #include "Position.hpp"
 #include "Shooter.hpp"
 #include "Velocity.hpp"
+#include "EnemyStats.hpp"
 
 #endif /* !CLIENTCOMPS_HPP_ */

@@ -24,33 +24,6 @@
 #include "../Engine/RegistryManager.hpp"
 
 namespace rtp {
-
-    enum ACTIONTYPE_PREGAME {
-        OK,
-        KO,
-        CONNECT,
-        CREATE_LOBBY,
-        LIST_LOBBIES,
-        JOIN_LOBBY,
-        PLAYER_JOINED_LOBBY,
-        START_GAME
-    };
-
-    enum ACTIONTYPE_INGAME {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT,
-        SHOT,
-        QUIT
-    };
-
-    typedef struct payload {
-        int ACTION_NAME;
-        size_t bodySize = 0;
-        void * body = NULL;
-    } networkPayload;
-
     class Server {
         public:
             Server(int port);

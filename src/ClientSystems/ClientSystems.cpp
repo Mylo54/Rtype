@@ -177,7 +177,7 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
             if (sht.value().nextFire > 0) {
                 sht.value().nextFire -= _c.getElapsedTime().asSeconds();
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sht.value().nextFire <= 0)  {
+            if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
@@ -223,6 +223,7 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 r.addComponent(bullet, rtp::Position(x, y, z));
                 r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath));
                 r.addComponent(bullet, rtp::AudioSource("assets/fire.wav", true));
+                r.addComponent(bullet, rtp::Bullet(2));
             }
         }
     }
@@ -297,7 +298,44 @@ void rtp::ClientSystems::receiveData(eng::Registry &r)
     // Emplace new values (Position, health, Velocities, etc ...)
 }
 
-void rtp::ClientSystems::bulletAgainstEnemy(eng::Registry &r)
+// Bullets are considered as (x, y) points
+void rtp::ClientSystems::playerBullets(eng::Registry &r)
 {
-    auto &colliders = r.getComponents<RectCollider>();
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size() && i < poss.size(); i++) {
+        if (blts[i].has_value() && poss[i].has_value()) {
+            _bulletAgainstEnemy(r, eng::Entity(i));
+            // std::cout << "i =" << i << std::endl;
+            // std::cout << "next =" << i + 1 << std::endl;
+            // std::cout << "bltsz =" << blts.size() << std::endl;
+            // std::cout << "possz =" << poss.size() << std::endl;
+
+        }
+    }
+}
+
+void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
+{
+    auto &enms = r.getComponents<EnemyStats>();
+    auto &poss = r.getComponents<Position>();
+    auto &rcts = r.getComponents<RectCollider>();
+    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &b = r.getComponents<Bullet>()[blt.getId()].value();
+
+    for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
+        if (enms[i].has_value() && poss[i].has_value() && rcts[i].has_value()) {
+            auto &enm = enms[i].value();
+            auto &pos = poss[i].value();
+            auto &rct = rcts[i].value();
+            if (p.x >= pos.x && p.y >= pos.y) {
+                if (p.x <= pos.x + rct.width && p.y <= pos.y + rct.height) {
+                    enm.health -= b.damage;
+                    r.killEntity(blt);
+                    // std::cout << "Killed entity:" << blt.getId() << std::endl;
+                }
+            }
+        }
+    }
 }

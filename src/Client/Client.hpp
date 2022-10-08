@@ -12,7 +12,7 @@
 #include <fstream>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include "../Components/ClientComps.hpp"
+#include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
 #include "../Engine/RegistryManager.hpp"
 #include "../NetworkStructs.hpp"
@@ -38,6 +38,11 @@ namespace rtp {
             /// @param reg The Registry on which to adds the player 
             /// @return The entity containing the player
             eng::Entity _addPlayer(eng::Registry &reg);
+
+            /// @brief Adds an enemy to a registry
+            /// @param reg The Registry on which to adds the enemy 
+            /// @return The entity containing the enemy
+            eng::Entity _addEnemy(eng::Registry &reg);
 
             /// @brief Add layers of backgrounds to a registry
             /// @param reg The Registry on which to add the backgrounds
