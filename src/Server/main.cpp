@@ -41,19 +41,9 @@ int main(int ac, char **av)
 
     manage.addRegistry("r1");
     eng::Registry &reg = manage.getTop();
-    rtp::ServerSystems systems;
 
     reg.registerComponents(eng::SparseArray<rtp::Position>());
     reg.registerComponents(eng::SparseArray<rtp::Velocity>());
-
-    while (true) {
-        systems.positionSystem(reg);
-        systems.controlSystem(reg);
-        systems.controlMovementSystem(reg);
-        systems.controlFireSystem(reg);
-        systems.sendData(reg);
-        systems.receiveData(reg);
-    }
 
     return (0);
 }

@@ -8,13 +8,17 @@
 #ifndef SERVERSYSTEMS_HPP_
 #define SERVERSYSTEMS_HPP_
 
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+#include "../NetworkStructs.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
 
 namespace rtp {
     class ServerSystems {
         public:
-            ServerSystems();
+            ServerSystems(std::string adress, int port,
+            boost::asio::ip::udp::socket &socket);
             ~ServerSystems();
 
             /// @brief A system who applies velocities on positions
@@ -42,6 +46,8 @@ namespace rtp {
             void receiveData(eng::Registry &r);
         protected:
         private:
+            boost::asio::ip::udp::socket &_socket;
+            boost::asio::ip::udp::endpoint _endpoint;
     };
 };
 
