@@ -90,10 +90,19 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
 void rtp::Client::send()
 {
     std::cout << "WAITING TO SEND\n";
-
     boost::array<networkPayload, 1> data_tbs = {CONNECT};
     _socket.send_to(boost::asio::buffer(data_tbs),
     boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
+
+
+    boost::array<networkPayload, 1> dataRec;
+    boost::asio::ip::udp::endpoint endpoint;
+    size_t len = this->_socket.receive_from(boost::asio::buffer(dataRec), endpoint);
+    if (dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::OK) {
+        std::cout << "Connected to server" << std::endl;
+    } else {
+        send();
+    }
 }
 
 void rtp::Client::_openSocket()
@@ -103,26 +112,14 @@ void rtp::Client::_openSocket()
 
 void rtp::Client::systemsLoop()
 {
-    sf::RenderWindow w(sf::VideoMode(1920, 1080, 32), "RTYPE");
-    sf::Clock c;
-    rtp::ClientSystems systems(w, c, "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     
     // TODO: make the loop speed not depend on framerate
-    w.setFramerateLimit(60);
 
-    while (w.isOpen()) {
+    while (systems.windowOpen()) {
 
-        // TODO: make this a system or something, this needs to go out
-        //////////////////////////////////////////////////////////////
-        sf::Event event;
-        while (w.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                w.close();
-        }
-        //////////////////////////////////////////////////////////////
-
+        systems.eventCloseWindow();
         // Receive Inputs
         //systems.receiveData(r);
         systems.controlSystem(r);

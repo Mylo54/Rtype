@@ -26,14 +26,17 @@ void rtp::Server::requestConnection()
 {
     if (this->_dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::CONNECT) {
         std::cout << "client ask for connection" << std::endl;
-        //createLobby
+        addLobby(Lobby());
+        //TODO: create thread for client
+        boost::array<networkPayload, 1> data = {OK};
+        this->_socket.send_to(boost::asio::buffer(data), this->_client);
     }
 }
 
 void rtp::Server::run()
 {
     for (;;) {
-        std::cout << "WAITING TO RECEIVE\n";
+        std::cout << "WAITING TO RECEIVE" << std::endl;
         size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
         
         requestConnection();

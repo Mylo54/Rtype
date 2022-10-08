@@ -17,4 +17,7 @@
 #include "AudioSource.hpp"
 #include "RectCollider.hpp"
 
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+
 #endif /* !COMPONENTS_HPP_ */
