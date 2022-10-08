@@ -4,3 +4,7 @@ _deps
 .vscode
 CMakeCache.txt
 build
+bin
+Makefile
+cmake_install.cmake
+

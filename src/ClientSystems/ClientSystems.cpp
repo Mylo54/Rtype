@@ -2,20 +2,25 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Systems
+** ClientSystems
 */
 
-#include "Systems.hpp"
+#include "ClientSystems.hpp"
 
-rtp::Systems::Systems(sf::RenderWindow &w, sf::Clock &c) : _w(w), _c(c)
+rtp::ClientSystems::ClientSystems(sf::RenderWindow &w,
+    sf::Clock &c,
+    std::string adress,
+    int port, 
+    boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _socket(socket)
+{
+    _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
+}
+
+rtp::ClientSystems::~ClientSystems()
 {
 }
 
-rtp::Systems::~Systems()
-{
-}
-
-void rtp::Systems::logSystem(eng::Registry &r)
+void rtp::ClientSystems::logSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &velocities = r.getComponents<Velocity>();
@@ -32,7 +37,7 @@ void rtp::Systems::logSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlSystem(eng::Registry &r)
+void rtp::ClientSystems::controlSystem(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
 
@@ -62,7 +67,7 @@ void rtp::Systems::controlSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlMovementSystem(eng::Registry &r)
+void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<Velocity>();
     auto &controllables = r.getComponents<Controllable>();
@@ -85,19 +90,19 @@ void rtp::Systems::controlMovementSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::clearSystem(eng::Registry &r)
+void rtp::ClientSystems::clearSystem(eng::Registry &r)
 {
     _w.clear();
 }
 
-void rtp::Systems::displaySystem(eng::Registry &r)
+void rtp::ClientSystems::displaySystem(eng::Registry &r)
 {
     _w.display();
     _c.restart();
 }
 
 // Some changes to optimize would be good
-void rtp::Systems::animateSystem(eng::Registry &r)
+void rtp::ClientSystems::animateSystem(eng::Registry &r)
 {
     auto &sprites = r.getComponents<Drawable>();
 
@@ -142,7 +147,7 @@ void rtp::Systems::animateSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::drawSystem(eng::Registry &r)
+void rtp::ClientSystems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &sprites = r.getComponents<Drawable>();
@@ -159,7 +164,7 @@ void rtp::Systems::drawSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlFireSystem(eng::Registry &r)
+void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 {
     auto &shooters = r.getComponents<Shooter>();
     auto &controllables = r.getComponents<Controllable>();
@@ -180,7 +185,7 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::backgroundSystem(eng::Registry &r)
+void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
 {
     auto &bgs = r.getComponents<Background>();
     auto &poss = r.getComponents<Position>();
@@ -198,7 +203,7 @@ void rtp::Systems::backgroundSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::shootSystem(eng::Registry &r)
+void rtp::ClientSystems::shootSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &shooters = r.getComponents<Shooter>();
@@ -216,14 +221,14 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 eng::Entity bullet = r.spawnEntity();
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
-                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath, _w, _c));
-                r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
+                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath));
+                r.addComponent(bullet, rtp::AudioSource("assets/fire.wav", true));
             }
         }
     }
 }
 
-void rtp::Systems::playSoundSystem(eng::Registry &r)
+void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
 {
     auto &sounds = r.getComponents<AudioSource>();
 
@@ -239,7 +244,7 @@ void rtp::Systems::playSoundSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::positionSystem(eng::Registry &r)
+void rtp::ClientSystems::positionSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &velocities = r.getComponents<Velocity>();
@@ -255,7 +260,7 @@ void rtp::Systems::positionSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::sendData(eng::Registry &r)
+void rtp::ClientSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
 
@@ -263,23 +268,36 @@ void rtp::Systems::sendData(eng::Registry &r)
         auto ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            std::cout << "[Packet Start]" << std::endl;
-            std::cout << "x:"<< ctrl.value().xAxis << std::endl;
-            std::cout << "y:"<< ctrl.value().yAxis << std::endl;
-            std::cout << "s:"<< ctrl.value().shoot << std::endl;
-            std::cout << "[Packet End]" << std::endl;
+            if (ctrl.value().shoot) {
+                boost::array<networkPayload, 1> data = {SHOT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().xAxis > 0) {
+                boost::array<networkPayload, 1> data = {RIGHT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().xAxis < 0) {
+                boost::array<networkPayload, 1> data = {LEFT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().yAxis > 0) {
+                boost::array<networkPayload, 1> data = {DOWN};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().yAxis < 0) {
+                boost::array<networkPayload, 1> data = {UP};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
         }
     }
 }
 
-void rtp::Systems::receiveData(eng::Registry &r)
+void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
     // Read the buffer of values received from the server
     // For every entity having the "Synced" component (not existing yet),
     // Emplace new values (Position, health, Velocities, etc ...)
 }
 
-void rtp::Systems::bulletAgainstEnemy(eng::Registry &r)
+void rtp::ClientSystems::bulletAgainstEnemy(eng::Registry &r)
 {
     auto &colliders = r.getComponents<RectCollider>();
 }

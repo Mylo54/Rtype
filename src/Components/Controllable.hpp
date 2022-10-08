@@ -14,13 +14,12 @@ namespace rtp
 {
     class Controllable {
         public:
-            Controllable(sf::RenderWindow &pwindow): window(pwindow) {}
+            Controllable() {}
             ~Controllable() {}
 
-            sf::RenderWindow &window;
-            int xAxis;
-            int yAxis;
-            bool shoot;
+            int xAxis = 0;
+            int yAxis = 0;
+            bool shoot = false;
         protected:
         private:
     };

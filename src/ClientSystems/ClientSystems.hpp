@@ -2,21 +2,25 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Systems
+** ClientSystems
 */
 
-#ifndef SYSTEMS_HPP_
-#define SYSTEMS_HPP_
+#ifndef CLIENTSYSTEMS_HPP_
+#define CLIENTSYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
+#include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 namespace rtp
 {
-    class Systems {
+    class ClientSystems {
         public:
-            Systems(sf::RenderWindow &w, sf::Clock &c);
-            ~Systems();
+            ClientSystems(sf::RenderWindow &w, sf::Clock &c, std::string adress, int port,
+            boost::asio::ip::udp::socket &socket);
+            ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -81,9 +85,11 @@ namespace rtp
         private:
             sf::RenderWindow &_w;
             sf::Clock &_c;
+            boost::asio::ip::udp::socket &_socket;
+            boost::asio::ip::udp::endpoint _endpoint;
     };
 } // namespace rtp
 
 
 
-#endif /* !SYSTEMS_HPP_ */
+#endif /* !CLIENTSYSTEMS_HPP_ */
