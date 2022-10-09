@@ -103,9 +103,29 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
-    // Send players infos (positions, velocities, health)
-    // Send shoot events
-    // Send enemy infos (positions, velocities, health, enemy id)
+    auto &ps = r.getComponents<Position>();
+    auto &vs = r.getComponents<Velocity>();
+    auto &playerStats = r.getComponents<PlayerStats>();
+    auto &enemyStats = r.getComponents<EnemyStats>();
+
+    for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size(); i++) {
+        // Send player infos
+        // (not checking if ps and vs have values so it's dangerous O_o)
+        if (playerStats[i].has_value()) {
+            auto &p = ps[i].value();
+            auto &v = vs[i].value();
+            auto &player = playerStats[i].value();
+            // Send thoses values to each client
+        }
+        // Same but for enemies
+        if (enemyStats[i].has_value()) {
+            auto &p = ps[i].value();
+            auto &v = vs[i].value();
+            auto &enm = enemyStats[i].value();
+            // Send thoses values to each client
+        }
+        // Then send shot events and from which player they arrived from
+    }
 }
 
 // I don't think this will stay here

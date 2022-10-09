@@ -18,6 +18,7 @@
 #include "RectCollider.hpp"
 #include "EnemyStats.hpp"
 #include "Bullet.hpp"
+#include "PlayerStats.hpp"
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
