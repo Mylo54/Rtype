@@ -9,6 +9,7 @@
 
 rtp::Systems::Systems(sf::RenderWindow &w, sf::Clock &c) : _w(w), _c(c)
 {
+    _displayTime = 0;
 }
 
 rtp::Systems::~Systems()
@@ -92,8 +93,10 @@ void rtp::Systems::clearSystem(eng::Registry &r)
 
 void rtp::Systems::displaySystem(eng::Registry &r)
 {
-    _w.display();
-    _c.restart();
+    if ((_delta.asSeconds() + _displayTime) >= (1/60)) {
+        _w.display();
+        _displayTime = _delta.asSeconds() + _displayTime - (1/60);
+    }
 }
 
 // Some changes to optimize would be good
@@ -107,7 +110,7 @@ void rtp::Systems::animateSystem(eng::Registry &r)
         if (spr.has_value()) {
             sf::IntRect rect = spr.value().sprite.getTextureRect();
             if (spr.value().sheetDirection != 0) {
-                spr.value().nextFrame -= _c.getElapsedTime().asSeconds();
+                spr.value().nextFrame -= _delta.asSeconds();
             }
             // Animate to the right
             if (spr.value().sheetDirection == 1 && spr.value().nextFrame <= 0) {
@@ -170,7 +173,7 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
 
         if (sht.has_value() && ctrl.has_value()) {
             if (sht.value().nextFire > 0) {
-                sht.value().nextFire -= _c.getElapsedTime().asSeconds();
+                sht.value().nextFire -= _delta.asSeconds() * 20;
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
@@ -249,8 +252,9 @@ void rtp::Systems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += vel.value().x;
-            pos.value().y += vel.value().y;
+            pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
+            pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
+            std::cout << _delta.asSeconds() << std::endl;
         }
     }
 }
@@ -282,4 +286,9 @@ void rtp::Systems::receiveData(eng::Registry &r)
 void rtp::Systems::bulletAgainstEnemy(eng::Registry &r)
 {
     auto &colliders = r.getComponents<RectCollider>();
+}
+
+void rtp::Systems::updDeltaTime()
+{
+    _delta = _c.restart();
 }

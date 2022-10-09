@@ -125,6 +125,7 @@ int main(int argc, char **argv)
                 w.close();
         }
         //systems.receiveData(r);
+        systems.updDeltaTime();
         systems.controlSystem(r);
         systems.controlMovementSystem(r);
         systems.controlFireSystem(r);

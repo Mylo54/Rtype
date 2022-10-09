@@ -77,10 +77,14 @@ namespace rtp
             /// @brief A system which damage enemies colliding with a bullet
             /// @param r The Registry on which to apply the system
             void bulletAgainstEnemy(eng::Registry &r);
+
+            void updDeltaTime();
         protected:
         private:
             sf::RenderWindow &_w;
             sf::Clock &_c;
+            sf::Time _delta;
+            float _displayTime;
     };
 } // namespace rtp
 
