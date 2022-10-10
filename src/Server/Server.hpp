@@ -57,6 +57,8 @@ namespace rtp {
             boost::asio::ip::udp::endpoint _client;
             boost::asio::ip::udp::socket _socket;
             boost::array<networkPayload, 1> _dataRec;
+            boost::asio::ip::tcp::acceptor _acceptor;
+            boost::asio::io_service _ioService;
     };
 };
 

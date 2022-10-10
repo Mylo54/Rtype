@@ -25,6 +25,10 @@ namespace rtp {
             void run();
             void systemsLoop();
             void send();
+
+            /// @brief Connect client to server
+            void connect();
+
         protected:
         private:
             /// @brief Opens a udp socket
@@ -53,6 +57,10 @@ namespace rtp {
             int _port;
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket{_ioContext};
+
+            boost::asio::io_service _ioService;
+            boost::asio::ip::tcp::socket _socketTCP;
+            boost::system::error_code _error;
     };
 }
 

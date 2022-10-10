@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(int port): _port(port)
+rtp::Client::Client(int port): _port(port), _socketTCP(_ioService)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -24,8 +24,34 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    // send();
+    //connect();
     systemsLoop();
+}
+
+void rtp::Client::connect()
+{
+    boost::array<networkPayload, 1> dataTbs = {CONNECT};
+    boost::array<networkPayload, 1> dataRec;
+
+    //connection
+    _socketTCP.connect(boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string("127.0.0.1"), 3304));
+    std::cout << "Client connect" << std::endl;
+
+
+    boost::asio::write( _socketTCP, boost::asio::buffer(dataTbs), _error);
+
+    if( _error )
+        std::cout << "send failed: " << _error.message() << std::endl;
+
+    // getting response from server
+    boost::asio::read(_socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), _error);
+
+    if( _error && _error != boost::asio::error::eof ) {
+        std::cout << "receive failed: " << _error.message() << std::endl;
+    }
+    else {
+        std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+    }
 }
 
 void rtp::Client::_setupRegistry(eng::Registry &reg)

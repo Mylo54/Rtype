@@ -7,10 +7,11 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(int port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303})
+rtp::Server::Server(int port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303))
 {
     this->_connect = false;
     this->_clientPort = 0;
+
 }
 
 rtp::Server::~Server()
@@ -29,24 +30,52 @@ void rtp::Server::requestConnection()
         addLobby(Lobby());
         //TODO: create thread for client
         boost::array<networkPayload, 1> data = {OK};
+        //boost::asio::write(this->_socket, boost::asio::buffer(data));
         this->_socket.send_to(boost::asio::buffer(data), this->_client);
     }
 }
 
 void rtp::Server::run()
 {
-    for (;;) {
+
+    boost::asio::io_service io_service;
+    //listen for new connection
+    boost::asio::ip::tcp::acceptor acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3304));
+    //socket creation 
+    boost::asio::ip::tcp::socket socket_(io_service);
+    //waiting for connection
+    acceptor_.accept(socket_);
+
+
+        
+    //read operation
+    boost::array<networkPayload, 1> dataRec;
+    boost::asio::read(socket_, boost::asio::buffer(dataRec), boost::asio::transfer_all());
+    std::cout << dataRec[0].ACTION_NAME << std::endl;
+
+
+    //write operation
+    //send_(socket_, "Hello From Server!");
+    boost::array<networkPayload, 1> data_tbs = {OK};
+    boost::asio::write(socket_, boost::asio::buffer(data_tbs));
+
+
+    std::cout << "Servent sent Hello message to Client!" << std::endl;
+    
+    //_acceptor.accept(_socket);
+    /*for (;;) {
         std::cout << "WAITING TO RECEIVE" << std::endl;
+       // boost::asio::read( this->_socket, boost::asio::buffer(this->_dataRec));
         size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
         
         requestConnection();
 
         //boost::array<networkPayload, 1> data_rec;
         this->_clientPort = this->_client.port();
-        std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << len << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
         // là dans le cas du TCP il faut réagir au ACTION_NAME reçu 
         // puis envoyer une réponde en fonction de la réaction serveur.
-    }
+    }*/
 }
 
 int rtp::Server::getNumberLobby()
