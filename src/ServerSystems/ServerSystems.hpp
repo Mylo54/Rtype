@@ -17,10 +17,19 @@
 namespace rtp {
     class ServerSystems {
         public:
-            ServerSystems(std::string adress, int port,
-            boost::asio::ip::udp::socket &socket);
+            ServerSystems(boost::asio::ip::udp::socket &socket);
             ~ServerSystems();
 
+            /// @brief Add a client endpoint
+            /// @param address The IPv4 address of the receiver
+            /// @param port The port of the receiver
+            void addEndpoint(std::string address, int port);
+
+            /// @brief Remove a client endpoint
+            /// @param address The IPv4 address of the receiver
+            /// @param port The port of the receiver
+            void removeEndPoint(std::string address, int port);
+            
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
@@ -47,6 +56,7 @@ namespace rtp {
         protected:
         private:
             boost::asio::ip::udp::socket &_socket;
+            std::vector<boost::asio::ip::udp::endpoint> _endpoints;
             boost::asio::ip::udp::endpoint _endpoint;
     };
 };
