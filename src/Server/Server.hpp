@@ -17,6 +17,13 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <string.h>
+#include <functional>
+#include <fstream>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <condition_variable>
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
@@ -70,6 +77,9 @@ namespace rtp {
 
             //For TCP
             boost::asio::io_service _ioService;
+
+            //For thread
+            std::mutex _mutex;
 
             
     };

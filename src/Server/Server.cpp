@@ -55,7 +55,9 @@ void rtp::Server::dataReception()
     size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
 
     this->_clientPort = this->_client.port();
+    std::unique_lock<std::mutex> lk(this->_mutex);
     this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
+    lk.unlock();
     std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
 }
 
