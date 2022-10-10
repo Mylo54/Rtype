@@ -73,9 +73,12 @@ void rtp::Server::run()
     std::thread systems(&rtp::Server::systemsLoop, this);
 
     while(!_isEnd) {
+        std::cout << "> ";
         std::cin >> input;
-        if (input == "exit")
+        if (input == "exit") {
             _isEnd = true;
+            std::cout << "Exiting..." << std::endl;
+        }
     }
     systems.join();
 }
