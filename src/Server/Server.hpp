@@ -45,7 +45,10 @@ namespace rtp {
             /// @brief remove lobby in the list depending on his position
             /// @return void
             void removeLobby(int position);
-    
+
+            
+            void systemsLoop();
+
             // Liste des méthodes à implémenter :
 
 

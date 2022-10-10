@@ -69,6 +69,28 @@ void rtp::Server::run()
     }
 }
 
+void rtp::Server::systemsLoop()
+{
+    rtp::ServerSystems systems("127.0.0.1", 3304, this->_socket);
+    eng::Registry r;
+
+    while (true) {
+        // Receive data
+        systems.receiveData(r);
+
+        // Apply new controls
+        systems.controlSystem(r);
+        systems.controlMovementSystem(r);
+        systems.controlFireSystem(r);
+
+        // Apply logic and physics calculations
+        systems.positionSystem(r);
+
+        // Send the new data
+        systems.sendData(r);
+    }
+}
+
 int rtp::Server::getNumberLobby()
 {
     return (this->_listLobby.size());
