@@ -77,10 +77,13 @@ void rtp::Server::run()
         std::cin >> input;
         if (input == "exit") {
             _isEnd = true;
-            std::cout << "Exiting..." << std::endl;
+            _cout.lock();
+            std::cout << "[Server]: Joining threads..." << std::endl;
+            _cout.unlock();
         }
     }
     systems.join();
+    std::cout << "[Server]: Bye!" << std::endl;
 }
 
 void rtp::Server::systemsLoop()
@@ -88,7 +91,8 @@ void rtp::Server::systemsLoop()
     rtp::ServerSystems systems("127.0.0.1", 3304, this->_socket);
     eng::Registry r;
 
-    while (_isEnd) {
+    _setupRegistry(r);
+    while (!_isEnd) {
         // Receive data
         systems.receiveData(r);
 
@@ -103,7 +107,20 @@ void rtp::Server::systemsLoop()
         // Send the new data
         systems.sendData(r);
     }
+    _cout.lock();
+    std::cout << "[Server]: Exiting system loops" << std::endl;
+    _cout.unlock();
     return;
+}
+
+void rtp::Server::_setupRegistry(eng::Registry &reg)
+{
+    reg.registerComponents(eng::SparseArray<rtp::Position>());
+    reg.registerComponents(eng::SparseArray<rtp::Velocity>());
+    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
+    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
+    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
+    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
 }
 
 int rtp::Server::getNumberLobby()

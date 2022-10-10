@@ -65,6 +65,10 @@ namespace rtp {
 
         protected:
         private:
+            /// @brief Setup the Registry and the multiple sparseArrays
+            /// @param r The registry on which to apply this method
+            void _setupRegistry(eng::Registry &reg);
+
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
 
@@ -80,6 +84,7 @@ namespace rtp {
 
             //For thread
             std::mutex _mutex;
+            std::mutex _cout;
             bool _isEnd = false;
 
             
