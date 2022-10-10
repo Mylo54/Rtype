@@ -8,7 +8,8 @@
 #include "ServerSystems.hpp"
 
 rtp::ServerSystems::ServerSystems(std::string adress, int port,
-    boost::asio::ip::udp::socket &socket): _socket(socket)
+    boost::asio::ip::udp::socket &socket, std::mutex &mutex,
+    std::vector<rtp::networkPayload> &listDataRec) : _socket(socket), _mutex(mutex), _listDataRec(listDataRec)
 {
     _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
 }

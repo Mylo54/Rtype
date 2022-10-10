@@ -13,12 +13,17 @@
 #include "../NetworkStructs.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
+#include <mutex>
+#include <vector>
+#include <thread>
+#include <condition_variable>
 
 namespace rtp {
     class ServerSystems {
         public:
             ServerSystems(std::string adress, int port,
-            boost::asio::ip::udp::socket &socket);
+            boost::asio::ip::udp::socket &socket, std::mutex &mutex,
+            std::vector<rtp::networkPayload> &listDataRec);
             ~ServerSystems();
 
             /// @brief A system who applies velocities on positions
@@ -48,6 +53,8 @@ namespace rtp {
         private:
             boost::asio::ip::udp::socket &_socket;
             boost::asio::ip::udp::endpoint _endpoint;
+            std::mutex &_mutex;
+            std::vector<networkPayload> &_listDataRec;
     };
 };
 
