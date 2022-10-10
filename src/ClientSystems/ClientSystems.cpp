@@ -363,3 +363,8 @@ void rtp::ClientSystems::eventCloseWindow()
             this->_w.close();
     }
 }
+
+void rtp::ClientSystems::updDeltaTime()
+{
+    _delta = _c.restart();
+}

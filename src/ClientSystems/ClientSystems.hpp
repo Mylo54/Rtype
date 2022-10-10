@@ -91,6 +91,8 @@ namespace rtp
 
             /// @brief A system who close the window
             void eventCloseWindow();
+
+            void updDeltaTime();
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets
@@ -102,6 +104,8 @@ namespace rtp
             sf::Event _event;
             sf::RenderWindow _w;
             sf::Clock _c;
+            sf::Time _delta;
+            float _displayTime;
             boost::asio::ip::udp::socket &_socket;
             boost::asio::ip::udp::endpoint _endpoint;
     };
