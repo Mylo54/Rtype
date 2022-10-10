@@ -110,7 +110,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
 
 void rtp::Server::systemsLoop()
 {
-    rtp::ServerSystems systems("127.0.0.1", 3304, this->_socket);
+    rtp::ServerSystems systems(this->_socket, this->_mutex, this->_listDataRec);
     eng::Registry r;
 
     _setupRegistry(r);

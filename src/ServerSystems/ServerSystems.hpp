@@ -13,11 +13,16 @@
 #include "../NetworkStructs.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
+#include <mutex>
+#include <vector>
+#include <thread>
+#include <condition_variable>
 
 namespace rtp {
     class ServerSystems {
         public:
-            ServerSystems(boost::asio::ip::udp::socket &socket);
+            ServerSystems(boost::asio::ip::udp::socket &socket,
+            std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec);
             ~ServerSystems();
 
             /// @brief Add a client endpoint
@@ -58,6 +63,8 @@ namespace rtp {
             boost::asio::ip::udp::socket &_socket;
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
             boost::asio::ip::udp::endpoint _endpoint;
+            std::mutex &_mutex;
+            std::vector<networkPayload> &_listDataRec;
     };
 };
 

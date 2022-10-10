@@ -7,7 +7,8 @@
 
 #include "ServerSystems.hpp"
 
-rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket): _socket(socket)
+rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
+    std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec) : _socket(socket), _mutex(mutex), _listDataRec(listDataRec)
 {
     //_endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
 }
@@ -27,7 +28,8 @@ void rtp::ServerSystems::removeEndPoint(std::string address, int port)
     bool found = false;
 
     while (it != _endpoints.end()) {
-        if (*it == {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)}) {
+        if (it->address() == boost::asio::ip::make_address(address)
+            && it->port() == static_cast<boost::asio::ip::port_type>(port)) {
             found = true;
             break;
         }
