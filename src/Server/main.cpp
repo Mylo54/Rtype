@@ -23,13 +23,8 @@ int errorManagement(int ac, char **av)
 
 int main(int ac, char **av)
 {
-    if (errorManagement(ac, av) == 84) {
-        std::cout << "\033[1;31mInvalid Argument Parameters\033[0m\n";
-        std::cout << "Usage: ./Server-Rutabaga <PORT>\n";
-    }
-
     try {
-        rtp::Server srv(std::atoi(av[1]));
+        rtp::Server srv(3033);
         srv.run();
     }
     catch (const std::exception &error) {

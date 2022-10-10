@@ -58,7 +58,7 @@ void rtp::Server::connect()
 
 void rtp::Server::run()
 {
-    //connect();
+    connect();
 
     for (;;) {
         std::cout << "WAITING TO RECEIVE" << std::endl;

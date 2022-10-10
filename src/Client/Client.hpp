@@ -27,7 +27,8 @@ namespace rtp {
             void send();
 
             /// @brief Connect client to server
-            void connect();
+            /// @return 0 if successful, 1 otherwise
+            int connect();
 
         protected:
         private:

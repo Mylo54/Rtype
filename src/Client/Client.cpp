@@ -24,19 +24,25 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    //connect();
+    int cnt = connect();
     systemsLoop();
 }
 
-void rtp::Client::connect()
+int rtp::Client::connect()
 {
     boost::array<networkPayload, 1> dataTbs = {CONNECT};
     boost::array<networkPayload, 1> dataRec;
 
     //connection
-    _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3304));
-    std::cout << "Client connect" << std::endl;
-
+    try {
+        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3304));
+        std::cout << "Client connect" << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return (1);
+    }
 
     boost::asio::write( _socketTCP, boost::asio::buffer(dataTbs), _error);
 
@@ -48,10 +54,10 @@ void rtp::Client::connect()
 
     if (_error && _error != boost::asio::error::eof) {
         std::cout << "receive failed: " << _error.message() << std::endl;
-    }
-    else {
+    } else {
         std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
+    return (0);
 }
 
 void rtp::Client::_setupRegistry(eng::Registry &reg)
