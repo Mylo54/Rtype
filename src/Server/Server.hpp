@@ -17,6 +17,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <string.h>
+#include <thread>
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
@@ -50,7 +51,7 @@ namespace rtp {
             /// @return void
             void removeLobby(int position);
 
-            
+
             void systemsLoop();
 
             // Liste des méthodes à implémenter :

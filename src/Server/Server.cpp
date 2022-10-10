@@ -67,7 +67,8 @@ void rtp::Server::run()
         -engine et system loop
         -data reception
     */
-    
+    // std::thread(&rtp::Server::systemsLoop, this);
+
     for (;;) {
         std::cout << "WAITING TO RECEIVE" << std::endl;
         size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
