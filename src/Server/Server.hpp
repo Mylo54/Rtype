@@ -31,8 +31,12 @@ namespace rtp {
 
             void run();
             void requestConnection();
-            bool isConnected();
+
+            /// @brief connection between server and client
             void connect();
+
+            /// @brief thread reception data
+            void dataReception();
 
             /// @brief get the number of lobby in the list
             /// @return int
@@ -51,15 +55,20 @@ namespace rtp {
 
         protected:
         private:
-            bool _connect;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
+
+            //For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::endpoint _client;
             boost::asio::ip::udp::socket _socket;
             boost::array<networkPayload, 1> _dataRec;
+            std::vector<networkPayload> _listDataRec;
 
+            //For TCP
             boost::asio::io_service _ioService;
+
+            
     };
 };
 

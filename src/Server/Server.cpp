@@ -9,18 +9,11 @@
 
 rtp::Server::Server(int port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303})
 {
-    this->_connect = false;
     this->_clientPort = 0;
-
 }
 
 rtp::Server::~Server()
 {
-}
-
-bool rtp::Server::isConnected()
-{
-    return this->_connect;
 }
 
 void rtp::Server::requestConnection()
@@ -56,10 +49,25 @@ void rtp::Server::connect()
     std::cout << "Servent sent Hello message to Client!" << std::endl;
 }
 
+void rtp::Server::dataReception()
+{
+    std::cout << "WAITING TO RECEIVE" << std::endl;
+    size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
+
+    this->_clientPort = this->_client.port();
+    this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
+    std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+}
+
 void rtp::Server::run()
 {
     connect();
 
+    /*creer les deux theads :
+        -engine et system loop
+        -data reception
+    */
+    
     for (;;) {
         std::cout << "WAITING TO RECEIVE" << std::endl;
         size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
