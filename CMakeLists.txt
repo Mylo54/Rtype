@@ -17,6 +17,7 @@ conan_basic_setup()
 find_package(SFML 2.5.1 COMPONENTS window graphics system network audio REQUIRED)
 find_package(asio REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Boost REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
@@ -30,48 +31,40 @@ include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
-#####    CLIENT
+#####   Files
 
 FILE(GLOB_RECURSE ENGINE src/Engine/*.cpp)
-FILE(GLOB_RECURSE ENGINE_HPP src/Engine/*.hpp)
-FILE(GLOB_RECURSE SYSTEMS src/Systems/*.cpp)
-FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp src/Client/*.hpp)
+FILE(GLOB_RECURSE CLIENT_SYSTEMS src/ClientSystems/*.cpp)
+FILE(GLOB_RECURSE SERVER_SYSTEMS src/ServerSystems/*.cpp)
+FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
+FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 
-###### toolsclient.so
+#####   CLIENT
 
-# add_library(Engine SHARED ${ENGINE} ${ENGINE_HPP})
-
-
-
-
-##### client-Rutabaga
-
-add_executable(Client-Rutabaga ${ENGINE} ${SYSTEMS} ${SRCS_CLIENT})
+add_executable(Client-Rtype ${ENGINE} ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
-  Client-Rutabaga PUBLIC
+  Client-Rtype PUBLIC
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
-  Client-Rutabaga
+  Client-Rtype
   PRIVATE
   ${CONAN_LIBS}
 )
 
 #####    SERVER
 
-FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
-
-add_executable(Server-Rutabaga ${SRCS_SERVER})
+add_executable(Server-Rtype ${ENGINE} ${SERVER_SYSTEMS} ${SRCS_SERVER})
 
 target_include_directories(
-  Server-Rutabaga PUBLIC
+  Server-Rtype PUBLIC
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
-  Server-Rutabaga
+  Server-Rtype
   PRIVATE
   ${CONAN_LIBS}
 )

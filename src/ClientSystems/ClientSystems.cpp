@@ -2,21 +2,23 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Systems
+** ClientSystems
 */
 
-#include "Systems.hpp"
+#include "ClientSystems.hpp"
 
-rtp::Systems::Systems(sf::RenderWindow &w, sf::Clock &c) : _w(w), _c(c)
+rtp::ClientSystems::ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port, boost::asio::ip::udp::socket &socket) : _w(sf::RenderWindow(sf::VideoMode(dimWdw[0], dimWdw[1], dimWdw[2]), nameWdw)), _c(sf::Clock()), _socket(socket)
 {
     _displayTime = 0;
+    _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
+    _w.setFramerateLimit(60);
 }
 
-rtp::Systems::~Systems()
+rtp::ClientSystems::~ClientSystems()
 {
 }
 
-void rtp::Systems::logSystem(eng::Registry &r)
+void rtp::ClientSystems::logSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &velocities = r.getComponents<Velocity>();
@@ -33,7 +35,7 @@ void rtp::Systems::logSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlSystem(eng::Registry &r)
+void rtp::ClientSystems::controlSystem(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
 
@@ -63,7 +65,7 @@ void rtp::Systems::controlSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlMovementSystem(eng::Registry &r)
+void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<Velocity>();
     auto &controllables = r.getComponents<Controllable>();
@@ -86,12 +88,12 @@ void rtp::Systems::controlMovementSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::clearSystem(eng::Registry &r)
+void rtp::ClientSystems::clearSystem(eng::Registry &r)
 {
     _w.clear();
 }
 
-void rtp::Systems::displaySystem(eng::Registry &r)
+void rtp::ClientSystems::displaySystem(eng::Registry &r)
 {
     if ((_delta.asSeconds() + _displayTime) >= (1/60)) {
         _w.display();
@@ -100,7 +102,7 @@ void rtp::Systems::displaySystem(eng::Registry &r)
 }
 
 // Some changes to optimize would be good
-void rtp::Systems::animateSystem(eng::Registry &r)
+void rtp::ClientSystems::animateSystem(eng::Registry &r)
 {
     auto &sprites = r.getComponents<Drawable>();
 
@@ -145,7 +147,7 @@ void rtp::Systems::animateSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::drawSystem(eng::Registry &r)
+void rtp::ClientSystems::drawSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &sprites = r.getComponents<Drawable>();
@@ -162,7 +164,7 @@ void rtp::Systems::drawSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::controlFireSystem(eng::Registry &r)
+void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 {
     auto &shooters = r.getComponents<Shooter>();
     auto &controllables = r.getComponents<Controllable>();
@@ -175,7 +177,7 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
             if (sht.value().nextFire > 0) {
                 sht.value().nextFire -= _delta.asSeconds() * 20;
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sht.value().nextFire <= 0)  {
+            if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
@@ -183,7 +185,7 @@ void rtp::Systems::controlFireSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::backgroundSystem(eng::Registry &r)
+void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
 {
     auto &bgs = r.getComponents<Background>();
     auto &poss = r.getComponents<Position>();
@@ -201,7 +203,7 @@ void rtp::Systems::backgroundSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::shootSystem(eng::Registry &r)
+void rtp::ClientSystems::shootSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &shooters = r.getComponents<Shooter>();
@@ -219,14 +221,15 @@ void rtp::Systems::shootSystem(eng::Registry &r)
                 eng::Entity bullet = r.spawnEntity();
                 r.addComponent(bullet, rtp::Velocity(15, 0));
                 r.addComponent(bullet, rtp::Position(x, y, z));
-                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath, _w, _c));
-                r.addComponent(bullet, rtp::AudioSource("../assets/fire.wav", true));
+                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath));
+                r.addComponent(bullet, rtp::AudioSource("assets/fire.wav", true));
+                r.addComponent(bullet, rtp::Bullet(2));
             }
         }
     }
 }
 
-void rtp::Systems::playSoundSystem(eng::Registry &r)
+void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
 {
     auto &sounds = r.getComponents<AudioSource>();
 
@@ -242,7 +245,7 @@ void rtp::Systems::playSoundSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::positionSystem(eng::Registry &r)
+void rtp::ClientSystems::positionSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
     auto &velocities = r.getComponents<Velocity>();
@@ -259,7 +262,7 @@ void rtp::Systems::positionSystem(eng::Registry &r)
     }
 }
 
-void rtp::Systems::sendData(eng::Registry &r)
+void rtp::ClientSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
 
@@ -267,28 +270,96 @@ void rtp::Systems::sendData(eng::Registry &r)
         auto ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            std::cout << "[Packet Start]" << std::endl;
-            std::cout << "x:"<< ctrl.value().xAxis << std::endl;
-            std::cout << "y:"<< ctrl.value().yAxis << std::endl;
-            std::cout << "s:"<< ctrl.value().shoot << std::endl;
-            std::cout << "[Packet End]" << std::endl;
+            if (ctrl.value().shoot) {
+                boost::array<networkPayload, 1> data = {SHOT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().xAxis > 0) {
+                boost::array<networkPayload, 1> data = {RIGHT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().xAxis < 0) {
+                boost::array<networkPayload, 1> data = {LEFT};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
+            if (ctrl.value().yAxis > 0) {
+                boost::array<networkPayload, 1> data = {DOWN};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            } else if (ctrl.value().yAxis < 0) {
+                boost::array<networkPayload, 1> data = {UP};
+                _socket.send_to(boost::asio::buffer(data), _endpoint);
+            }
         }
     }
 }
 
-void rtp::Systems::receiveData(eng::Registry &r)
+void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
+{
+    auto &ennemies = r.getComponents<EnemyStats>();
+
+    for (int i = 0; i < ennemies.size(); i++)
+        if (ennemies[i].has_value())
+            if (ennemies[i].value().health <= 0)
+                r.killEntity(eng::Entity(i));
+}
+
+void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
     // Read the buffer of values received from the server
     // For every entity having the "Synced" component (not existing yet),
     // Emplace new values (Position, health, Velocities, etc ...)
 }
 
-void rtp::Systems::bulletAgainstEnemy(eng::Registry &r)
+// Bullets are considered as (x, y) points
+void rtp::ClientSystems::playerBullets(eng::Registry &r)
 {
-    auto &colliders = r.getComponents<RectCollider>();
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size() && i < poss.size(); i++) {
+        if (blts[i].has_value() && poss[i].has_value()) {
+            _bulletAgainstEnemy(r, eng::Entity(i));
+            // std::cout << "i =" << i << std::endl;
+            // std::cout << "next =" << i + 1 << std::endl;
+            // std::cout << "bltsz =" << blts.size() << std::endl;
+            // std::cout << "possz =" << poss.size() << std::endl;
+
+        }
+    }
 }
 
-void rtp::Systems::updDeltaTime()
+void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
-    _delta = _c.restart();
+    auto &enms = r.getComponents<EnemyStats>();
+    auto &poss = r.getComponents<Position>();
+    auto &rcts = r.getComponents<RectCollider>();
+    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &b = r.getComponents<Bullet>()[blt.getId()].value();
+
+    for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
+        if (enms[i].has_value() && poss[i].has_value() && rcts[i].has_value()) {
+            auto &enm = enms[i].value();
+            auto &pos = poss[i].value();
+            auto &rct = rcts[i].value();
+            if (p.x >= pos.x && p.y >= pos.y) {
+                if (p.x <= pos.x + rct.width && p.y <= pos.y + rct.height) {
+                    enm.health -= b.damage;
+                    r.killEntity(blt);
+                    // std::cout << "Killed entity:" << blt.getId() << std::endl;
+                }
+            }
+        }
+    }
+}
+
+bool rtp::ClientSystems::windowOpen()
+{
+    return this->_w.isOpen();
+}
+
+void rtp::ClientSystems::eventCloseWindow()
+{
+    while (this->_w.pollEvent(this->_event)) {
+        if (this->_event.type == sf::Event::Closed)
+            this->_w.close();
+    }
 }

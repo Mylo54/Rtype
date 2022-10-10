@@ -8,11 +8,18 @@
 #ifndef REGISTRY_HPP_
 #define REGISTRY_HPP_
 
-#include "IRegistry.hpp"
+#include "Entity.hpp"
+#include "Log.hpp"
+#include <stack>
+#include "SparseArray.hpp"
+#include <functional>
+#include <any>
+#include <unordered_map>
+#include <typeindex>
 
 namespace eng
 {
-    class Registry : public IRegistry {
+    class Registry {
         public:
             Registry();
             ~Registry();
@@ -74,10 +81,8 @@ namespace eng
             /// @brief Remove an entity and it's previously attached components
             /// @param e The Entity
             void killEntity(Entity const &e) {
-                for (int i = 0; i < _erasers.size(); i++) {
+                for (int i = 0; i < _erasers.size(); i++)
                     _erasers[i](*this, e);
-                }
-
                 if (e.getId() == _maxEntity)
                     _maxEntity--;
                 else

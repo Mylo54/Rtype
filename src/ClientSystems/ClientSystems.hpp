@@ -2,21 +2,25 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Systems
+** ClientSystems
 */
 
-#ifndef SYSTEMS_HPP_
-#define SYSTEMS_HPP_
+#ifndef CLIENTSYSTEMS_HPP_
+#define CLIENTSYSTEMS_HPP_
 
 #include "../Engine/Registry.hpp"
+#include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 namespace rtp
 {
-    class Systems {
+    class ClientSystems {
         public:
-            Systems(sf::RenderWindow &w, sf::Clock &c);
-            ~Systems();
+            ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port,
+            boost::asio::ip::udp::socket &socket);
+            ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -74,20 +78,35 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
 
-            /// @brief A system which damage enemies colliding with a bullet
+            /// @brief A system which damage enemies colliding a player's bullet
             /// @param r The Registry on which to apply the system
-            void bulletAgainstEnemy(eng::Registry &r);
+            void playerBullets(eng::Registry &r);
 
-            void updDeltaTime();
+            /// @brief A system which kill dead enemies
+            /// @param r The Registry on which to apply the system
+            void killDeadEnemies(eng::Registry &r);
+
+            /// @brief A system that lets you know if the window is open
+            bool windowOpen();
+
+            /// @brief A system who close the window
+            void eventCloseWindow();
         protected:
         private:
-            sf::RenderWindow &_w;
-            sf::Clock &_c;
-            sf::Time _delta;
-            float _displayTime;
+            /// @brief A short system which damage an enemy and destroys bullets
+            /// @param r The Registry on which to apply the system 
+            /// @param b The bullets data
+            /// @param p The Position of the bullet
+            void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
+
+            sf::Event _event;
+            sf::RenderWindow _w;
+            sf::Clock _c;
+            boost::asio::ip::udp::socket &_socket;
+            boost::asio::ip::udp::endpoint _endpoint;
     };
 } // namespace rtp
 
 
 
-#endif /* !SYSTEMS_HPP_ */
+#endif /* !CLIENTSYSTEMS_HPP_ */
