@@ -80,6 +80,7 @@ namespace rtp {
 
             //For thread
             std::mutex _mutex;
+            bool _isEnd = false;
 
             
     };

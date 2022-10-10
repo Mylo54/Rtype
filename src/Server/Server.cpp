@@ -63,21 +63,21 @@ void rtp::Server::dataReception()
 
 void rtp::Server::run()
 {
-    connect();
+    std::string input;
+    //connect();
 
     /*creer les deux theads :
         -engine et system loop
         -data reception
     */
-    // std::thread(&rtp::Server::systemsLoop, this);
+    std::thread systems(&rtp::Server::systemsLoop, this);
 
-    for (;;) {
-        std::cout << "WAITING TO RECEIVE" << std::endl;
-        size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
-
-        this->_clientPort = this->_client.port();
-        std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+    while(!_isEnd) {
+        std::cin >> input;
+        if (input == "exit")
+            _isEnd = true;
     }
+    systems.join();
 }
 
 void rtp::Server::systemsLoop()
@@ -85,7 +85,7 @@ void rtp::Server::systemsLoop()
     rtp::ServerSystems systems("127.0.0.1", 3304, this->_socket);
     eng::Registry r;
 
-    while (true) {
+    while (_isEnd) {
         // Receive data
         systems.receiveData(r);
 
@@ -100,6 +100,7 @@ void rtp::Server::systemsLoop()
         // Send the new data
         systems.sendData(r);
     }
+    return;
 }
 
 int rtp::Server::getNumberLobby()
