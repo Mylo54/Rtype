@@ -24,7 +24,8 @@ int errorManagement(int ac, char **av)
 int main(int ac, char **av)
 {
     try {
-        rtp::Server srv(3033);
+        boost::asio::ip::port_type port(3033);
+        rtp::Server srv(port);
         srv.run();
     }
     catch (const std::exception &error) {

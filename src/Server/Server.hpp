@@ -33,11 +33,11 @@
 namespace rtp {
     class Server {
         public:
-            Server(int port);
+            Server(boost::asio::ip::port_type port);
             ~Server();
 
             void run();
-            void requestConnection();
+            //void requestConnection();
 
             /// @brief connection between server and client
             void connect();
@@ -74,12 +74,12 @@ namespace rtp {
             /// @param rec The reception loop thread
             void _exitServer(std::thread &sys, std::thread &rec);
 
+            boost::asio::ip::port_type _port;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
 
             // For UDP
             boost::asio::io_context _ioContext;
-            boost::asio::ip::udp::endpoint _client;
             boost::asio::ip::udp::socket _socket;
             boost::array<networkPayload, 1> _dataRec;
             std::vector<networkPayload> _listDataRec;

@@ -7,15 +7,17 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(int port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), 3303})
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port})
 {
     this->_clientPort = 0;
+    _port = port;
+    //_socket.local_endpoint().port(_port);
 }
 
 rtp::Server::~Server()
 {
 }
-
+/*
 void rtp::Server::requestConnection()
 {
     if (this->_dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::CONNECT) {
@@ -26,23 +28,23 @@ void rtp::Server::requestConnection()
         //boost::asio::write(this->_socket, boost::asio::buffer(data));
         this->_socket.send_to(boost::asio::buffer(data), this->_client);
     }
-}
+}*/
 
 void rtp::Server::connect()
 {
-    //listen for new connection
+    // listen for new connection
     boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3304));
-    //socket creation 
+    // socket creation
     boost::asio::ip::tcp::socket socket(_ioService);
-    //waiting for connection
+    // waiting for connection
     acceptor.accept(socket);
-        
-    //read operation
+
+    // read operation
     boost::array<networkPayload, 1> dataRec;
     boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all());
     std::cout << dataRec[0].ACTION_NAME << std::endl;
 
-    //write operation
+    // write operation
     boost::array<networkPayload, 1> dataTbs = {OK};
     boost::asio::write(socket, boost::asio::buffer(dataTbs));
 
@@ -51,17 +53,24 @@ void rtp::Server::connect()
 
 void rtp::Server::dataReception()
 {
-    while (!_isEnd) {
+    while (!_isEnd)
+    {
         _cout.lock();
         std::cout << "[Server][dataReception]: Waiting to receive" << std::endl;
         _cout.unlock();
-        size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
+        size_t len = this->_socket.receive(boost::asio::buffer(this->_dataRec));
+
+        _cout.lock();
+        std::cout << "[Server][dataReception]: Received something!" << std::endl;
+        _cout.unlock();
 
         std::unique_lock<std::mutex> lk(this->_mutex);
         this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
         lk.unlock();
         _cout.lock();
-        std::cout << "[Server][dataReception]: " << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        std::cout << "[Server][dataReception]: "
+                  << "A client"
+                  << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
         _cout.unlock();
     }
     _cout.lock();
@@ -72,7 +81,7 @@ void rtp::Server::dataReception()
 void rtp::Server::run()
 {
     std::string input;
-    //connect();
+    // connect();
 
     /*creer les deux theads :
         -engine et system loop
@@ -81,8 +90,8 @@ void rtp::Server::run()
     std::thread dataReception(&rtp::Server::dataReception, this);
     std::thread systems(&rtp::Server::systemsLoop, this);
 
-
-    while(!_isEnd) {
+    while (!_isEnd)
+    {
         std::cin >> input;
         if (input == "exit")
             _exitServer(systems, dataReception);
@@ -101,7 +110,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
     // Send a last msg to end data thread
     boost::array<networkPayload, 1> endmsg = {OK};
     _socket.send_to(boost::asio::buffer(endmsg),
-    boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
+    boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
     
     // Joining threads
     sys.join();
@@ -114,7 +123,13 @@ void rtp::Server::systemsLoop()
     eng::Registry r;
 
     _setupRegistry(r);
-    while (!_isEnd) {
+
+    _cout.lock();
+    std::cout << "[Server][systemsLoop]: Registry is ready" << std::endl;
+    _cout.unlock();
+
+    while (!_isEnd)
+    {
         // Receive data
         systems.receiveData(r);
 
@@ -159,7 +174,8 @@ void rtp::Server::removeLobby(int position)
 {
     std::list<rtp::Lobby>::iterator it = this->_listLobby.begin();
 
-    for (int i = 0; i <= position; i++, it++) {
+    for (int i = 0; i <= position; i++, it++)
+    {
         if (it != this->_listLobby.end())
             return;
     }
