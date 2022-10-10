@@ -46,19 +46,20 @@ void rtp::Server::connect()
     boost::array<networkPayload, 1> dataTbs = {OK};
     boost::asio::write(socket, boost::asio::buffer(dataTbs));
 
-    std::cout << "Servent sent Hello message to Client!" << std::endl;
+    std::cout << "Server connected to Client!" << std::endl;
 }
 
 void rtp::Server::dataReception()
 {
-    std::cout << "WAITING TO RECEIVE" << std::endl;
-    size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
+    while (!_isEnd) {
+        std::cout << "Waiting to receive" << std::endl;
+        size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
 
-    this->_clientPort = this->_client.port();
-    std::unique_lock<std::mutex> lk(this->_mutex);
-    this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
-    lk.unlock();
-    std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        std::unique_lock<std::mutex> lk(this->_mutex);
+        this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
+        lk.unlock();
+        std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+    }
 }
 
 void rtp::Server::run()
@@ -70,7 +71,9 @@ void rtp::Server::run()
         -engine et system loop
         -data reception
     */
-    std::thread systems(&rtp::Server::systemsLoop, this);
+    std::thread dataReception(&rtp::Server::dataReception, this);
+    //std::thread systems(&rtp::Server::systemsLoop, this);
+
 
     while(!_isEnd) {
         std::cout << "> ";
@@ -80,7 +83,8 @@ void rtp::Server::run()
             std::cout << "Exiting..." << std::endl;
         }
     }
-    systems.join();
+    //systems.join();
+    dataReception.join();
 }
 
 void rtp::Server::systemsLoop()
@@ -88,7 +92,8 @@ void rtp::Server::systemsLoop()
     rtp::ServerSystems systems("127.0.0.1", 3304, this->_socket);
     eng::Registry r;
 
-    while (_isEnd) {
+    std::cout << "debug system loop" << std::endl;
+    while (!_isEnd) {
         // Receive data
         systems.receiveData(r);
 
