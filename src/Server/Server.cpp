@@ -52,14 +52,21 @@ void rtp::Server::connect()
 void rtp::Server::dataReception()
 {
     while (!_isEnd) {
-        std::cout << "Waiting to receive" << std::endl;
+        _cout.lock();
+        std::cout << "[Server][dataReception]: Waiting to receive" << std::endl;
+        _cout.unlock();
         size_t len = this->_socket.receive_from(boost::asio::buffer(this->_dataRec), this->_client);
 
         std::unique_lock<std::mutex> lk(this->_mutex);
         this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
         lk.unlock();
-        std::cout << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        _cout.lock();
+        std::cout << "[Server][dataReception]: " << this->_client << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        _cout.unlock();
     }
+    _cout.lock();
+    std::cout << "[Server][dataReception]: Exiting data reception loop" << std::endl;
+    _cout.unlock();
 }
 
 void rtp::Server::run()
@@ -76,18 +83,29 @@ void rtp::Server::run()
 
 
     while(!_isEnd) {
-        std::cout << "> ";
         std::cin >> input;
-        if (input == "exit") {
-            _isEnd = true;
-            _cout.lock();
-            std::cout << "[Server]: Joining threads..." << std::endl;
-            _cout.unlock();
-        }
+        if (input == "exit")
+            _exitServer(systems, dataReception);
     }
-    systems.join();
-    dataReception.join();
     std::cout << "[Server]: Bye!" << std::endl;
+}
+
+void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
+{
+    // Speak to user
+    _cout.lock();
+    std::cout << "[Server]: Joining threads..." << std::endl;
+    _cout.unlock();
+    _isEnd = true;
+
+    // Send a last msg to end data thread
+    boost::array<networkPayload, 1> endmsg = {OK};
+    _socket.send_to(boost::asio::buffer(endmsg),
+    boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
+    
+    // Joining threads
+    sys.join();
+    rec.join();
 }
 
 void rtp::Server::systemsLoop()
@@ -112,7 +130,7 @@ void rtp::Server::systemsLoop()
         systems.sendData(r);
     }
     _cout.lock();
-    std::cout << "[Server]: Exiting system loops" << std::endl;
+    std::cout << "[Server][systemsLoop]: Exiting systems loop" << std::endl;
     _cout.unlock();
     return;
 }

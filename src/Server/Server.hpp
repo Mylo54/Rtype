@@ -69,20 +69,25 @@ namespace rtp {
             /// @param r The registry on which to apply this method
             void _setupRegistry(eng::Registry &reg);
 
+            /// @brief Exit and join everything on the server
+            /// @param sys The system loop thread
+            /// @param rec The reception loop thread
+            void _exitServer(std::thread &sys, std::thread &rec);
+
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
 
-            //For UDP
+            // For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::endpoint _client;
             boost::asio::ip::udp::socket _socket;
             boost::array<networkPayload, 1> _dataRec;
             std::vector<networkPayload> _listDataRec;
 
-            //For TCP
+            // For TCP
             boost::asio::io_service _ioService;
 
-            //For thread
+            // For thread
             std::mutex _mutex;
             std::mutex _cout;
             bool _isEnd = false;
