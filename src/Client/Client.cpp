@@ -35,7 +35,7 @@ int rtp::Client::connect()
 
     //connection
     try {
-        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3304));
+        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3303));
         std::cout << "Client connect" << std::endl;
     }
     catch (std::exception& e)
