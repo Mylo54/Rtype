@@ -21,8 +21,19 @@ int errorManagement(int ac, char **av)
     return(0);
 }
 
+int printHelp()
+{
+    std::cout << "[RTYPE - SERVER]" << std::endl;
+    std::cout << "\t./RType-Server [port]" << std::endl;
+    std::cout << "[port]: the port you want to open for the clients to connect" << std::endl;
+    return (0);
+}
+
 int main(int ac, char **av)
 {
+    std::string arg = av[1];
+    if (arg == "-h" || arg == "-help")
+        return (printHelp());
     try {
         boost::asio::ip::port_type port(3033);
         rtp::Server srv(port);
@@ -31,15 +42,5 @@ int main(int ac, char **av)
     catch (const std::exception &error) {
         std::cerr << error.what() << std::endl;
     }
-
-    //sert à rien pour l'instant cf l.29
-    eng::RegistryManager manage;
-
-    manage.addRegistry("r1");
-    eng::Registry &reg = manage.getTop();
-
-    reg.registerComponents(eng::SparseArray<rtp::Position>());
-    reg.registerComponents(eng::SparseArray<rtp::Velocity>());
-
     return (0);
 }
