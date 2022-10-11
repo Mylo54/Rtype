@@ -43,9 +43,7 @@ namespace rtp
         SHOOTER,
         CONTROLLABLE,
         ENEMY_STATS,
-        PLATER_STATS,
-        POSITION,
-        SHOOTER
+        PLATER_STATS
     };
 
     typedef struct payload {
