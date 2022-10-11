@@ -11,6 +11,7 @@ rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext,
 {
     this->_clientPort = 0;
     _port = port;
+    _isEnd = false;
     //_socket.local_endpoint().port(_port);
 }
 
@@ -39,25 +40,29 @@ void rtp::Server::connect()
     boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
     // socket creation
     boost::asio::ip::tcp::socket socket(_ioService);
-    // waiting for connection
-    acceptor.accept(socket, endType);
+    ///while (!_isEnd) {
+        // waiting for connection
+        acceptor.accept(socket, endType);
 
-    // read operation
-    boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-    if (error && error != boost::asio::error::eof) {
-        std::cout << "receive failed: " << error.message() << std::endl;
-    } else if (dataRec[0].ACTION_NAME == CONNECT) {
-        std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-        _addEndpoint(endType.address().to_string(), endType.port());
-    } else {
-        std::cout << "wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
-    }
+        // read operation
+        boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+        if (error && error != boost::asio::error::eof) {
+            std::cout << "receive failed: " << error.message() << std::endl;
+        } else if (dataRec[0].ACTION_NAME == CONNECT) {
+            std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+            _addEndpoint(endType.address().to_string(), endType.port());
+        } else {
+            std::cout << "wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
+        }
 
-    // write operation
-    boost::array<networkPayload, 1> dataTbs = {OK};
-    boost::asio::write(socket, boost::asio::buffer(dataTbs));
+        // write operation
+        boost::array<networkPayload, 1> dataTbs = {OK};
+        boost::asio::write(socket, boost::asio::buffer(dataTbs));
 
-    std::cout << "Server connected to Client!" << std::endl;
+        std::cout << "Server connected to Client!" << std::endl;
+    //}
+    std::cout << "END CONNECTION" << std::endl;
+
 }
 
 void rtp::Server::dataReception()
@@ -91,10 +96,12 @@ void rtp::Server::run()
 {
     std::string input;
     std::cout << "[Server][dataReception]: Running..." << std::endl;
-    connect();
-
+    
+    //connect();
+    std::thread connect(&rtp::Server::connect, this);
     std::thread dataReception(&rtp::Server::dataReception, this);
     std::thread systems(&rtp::Server::systemsLoop, this);
+
 
     while (!_isEnd)
     {
@@ -102,7 +109,7 @@ void rtp::Server::run()
         if (input == "help")
             _printHelp();
         if (input == "exit")
-            _exitServer(systems, dataReception);
+            _exitServer(systems, dataReception, connect);
     }
     std::cout << "[Server]: Bye!" << std::endl;
 }
@@ -114,8 +121,9 @@ void rtp::Server::_printHelp()
     _cout.unlock();
 }
 
-void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
+void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &co)
 {
+    boost::asio::ip::tcp::socket socketTCP(_ioService);
     // Speak to user
     _cout.lock();
     std::cout << "[Server]: Joining threads..." << std::endl;
@@ -126,10 +134,12 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
     boost::array<networkPayload, 1> endmsg = {QUIT};
     _socket.send_to(boost::asio::buffer(endmsg),
     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
+    //boost::asio::write(socketTCP, boost::asio::buffer(boost::array<networkPayload, 1> {QUIT}));
     
     // Joining threads
     sys.join();
     rec.join();
+    co.join();
 }
 
 void rtp::Server::systemsLoop()

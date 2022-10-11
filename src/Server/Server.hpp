@@ -80,7 +80,7 @@ namespace rtp {
             /// @brief Exit and join everything on the server
             /// @param sys The system loop thread
             /// @param rec The reception loop thread
-            void _exitServer(std::thread &sys, std::thread &rec);
+            void _exitServer(std::thread &sys, std::thread &rec, std::thread &co);
 
             /// @brief Print a list of commands for the user
             void _printHelp();
@@ -102,7 +102,7 @@ namespace rtp {
             // For thread
             std::mutex _mutex;
             std::mutex _cout;
-            bool _isEnd = false;
+            bool _isEnd;
 
             
     };
