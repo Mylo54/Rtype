@@ -74,6 +74,9 @@ namespace rtp {
             /// @param rec The reception loop thread
             void _exitServer(std::thread &sys, std::thread &rec);
 
+            /// @brief Print a list of commands for the user
+            void _printHelp();
+
             boost::asio::ip::port_type _port;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;

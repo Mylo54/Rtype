@@ -82,22 +82,27 @@ void rtp::Server::dataReception()
 void rtp::Server::run()
 {
     std::string input;
-    connect();
+    //connect();
 
-    /*creer les deux theads :
-        -engine et system loop
-        -data reception
-    */
     std::thread dataReception(&rtp::Server::dataReception, this);
     std::thread systems(&rtp::Server::systemsLoop, this);
 
     while (!_isEnd)
     {
         std::cin >> input;
+        if (input == "help")
+            _printHelp();
         if (input == "exit")
             _exitServer(systems, dataReception);
     }
     std::cout << "[Server]: Bye!" << std::endl;
+}
+
+void rtp::Server::_printHelp()
+{
+    _cout.lock();
+    std::cout << "[Server]: exit\t exits the server"<< std::endl;
+    _cout.unlock();
 }
 
 void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
@@ -109,7 +114,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
     _isEnd = true;
 
     // Send a last msg to end data thread
-    boost::array<networkPayload, 1> endmsg = {OK};
+    boost::array<networkPayload, 1> endmsg = {QUIT};
     _socket.send_to(boost::asio::buffer(endmsg),
     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
     
