@@ -57,14 +57,22 @@ namespace rtp {
             /// @return void
             void removeLobby(int position);
 
-
             void systemsLoop();
 
-            // Liste des méthodes à implémenter :
-
+            void tcpThread();
 
         protected:
         private:
+            /// @brief Adds an endpoint into the vector of endpoints
+            /// @param address The adress of the endpoint
+            /// @param port The port of the endpoint
+            void _addEndpoint(std::string address, int port);
+
+            /// @brief Remove an endpoint from the vector of endpoints
+            /// @param address The adress of the endpoint
+            /// @param port The port of the endpoint
+            void _removeEndPoint(std::string address, int port);
+
             /// @brief Setup the Registry and the multiple sparseArrays
             /// @param r The registry on which to apply this method
             void _setupRegistry(eng::Registry &reg);
@@ -86,6 +94,7 @@ namespace rtp {
             boost::asio::ip::udp::socket _socket;
             boost::array<networkPayload, 1> _dataRec;
             std::vector<networkPayload> _listDataRec;
+            std::vector<boost::asio::ip::udp::endpoint> _endpoints;
 
             // For TCP
             boost::asio::io_service _ioService;
