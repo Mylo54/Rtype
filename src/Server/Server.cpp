@@ -32,19 +32,27 @@ void rtp::Server::requestConnection()
 
 void rtp::Server::connect()
 {
+    boost::system::error_code error;
+    boost::array<networkPayload, 1> dataRec;
+    boost::asio::ip::tcp::acceptor::endpoint_type endType;
     // listen for new connection
-    boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3304));
+    boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
     // socket creation
     boost::asio::ip::tcp::socket socket(_ioService);
-    boost::asio::ip::tcp::acceptor::endpoint_type endType;
     // waiting for connection
     acceptor.accept(socket, endType);
-    std::string sClientIp = endType.address().to_string();
 
     // read operation
-    boost::array<networkPayload, 1> dataRec;
-    boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all());
-    std::cout << dataRec[0].ACTION_NAME << std::endl;
+    boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    if (error && error != boost::asio::error::eof) {
+        std::cout << "receive failed: " << error.message() << std::endl;
+    } else if (dataRec[0].ACTION_NAME == CONNECT) {
+        std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+        std::string sClientIp = endType.address().to_string();
+    } else {
+        std::cout << "wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
+    }
+
     // write operation
     boost::array<networkPayload, 1> dataTbs = {OK};
     boost::asio::write(socket, boost::asio::buffer(dataTbs));
@@ -82,7 +90,8 @@ void rtp::Server::dataReception()
 void rtp::Server::run()
 {
     std::string input;
-    //connect();
+    std::cout << "[Server][dataReception]: Running..." << std::endl;
+    connect();
 
     std::thread dataReception(&rtp::Server::dataReception, this);
     std::thread systems(&rtp::Server::systemsLoop, this);
