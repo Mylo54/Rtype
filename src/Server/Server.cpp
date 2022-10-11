@@ -196,3 +196,25 @@ void rtp::Server::removeLobby(int position)
     }
     this->_listLobby.erase(it);
 }
+
+void rtp::Server::_addEndpoint(std::string address, int port)
+{
+    _endpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
+}
+
+void rtp::Server::_removeEndPoint(std::string address, int port)
+{
+    auto it = _endpoints.begin();
+    bool found = false;
+
+    while (it != _endpoints.end()) {
+        if (it->address() == boost::asio::ip::make_address(address)
+            && it->port() == static_cast<boost::asio::ip::port_type>(port)) {
+            found = true;
+            break;
+        }
+        it++;
+    }
+    if (found)
+        _endpoints.erase(it);
+}
