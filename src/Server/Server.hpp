@@ -98,6 +98,8 @@ namespace rtp {
 
             // For TCP
             boost::asio::io_service _ioService;
+            boost::asio::ip::tcp::acceptor _acceptor;
+            boost::asio::ip::tcp::socket _socketTCP;
 
             // For thread
             std::mutex _mutex;
