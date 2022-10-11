@@ -22,7 +22,8 @@ namespace rtp
         LIST_LOBBIES,
         JOIN_LOBBY,
         PLAYER_JOINED_LOBBY,
-        START_GAME
+        START_GAME,
+        LEAVE_GAME
     };
 
     enum ACTIONTYPE_INGAME {

@@ -13,14 +13,28 @@
 #include "../NetworkStructs.hpp"
 #include "../Engine/Registry.hpp"
 #include "../Components/Components.hpp"
+#include <mutex>
+#include <vector>
+#include <thread>
+#include <condition_variable>
 
 namespace rtp {
     class ServerSystems {
         public:
-            ServerSystems(std::string adress, int port,
-            boost::asio::ip::udp::socket &socket);
+            ServerSystems(boost::asio::ip::udp::socket &socket,
+            std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec);
             ~ServerSystems();
 
+            /// @brief Add a client endpoint
+            /// @param address The IPv4 address of the receiver
+            /// @param port The port of the receiver
+            void addEndpoint(std::string address, int port);
+
+            /// @brief Remove a client endpoint
+            /// @param address The IPv4 address of the receiver
+            /// @param port The port of the receiver
+            void removeEndPoint(std::string address, int port);
+            
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
@@ -47,7 +61,10 @@ namespace rtp {
         protected:
         private:
             boost::asio::ip::udp::socket &_socket;
+            std::vector<boost::asio::ip::udp::endpoint> _endpoints;
             boost::asio::ip::udp::endpoint _endpoint;
+            std::mutex &_mutex;
+            std::vector<networkPayload> &_listDataRec;
     };
 };
 
