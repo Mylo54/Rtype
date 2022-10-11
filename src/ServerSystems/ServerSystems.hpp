@@ -17,12 +17,14 @@
 #include <vector>
 #include <thread>
 #include <condition_variable>
+#include <boost/container/vector.hpp>
 
 namespace rtp {
     class ServerSystems {
         public:
             ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec);
+            std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec,
+            std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
 
             /// @brief Add a client endpoint
@@ -60,9 +62,12 @@ namespace rtp {
             void receiveData(eng::Registry &r);
         protected:
         private:
+            /// @brief A method for sending a package to every endpoint
+            /// @todo find how to contain the data that we need to send to the client
+            void _sendSubsystem();
+
             boost::asio::ip::udp::socket &_socket;
-            std::vector<boost::asio::ip::udp::endpoint> _endpoints;
-            boost::asio::ip::udp::endpoint _endpoint;
+            std::vector<boost::asio::ip::udp::endpoint> &_endpoints;
             std::mutex &_mutex;
             std::vector<networkPayload> &_listDataRec;
     };

@@ -8,9 +8,10 @@
 #include "ServerSystems.hpp"
 
 rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
-    std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec) : _socket(socket), _mutex(mutex), _listDataRec(listDataRec)
+    std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec,
+    std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
+    _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {
-    //_endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
 }
 
 rtp::ServerSystems::~ServerSystems()
@@ -129,6 +130,7 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &vs = r.getComponents<Velocity>();
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
+    
 
     for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size(); i++) {
         // Send player infos
