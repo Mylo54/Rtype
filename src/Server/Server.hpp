@@ -63,6 +63,10 @@ namespace rtp {
 
         protected:
         private:
+            /// @brief Adds a player into a registry, setting up everything
+            /// @param r The registry on which to add a player
+            void _addPlayer(eng::Registry &r, int syncId, int playerId);
+
             /// @brief Adds an endpoint into the vector of endpoints
             /// @param address The adress of the endpoint
             /// @param port The port of the endpoint

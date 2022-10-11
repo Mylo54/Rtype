@@ -72,8 +72,12 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Background>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Synced>());
 }
 
+// Synced is 1 but should not stay that way,
+// We should wait for the Server to send us the synced id
+// And the player id
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
 {
     eng::Entity player = reg.spawnEntity();
@@ -83,6 +87,7 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.005));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(1));
 
     return player;
 }

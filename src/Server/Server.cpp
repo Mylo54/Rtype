@@ -155,6 +155,8 @@ void rtp::Server::systemsLoop()
     eng::Registry r;
 
     _setupRegistry(r);
+    // Temporary way to add player
+    _addPlayer(r, 1, 1);
 
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Registry is ready" << std::endl;
@@ -190,6 +192,22 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Synced>());
+}
+
+// Player Id will be stored inside playerstats later...
+void rtp::Server::_addPlayer(eng::Registry &r, int syncId, int playerId)
+{
+    eng::Entity player = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
+    r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
+    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats());
+    r.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    r.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    _cout.lock();
+    std::cout << "[Server][systemsLoop]: Player " << playerId << " has joined the registry" << std::endl;
+    _cout.unlock();
 }
 
 int rtp::Server::getNumberLobby()

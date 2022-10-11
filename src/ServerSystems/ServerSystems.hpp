@@ -62,6 +62,11 @@ namespace rtp {
             void receiveData(eng::Registry &r);
         protected:
         private:
+            /// @brief A method that gets a synced entity id
+            /// @param syncId The synced component id
+            /// @return The entity id
+            int _getSyncedEntity(eng::Registry &r, int syncId);
+
             /// @brief A method for sending a package to every endpoint
             /// @todo find how to contain the data that we need to send to the client
             void _sendSubsystem();

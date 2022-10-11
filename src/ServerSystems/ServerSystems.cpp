@@ -130,7 +130,6 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &vs = r.getComponents<Velocity>();
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
-    
 
     for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size(); i++) {
         // Send player infos
@@ -141,6 +140,8 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &player = playerStats[i].value();
             // Send thoses values to each client
         }
+    }
+    for (int i = 0; i < ps.size() && i < vs.size() && i < enemyStats.size(); i++) {
         // Same but for enemies
         if (enemyStats[i].has_value()) {
             auto &p = ps[i].value();
@@ -152,8 +153,46 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     }
 }
 
-// I don't think this will stay here
 void rtp::ServerSystems::receiveData(eng::Registry &r)
 {
+    _mutex.lock();
+    while (_listDataRec.size() > 0) {
+        if (_listDataRec.back().ACTION_NAME == SHOT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().shoot = true;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == LEFT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().xAxis = -1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == RIGHT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().xAxis = +1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == UP) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().yAxis = -1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == DOWN) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().yAxis = +1;
+            _listDataRec.pop_back();
+        }
+    }
+    _mutex.unlock();
+}
 
+int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
+{
+    auto synceds = r.getComponents<Synced>();
+
+    for (int i = 0; i < synceds.size(); i++)
+        if (synceds[i].has_value())
+            if (synceds[i].value().id == syncId)
+                return i;
+    throw;
 }
