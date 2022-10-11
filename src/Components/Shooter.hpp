@@ -21,7 +21,7 @@ namespace rtp
             std::vector<float> pShootPoint = {0, 0}) : bulletSpritePath(pBulletSpritePath), speed(pSpeed), shootPoint(pShootPoint)
             {
                 // Hz to kHz
-                fireRate = (1 / pFireRate) / 100;
+                fireRate = (1 / pFireRate);
             }
             ~Shooter() {}
 

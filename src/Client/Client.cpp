@@ -81,7 +81,7 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     reg.addComponent<rtp::Velocity>(player, rtp::Velocity());
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
-    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
 
     return player;
@@ -94,7 +94,7 @@ eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
 
     reg.addComponent<rtp::Position>(enemy, rtp::Position(1920 + (rand() % 2000), rand() % 1080, 0));
     reg.addComponent<rtp::Velocity>(enemy, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+    reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
     reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
 

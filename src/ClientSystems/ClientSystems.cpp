@@ -10,6 +10,7 @@
 rtp::ClientSystems::ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port, boost::asio::ip::udp::socket &socket) : _w(sf::RenderWindow(sf::VideoMode(dimWdw[0], dimWdw[1], dimWdw[2]), nameWdw)), _c(sf::Clock()), _socket(socket)
 {
     _displayTime = 0;
+    
     _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
     _w.setFramerateLimit(60);
 }
@@ -175,7 +176,7 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 
         if (sht.has_value() && ctrl.has_value()) {
             if (sht.value().nextFire > 0) {
-                sht.value().nextFire -= _delta.asSeconds() * 20;
+                sht.value().nextFire -= _delta.asSeconds();
             }
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
@@ -257,7 +258,6 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
         if (pos.has_value() && vel.has_value()) {
             pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
             pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
-            std::cout << _delta.asSeconds() << std::endl;
         }
     }
 }
