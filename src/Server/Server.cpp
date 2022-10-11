@@ -36,14 +36,15 @@ void rtp::Server::connect()
     boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3304));
     // socket creation
     boost::asio::ip::tcp::socket socket(_ioService);
+    boost::asio::ip::tcp::acceptor::endpoint_type endType;
     // waiting for connection
-    acceptor.accept(socket);
+    acceptor.accept(socket, endType);
+    std::string sClientIp = endType.address().to_string();
 
     // read operation
     boost::array<networkPayload, 1> dataRec;
     boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all());
     std::cout << dataRec[0].ACTION_NAME << std::endl;
-
     // write operation
     boost::array<networkPayload, 1> dataTbs = {OK};
     boost::asio::write(socket, boost::asio::buffer(dataTbs));
@@ -81,7 +82,7 @@ void rtp::Server::dataReception()
 void rtp::Server::run()
 {
     std::string input;
-    // connect();
+    connect();
 
     /*creer les deux theads :
         -engine et system loop
