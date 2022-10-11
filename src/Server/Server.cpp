@@ -144,7 +144,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &c
 
 void rtp::Server::systemsLoop()
 {
-    rtp::ServerSystems systems(this->_socket, this->_mutex, this->_listDataRec);
+    rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
 
     _setupRegistry(r);
