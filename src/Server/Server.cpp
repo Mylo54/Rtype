@@ -48,7 +48,7 @@ void rtp::Server::connect()
         std::cout << "receive failed: " << error.message() << std::endl;
     } else if (dataRec[0].ACTION_NAME == CONNECT) {
         std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-        std::string sClientIp = endType.address().to_string();
+        _addEndpoint(endType.address().to_string(), endType.port());
     } else {
         std::cout << "wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }
