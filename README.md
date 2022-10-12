@@ -9,6 +9,8 @@
         <img src="https://img.shields.io/badge/MADE%20WITH-CONAN-blueviolet" /></a>
 <a href="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" alt="Cmake">
         <img src="https://img.shields.io/badge/MADE%20WITH-CMAKE-red" /></a>
+<a href="https://codedocs.xyz/Mylo54/Rtype.svg" alt="Documentation">
+        <img src="https://codedocs.xyz/Mylo54/Rtype.svg" /></a>
 
 [![Linux compile](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml)
 [![Windows compile](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml)
