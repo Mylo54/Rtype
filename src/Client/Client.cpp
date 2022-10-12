@@ -11,7 +11,6 @@ rtp::Client::Client(int port): _port(port), _socketTCP(_ioService)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
-    eng::Entity player = _addPlayer(_manager.getTop());
     for (int i = 0; i < 10; i++)
         _addEnemy(_manager.getTop());
     _addBackgrounds(_manager.getTop());
@@ -25,6 +24,8 @@ rtp::Client::~Client()
 void rtp::Client::run()
 {
     int cnt = connect();
+    // change thoses 1s accordingly to what we received from connect();
+    _addPlayer(_manager.getTop(), 1, 1);
     systemsLoop();
 }
 
@@ -71,6 +72,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::Background>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
 }
@@ -78,7 +80,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
 // Synced is 1 but should not stay that way,
 // We should wait for the Server to send us the synced id
 // And the player id
-eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
+eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, size_t syncId)
 {
     eng::Entity player = reg.spawnEntity();
 
@@ -87,7 +89,8 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.005));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    reg.addComponent<rtp::Synced>(player, rtp::Synced(1));
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
 
     return player;
 }

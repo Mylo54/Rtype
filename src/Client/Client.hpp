@@ -41,8 +41,10 @@ namespace rtp {
 
             /// @brief Adds a controllable player to a registry
             /// @param reg The Registry on which to adds the player 
+            /// @param playerId The player id (1, 2, 3 or 4)
+            /// @param syncId The sync component id
             /// @return The entity containing the player
-            eng::Entity _addPlayer(eng::Registry &reg);
+            eng::Entity _addPlayer(eng::Registry &reg, int playerId, size_t syncId);
 
             /// @brief Adds an enemy to a registry
             /// @param reg The Registry on which to adds the enemy 

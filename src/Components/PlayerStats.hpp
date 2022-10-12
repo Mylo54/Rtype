@@ -12,12 +12,14 @@ namespace rtp
 {
     class PlayerStats {
         public:
-            PlayerStats(int pHealth = 10,
+            PlayerStats(int playerID,
+            int pHealth = 10,
             int pDamage = 1,
-            int pLives = 3): health(pHealth), damage(pDamage), lives(pLives)
+            int pLives = 3): playerId(playerID), health(pHealth), damage(pDamage), lives(pLives)
             {}
             ~PlayerStats() {}
 
+            int playerId;
             int health;
             int damage;
             int lives;
