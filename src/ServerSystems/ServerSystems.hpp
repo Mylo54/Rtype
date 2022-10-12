@@ -53,9 +53,13 @@ namespace rtp {
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
 
-            /// @brief A system which sends data to the server
+            /// @brief A system which sends data to ALL clients
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
+
+            /// @brief A generic funciton that send a boost::array to all stored endpoints
+            /// @param data_tbs The data to be sent to all clients
+            void sendSyncedDataToAll(boost::array<synced_component, 1> dataTbs);
             
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
