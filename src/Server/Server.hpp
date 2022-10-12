@@ -109,6 +109,7 @@ namespace rtp {
             std::mutex _mutex;
             std::mutex _cout;
             bool _isEnd;
+            bool _start;
 
             
     };

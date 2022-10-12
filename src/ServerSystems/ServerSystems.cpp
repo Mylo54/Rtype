@@ -155,7 +155,7 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
 
 void rtp::ServerSystems::receiveData(eng::Registry &r)
 {
-    _mutex.lock();
+    /*_mutex.lock();
     while (_listDataRec.size() > 0) {
         if (_listDataRec.back().ACTION_NAME == SHOT) {
             int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
@@ -183,7 +183,7 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
             _listDataRec.pop_back();
         }
     }
-    _mutex.unlock();
+    _mutex.unlock();*/
 }
 
 int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
