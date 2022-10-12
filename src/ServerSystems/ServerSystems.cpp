@@ -131,6 +131,7 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
     auto &sc = r.getComponents<Synced>();
+    boost::array<synced_component, 1> dataTbs;
 
     for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size(); i++) {
         // Send player infos
@@ -142,7 +143,11 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &player = playerStats[i].value();
             // Send thoses values to each client
             
-            boost::array<synced_component, 1> dataTbs = {POSITION, id_sync, p};
+            dataTbs = {POSITION, id_sync.id, p};
+            sendSyncedDataToAll(dataTbs);
+            dataTbs = {VELOCITY, id_sync.id, v};
+            sendSyncedDataToAll(dataTbs);
+            dataTbs = {PLAYER_STATS, id_sync.id, player};
             sendSyncedDataToAll(dataTbs);
         }
     }
