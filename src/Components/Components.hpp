@@ -19,6 +19,7 @@
 #include "EnemyStats.hpp"
 #include "Bullet.hpp"
 #include "PlayerStats.hpp"
+#include "Writable.hpp"
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"

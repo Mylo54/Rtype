@@ -165,6 +165,25 @@ void rtp::ClientSystems::drawSystem(eng::Registry &r)
     }
 }
 
+void rtp::ClientSystems::writeSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < positions.size() && i < writables.size(); i++) {
+        auto &pos = positions[i];
+        auto &wrt = writables[i];
+
+        if (pos.has_value() && wrt.has_value()) {
+            std::cout << "Bim" << std::endl;
+            wrt.value()._txt.setPosition({pos.value().x, pos.value().y});
+            std::cout << "Bam" << std::endl;
+            _w.draw(wrt.value()._txt);
+            std::cout << "Boum" << std::endl;
+        }
+    }
+}
+
 void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 {
     auto &shooters = r.getComponents<Shooter>();

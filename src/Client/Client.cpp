@@ -12,6 +12,7 @@ rtp::Client::Client(int port): _port(port), _socketTCP(_ioService)
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     eng::Entity player = _addPlayer(_manager.getTop());
+    _addChatBox(_manager.getTop());
     for (int i = 0; i < 10; i++)
         _addEnemy(_manager.getTop());
     _addBackgrounds(_manager.getTop());
@@ -72,6 +73,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Background>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Writable>());
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
@@ -138,6 +140,16 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
     return bgs;
 }
 
+eng::Entity rtp::Client::_addChatBox(eng::Registry &reg)
+{
+    eng::Entity chatBox = reg.spawnEntity();
+    sf::Text txt;
+
+    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable());
+    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 800, 0));
+    return chatBox;
+}
+
 //UDP
 void rtp::Client::send()
 {
@@ -166,7 +178,7 @@ void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
-    
+
     // TODO: make the loop speed not depend on framerate
 
     while (systems.windowOpen()) {
@@ -193,6 +205,7 @@ void rtp::Client::systemsLoop()
         systems.playSoundSystem(r);
         systems.clearSystem(r);
         systems.drawSystem(r);
+        systems.writeSystem(r);
         systems.backgroundSystem(r);
         systems.displaySystem(r);
     }

@@ -23,19 +23,23 @@ namespace rtp
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             void positionSystem(eng::Registry &r);
 
             /// @brief A system who animate every animatable entity
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             void animateSystem(eng::Registry &r);
 
             /// @brief A system who draws every drawable entity
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             void drawSystem(eng::Registry &r);
 
+            /// @brief A system who write every writable entity
+            /// @param r The Registry on which to apply the system
+            void writeSystem(eng::Registry &r);
+
             /// @brief A system who handles inputs and stores actions
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             void controlSystem(eng::Registry &r);
 
             /// @brief A system who clears the screen
@@ -63,7 +67,7 @@ namespace rtp
             void backgroundSystem(eng::Registry &r);
 
             /// @brief A system that logs every loggable component
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             void logSystem(eng::Registry &r);
 
             /// @brief A system that plays every sounds set to play
@@ -96,7 +100,7 @@ namespace rtp
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets
-            /// @param r The Registry on which to apply the system 
+            /// @param r The Registry on which to apply the system
             /// @param b The bullets data
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
