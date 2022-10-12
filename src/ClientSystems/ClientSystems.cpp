@@ -303,19 +303,57 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
 }
 
+// This will get smaller when we'll get emplaceComponent function
 void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
-    boost::array<networkPayload, 1UL> payload;
-    std::vector<synced_component> data;
+    boost::array<synced_component, 1UL> payload = {OK};
+    int e = 0;
 
-    _socket.receive(boost::asio::buffer(payload));
-    if (payload[0].ACTION_NAME != ACTIONTYPE_INGAME::SYNCHRONISATION)
-        return;
-    //data = static_cast<synced_component>(payload[0].body);
-    
-    // Read the buffer of values received from the server
-    // For every entity having the "Synced" component,
-    // Emplace new values (Position, health, Velocities, etc ...)
+    while (true) {
+        _socket.receive(boost::asio::buffer(payload));
+        if (payload[0].COMPONENT_NAME == END_PACKET)
+            break;
+        e = _getSyncedEntity(r, payload[0].id);
+        if (e == -1) {
+            e = r.spawnEntity().getId();
+            r.addComponent<Synced>(e, Synced(payload[0].id));
+        }
+        if (payload[0].COMPONENT_NAME == POSITION) {
+            if (r.getComponents<Position>().size() >= e && r.getComponents<Position>()[e].has_value())
+                r.getComponents<Position>()[e].value() = std::any_cast<Position>(payload[0].body);
+            else
+                r.addComponent<Position>(eng::Entity(e), std::any_cast<Position>(payload[0].body));
+        }
+        if (payload[0].COMPONENT_NAME == VELOCITY) {
+            if (r.getComponents<Velocity>().size() >= e && r.getComponents<Velocity>()[e].has_value())
+                r.getComponents<Velocity>()[e].value() = std::any_cast<Velocity>(payload[0].body);
+            else
+                r.addComponent<Velocity>(eng::Entity(e), std::any_cast<Velocity>(payload[0].body));
+        }
+        if (payload[0].COMPONENT_NAME == ENEMY_STATS) {
+            if (r.getComponents<EnemyStats>().size() >= e && r.getComponents<EnemyStats>()[e].has_value())
+                r.getComponents<EnemyStats>()[e].value() = std::any_cast<EnemyStats>(payload[0].body);
+            else
+                r.addComponent<EnemyStats>(eng::Entity(e), std::any_cast<EnemyStats>(payload[0].body));
+        }
+        if (payload[0].COMPONENT_NAME == PLAYER_STATS) {
+            if (r.getComponents<PlayerStats>().size() >= e && r.getComponents<PlayerStats>()[e].has_value())
+                r.getComponents<PlayerStats>()[e].value() = std::any_cast<PlayerStats>(payload[0].body);
+            else
+                r.addComponent<PlayerStats>(eng::Entity(e), std::any_cast<PlayerStats>(payload[0].body));
+        }
+    }
+}
+
+int rtp::ClientSystems::_getSyncedEntity(eng::Registry &r, int syncId)
+{
+    auto synceds = r.getComponents<Synced>();
+
+    for (int i = 0; i < synceds.size(); i++)
+        if (synceds[i].has_value())
+            if (synceds[i].value().id == syncId)
+                return i;
+    throw;
 }
 
 // Bullets are considered as (x, y) points

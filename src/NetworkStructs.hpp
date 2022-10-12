@@ -33,17 +33,15 @@ namespace rtp
         LEFT,
         SHOT,
         QUIT,
-        SYNCHRONISATION
+        SYNCHRONISATION,
+        END_PACKET
     };
 
     enum COMPONENTS_SYNCED {
-        BULLET,
         POSITION,
         VELOCITY,
-        SHOOTER,
-        CONTROLLABLE,
         ENEMY_STATS,
-        PLATER_STATS
+        PLAYER_STATS
     };
 
     typedef struct payload {

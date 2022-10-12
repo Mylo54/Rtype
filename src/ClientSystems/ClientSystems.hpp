@@ -93,6 +93,11 @@ namespace rtp
             void eventCloseWindow();
         protected:
         private:
+            /// @brief A method that gets a synced entity id
+            /// @param syncId The synced component id
+            /// @return The entity id
+            int _getSyncedEntity(eng::Registry &r, int syncId);
+
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system 
             /// @param b The bullets data
