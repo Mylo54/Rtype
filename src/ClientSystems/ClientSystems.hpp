@@ -54,6 +54,21 @@ namespace rtp
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
 
+            /// @brief A system who handles inputs for chatting
+            /// @param r The registry on which to apply the system
+            void controlChatSystem(eng::Registry &r);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param wrt the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param name the name of the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::string name);
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
             void controlMovementSystem(eng::Registry &r);

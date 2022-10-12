@@ -62,6 +62,7 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
         }
     }
 }
@@ -175,11 +176,8 @@ void rtp::ClientSystems::writeSystem(eng::Registry &r)
         auto &wrt = writables[i];
 
         if (pos.has_value() && wrt.has_value()) {
-            std::cout << "Bim" << std::endl;
             wrt.value()._txt.setPosition({pos.value().x, pos.value().y});
-            std::cout << "Bam" << std::endl;
             _w.draw(wrt.value()._txt);
-            std::cout << "Boum" << std::endl;
         }
     }
 }
@@ -201,6 +199,44 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
+        }
+    }
+}
+
+// Just a test, need to be really implemented
+void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
+{
+    auto &controllables = r.getComponents<Controllable>();
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            if (ctrl.value().chat) {
+                setText(r, "Wagadugu", "ChatBox");
+            }
+        }
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt)
+{
+    if (wrt.has_value() && wrt.value()._name == "ChatBox") {
+        wrt.value()._txt.setStyle(sf::Text::Bold);
+        wrt.value()._txt.setString(message);
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::string name)
+{
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < writables.size(); i++) {
+        auto &wrt = writables[i];
+        if (wrt.has_value() && wrt.value()._name == name) {
+            // wrt.value()._txt.setStyle(sf::Text::Bold);
+            wrt.value()._txt.setString(message);
         }
     }
 }

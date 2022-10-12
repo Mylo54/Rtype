@@ -18,7 +18,8 @@ namespace rtp
 {
     class Writable {
         public:
-            Writable(sf::String content = "Text",
+            Writable(std::string name,
+            sf::String content = "Text",
             const std::string fontPath = "assets/NeutronsDemoRegular.ttf",
             unsigned int charSize = 30,
             sf::Color color = sf::Color::White,
@@ -31,12 +32,14 @@ namespace rtp
                 _txt.setFont(*_font);
                 _txt.setFillColor(*_color);
                 _txt.setStyle(style);
+                _name = name;
             }
             ~Writable() {}
             sf::String *_content = new sf::String;
             sf::Font *_font = new sf::Font;
             sf::Color *_color = new sf::Color;
             sf::Text _txt;
+            std::string _name;
         protected:
         private:
     };
