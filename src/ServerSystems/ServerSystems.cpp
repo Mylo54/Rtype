@@ -8,7 +8,7 @@
 #include "ServerSystems.hpp"
 
 rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
-    std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec,
+    std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
     std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
     _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {
@@ -40,6 +40,26 @@ void rtp::ServerSystems::removeEndPoint(std::string address, int port)
         _endpoints.erase(it);
 }
 
+void rtp::ServerSystems::playerLogSystem(eng::Registry &r)
+{
+    auto &ps = r.getComponents<Position>();
+    auto &ss = r.getComponents<PlayerStats>();
+    auto &cs = r.getComponents<Controllable>();
+    auto &sys = r.getComponents<Synced>();
+
+    for (int i = 0; i < ps.size() && i < ss.size() && cs.size() && i < sys.size(); i++) {
+        if (ps[i].has_value() && cs[i].has_value() && ss[i].has_value() && sys[i].has_value()) {
+            auto p = ps[i].value();
+            auto c = cs[i].value();
+            auto s = ss[i].value();
+            auto sy = sys[i].value();
+
+            std::cout << "Player " << sy.id << " is at {" << p.x << ", ";
+            std::cout << p.y << "}" << std::endl;
+        }
+    }
+}
+
 void rtp::ServerSystems::positionSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -52,36 +72,6 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         if (pos.has_value() && vel.has_value()) {
             pos.value().x += vel.value().x;
             pos.value().y += vel.value().y;
-        }
-    }
-}
-
-void rtp::ServerSystems::controlSystem(eng::Registry &r)
-{
-    auto &controllables = r.getComponents<Controllable>();
-
-    for (int i = 0; i < controllables.size(); i++) {
-        auto &ctrl = controllables[i];
-
-        if (ctrl.has_value()) {
-            // up and down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                ctrl.value().yAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                ctrl.value().yAxis = 1;
-            else
-                ctrl.value().yAxis = 0;
-            
-            // left and right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                ctrl.value().xAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                ctrl.value().xAxis = 1;
-            else
-                ctrl.value().xAxis = 0;
-            
-            // shoot
-            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
         }
     }
 }
@@ -143,12 +133,12 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &player = playerStats[i].value();
             // Send thoses values to each client
             
-            dataTbs = {POSITION, id_sync.id, p};
+            /*dataTbs = {POSITION, id_sync.id, p};
             sendSyncedDataToAll(dataTbs);
             dataTbs = {VELOCITY, id_sync.id, v};
             sendSyncedDataToAll(dataTbs);
             dataTbs = {PLAYER_STATS, id_sync.id, player};
-            sendSyncedDataToAll(dataTbs);
+            sendSyncedDataToAll(dataTbs);*/
         }
     }
     for (int i = 0; i < ps.size() && i < vs.size() && i < enemyStats.size(); i++) {
@@ -177,7 +167,7 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
     int e = 0;
     _mutex.lock();
     while (_listDataRec.size() > 0) {
-        e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+        e = _getSyncedEntity(r, _listDataRec.back().syncId);
         if (e != -1) {
             if (_listDataRec.back().ACTION_NAME == SHOT) {
                 r.getComponents<Controllable>()[e].value().shoot = true;
@@ -196,7 +186,6 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
             }
         }
         _listDataRec.pop_back();
-
     }
     _mutex.unlock();
 }

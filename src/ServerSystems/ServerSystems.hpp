@@ -23,7 +23,7 @@ namespace rtp {
     class ServerSystems {
         public:
             ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<rtp::networkPayload> &listDataRec,
+            std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
 
@@ -41,10 +41,10 @@ namespace rtp {
             /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
 
-            /// @brief A system who handles inputs and stores actions
+            /// @brief A system who logs the infos of players
             /// @param r The Registry on which to apply the system 
-            void controlSystem(eng::Registry &r);
-
+            void playerLogSystem(eng::Registry &r);
+            
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
             void controlMovementSystem(eng::Registry &r);
@@ -78,7 +78,7 @@ namespace rtp {
             boost::asio::ip::udp::socket &_socket;
             std::vector<boost::asio::ip::udp::endpoint> &_endpoints;
             std::mutex &_mutex;
-            std::vector<networkPayload> &_listDataRec;
+            std::vector<inputPayload_t> &_listDataRec;
     };
 };
 

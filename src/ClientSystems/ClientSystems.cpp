@@ -262,15 +262,14 @@ void rtp::ClientSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
     auto &synceds = r.getComponents<Synced>();
-    boost::array<networkPayload, 1UL> data;
+    boost::array<inputPayload_t, 1UL> data;
 
     for (int i = 0; i < controllables.size() && i < synceds.size(); i++) {
         auto ctrl = controllables[i];
         auto sync = synceds[i];
 
         if (ctrl.has_value() && sync.has_value()) {
-            data[0].bodySize = 4;
-            data[0].body = (void *)sync.value().id;
+            data[0].syncId = sync.value().id;
             if (ctrl.value().shoot) {
                 data[0].ACTION_NAME = SHOT;
                 _socket.send_to(boost::asio::buffer(data), _endpoint);

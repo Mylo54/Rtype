@@ -14,12 +14,12 @@ namespace rtp
 {
     class Synced {
         public:
-            Synced(size_t pId, bool pIsNew = true)
+            Synced(int pId, bool pIsNew = true) : id(pId)
             {}
             ~Synced() {}
 
             bool isNew;
-            size_t id;
+            int id;
         protected:
         private:
     };

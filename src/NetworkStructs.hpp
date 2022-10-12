@@ -55,6 +55,17 @@ namespace rtp
         size_t id;
         std::any body;
     } synced_component;
+
+    typedef struct connectPayload_s {
+        int ACTION_NAME;
+        int playerId;
+        int syncId;
+    } connectPayload_t;
+
+    typedef struct inputPayload_s {
+        int ACTION_NAME;
+        int syncId;
+    } inputPayload_t;
 } // namespace rtp
 
 

@@ -22,8 +22,7 @@ rtp::Server::~Server()
 
 void rtp::Server::dataReception()
 {
-    while (!_isEnd)
-    {
+    while (!_isEnd) {
         _cout.lock();
         std::cout << "[Server][dataReception]: Waiting to receive" << std::endl;
         _cout.unlock();
@@ -34,12 +33,11 @@ void rtp::Server::dataReception()
         _cout.unlock();
 
         std::unique_lock<std::mutex> lk(this->_mutex);
-        this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
+        this->_listDataRec.push_back(inputPayload_t({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].syncId}));
         lk.unlock();
         _cout.lock();
-        std::cout << "[Server][dataReception]: "
-                  << "A client"
-                  << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        std::cout << "A client sent us the action type: <" << _dataRec[0].ACTION_NAME;
+        std::cout << "> for the synced component <" << _dataRec[0].syncId << std::endl;
         _cout.unlock();
     }
     _cout.lock();
@@ -50,7 +48,7 @@ void rtp::Server::dataReception()
 
 void rtp::Server::connect()
 {
-    //Non blockant
+    //Non bloquant
     _acceptor.async_accept(_socketTCP, [&] (boost::system::error_code error)
     {
         if (error) {
@@ -61,9 +59,13 @@ void rtp::Server::connect()
             connect();
             return;
         } else {
-            boost::array<networkPayload, 1> dataTbs = {OK};
+            boost::array<connectPayload_t, 1> dataTbs = {OK};
             boost::system::error_code error;
             boost::array<networkPayload, 1> dataRec;
+            connectPayload_t clientIds;
+
+            dataTbs[0].playerId = 1;
+            dataTbs[0].syncId = 1;
             _cout.lock();
             std::cout << "[Server][connect]: connect success" << std::endl;
             _cout.unlock();
@@ -161,12 +163,12 @@ void rtp::Server::systemsLoop()
         systems.receiveData(r);
 
         // Apply new controls
-        systems.controlSystem(r);
         systems.controlMovementSystem(r);
         systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
+        //systems.playerLogSystem(r);
 
         // Send the new data
         systems.sendData(r);
@@ -195,11 +197,11 @@ void rtp::Server::_addPlayer(eng::Registry &r, int syncId, int playerId)
 
     r.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
-    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats());
+    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
     r.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     _cout.lock();
-    std::cout << "[Server][systemsLoop]: Player " << playerId << " has joined the registry" << std::endl;
+    std::cout << "[Server][systemsLoop]: Player " << syncId << " has joined the registry" << std::endl;
     _cout.unlock();
 }
 

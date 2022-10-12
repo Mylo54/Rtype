@@ -23,16 +23,19 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    int cnt = connect();
-    // change thoses 1s accordingly to what we received from connect();
-    _addPlayer(_manager.getTop(), 1, 1);
+    std::vector<int> c = connect();
+
+    if (c[0] == 1)
+        return;
+    _addPlayer(_manager.getTop(), c[1], c[2]);
     systemsLoop();
 }
 
-int rtp::Client::connect()
+std::vector<int> rtp::Client::connect()
 {
     boost::array<networkPayload, 1> dataTbs = {CONNECT};
-    boost::array<networkPayload, 1> dataRec;
+    boost::array<connectPayload_t, 1> dataRec;
+    std::vector<int> res;
 
     //connection
     try {
@@ -42,7 +45,8 @@ int rtp::Client::connect()
     catch (std::exception& e)
     {
         std::cerr << e.what() << std::endl;
-        return (1);
+        res.push_back(1);
+        return (res);
     }
 
     boost::asio::write( _socketTCP, boost::asio::buffer(dataTbs), _error);
@@ -52,13 +56,15 @@ int rtp::Client::connect()
 
     // getting response from server
     boost::asio::read(_socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), _error);
-
+    res.push_back(0);
+    res.push_back(dataRec[0].playerId);
+    res.push_back(dataRec[0].syncId);
     if (_error && _error != boost::asio::error::eof) {
         std::cout << "receive failed: " << _error.message() << std::endl;
     } else {
         std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
-    return (0);
+    return (res);
 }
 
 void rtp::Client::_setupRegistry(eng::Registry &reg)
@@ -77,10 +83,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
 }
 
-// Synced is 1 but should not stay that way,
-// We should wait for the Server to send us the synced id
-// And the player id
-eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, size_t syncId)
+eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
 {
     eng::Entity player = reg.spawnEntity();
 
@@ -174,7 +177,7 @@ void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
-    
+
     // TODO: make the loop speed not depend on framerate
 
     while (systems.windowOpen()) {
@@ -204,5 +207,3 @@ void rtp::Client::systemsLoop()
         systems.displaySystem(r);
     }
 }
-
-//port 3303
