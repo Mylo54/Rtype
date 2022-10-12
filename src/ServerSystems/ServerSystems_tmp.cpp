@@ -169,29 +169,33 @@ void rtp::ServerSystems::sendSyncedDataToAll(boost::array<synced_component, 1> d
 
 void rtp::ServerSystems::receiveData(eng::Registry &r)
 {
-    int e = 0;
     _mutex.lock();
     while (_listDataRec.size() > 0) {
-        e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
-        if (e != -1) {
-            if (_listDataRec.back().ACTION_NAME == SHOT) {
-                r.getComponents<Controllable>()[e].value().shoot = true;
-            }
-            if (_listDataRec.back().ACTION_NAME == LEFT) {
-                r.getComponents<Controllable>()[e].value().xAxis = -1;
-            }
-            if (_listDataRec.back().ACTION_NAME == RIGHT) {
-                r.getComponents<Controllable>()[e].value().xAxis = +1;
-            }
-            if (_listDataRec.back().ACTION_NAME == UP) {
-                r.getComponents<Controllable>()[e].value().yAxis = -1;
-            }
-            if (_listDataRec.back().ACTION_NAME == DOWN) {
-                r.getComponents<Controllable>()[e].value().yAxis = +1;
-            }
+        if (_listDataRec.back().ACTION_NAME == SHOT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().shoot = true;
+            _listDataRec.pop_back();
         }
-        _listDataRec.pop_back();
-
+        if (_listDataRec.back().ACTION_NAME == LEFT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().xAxis = -1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == RIGHT) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().xAxis = +1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == UP) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().yAxis = -1;
+            _listDataRec.pop_back();
+        }
+        if (_listDataRec.back().ACTION_NAME == DOWN) {
+            int e = _getSyncedEntity(r, (size_t)_listDataRec.back().body);
+            r.getComponents<Controllable>()[e].value().yAxis = +1;
+            _listDataRec.pop_back();
+        }
     }
     _mutex.unlock();
 }
@@ -200,12 +204,9 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 {
     auto synceds = r.getComponents<Synced>();
 
-    for (int i = 0; i < synceds.size(); i++) {
-        if (synceds[i].has_value() == true) {
-            if (synceds[i].value().id == syncId) {
+    for (int i = 0; i < synceds.size(); i++)
+        if (synceds[i].has_value())
+            if (synceds[i].value().id == syncId)
                 return i;
-            }
-        }
-    }
-    return -1;
+    throw;
 }
