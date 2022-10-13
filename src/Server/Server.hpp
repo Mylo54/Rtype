@@ -24,6 +24,7 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
+#include <ctime>
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
@@ -116,7 +117,8 @@ namespace rtp {
             bool _isEnd;
             bool _start;
 
-            
+            // Clock
+            std::clock_t _clock;
     };
 };
 
