@@ -7,63 +7,22 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port})
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303)), _socketTCP(_ioContext)
 {
     this->_clientPort = 0;
     _port = port;
+    _isEnd = false;
+    _start = false;
     //_socket.local_endpoint().port(_port);
 }
 
 rtp::Server::~Server()
 {
 }
-/*
-void rtp::Server::requestConnection()
-{
-    if (this->_dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::CONNECT) {
-        std::cout << "client ask for connection" << std::endl;
-        addLobby(Lobby());
-        //TODO: create thread for client
-        boost::array<networkPayload, 1> data = {OK};
-        //boost::asio::write(this->_socket, boost::asio::buffer(data));
-        this->_socket.send_to(boost::asio::buffer(data), this->_client);
-    }
-}*/
-
-void rtp::Server::connect()
-{
-    boost::system::error_code error;
-    boost::array<networkPayload, 1> dataRec;
-    boost::asio::ip::tcp::acceptor::endpoint_type endType;
-    // listen for new connection
-    boost::asio::ip::tcp::acceptor acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
-    // socket creation
-    boost::asio::ip::tcp::socket socket(_ioService);
-    // waiting for connection
-    acceptor.accept(socket, endType);
-
-    // read operation
-    boost::asio::read(socket, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-    if (error && error != boost::asio::error::eof) {
-        std::cout << "receive failed: " << error.message() << std::endl;
-    } else if (dataRec[0].ACTION_NAME == CONNECT) {
-        std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-        _addEndpoint(endType.address().to_string(), endType.port());
-    } else {
-        std::cout << "wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
-    }
-
-    // write operation
-    boost::array<networkPayload, 1> dataTbs = {OK};
-    boost::asio::write(socket, boost::asio::buffer(dataTbs));
-
-    std::cout << "Server connected to Client!" << std::endl;
-}
 
 void rtp::Server::dataReception()
 {
-    while (!_isEnd)
-    {
+    while (!_isEnd) {
         _cout.lock();
         std::cout << "[Server][dataReception]: Waiting to receive" << std::endl;
         _cout.unlock();
@@ -74,12 +33,11 @@ void rtp::Server::dataReception()
         _cout.unlock();
 
         std::unique_lock<std::mutex> lk(this->_mutex);
-        this->_listDataRec.push_back(networkPayload({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].bodySize, this->_dataRec[0].body}));
+        this->_listDataRec.push_back(inputPayload_t({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].syncId}));
         lk.unlock();
         _cout.lock();
-        std::cout << "[Server][dataReception]: "
-                  << "A client"
-                  << " on port " << this->_clientPort << " sent us (" << 12 << "bytes): " << this->_dataRec[0].ACTION_NAME << " || the bodySize was " << this->_dataRec[0].bodySize << " bytes." << std::endl;
+        std::cout << "A client sent us the action type: <" << _dataRec[0].ACTION_NAME;
+        std::cout << "> for the synced component <" << _dataRec[0].syncId << std::endl;
         _cout.unlock();
     }
     _cout.lock();
@@ -87,14 +45,67 @@ void rtp::Server::dataReception()
     _cout.unlock();
 }
 
+void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
+{
+    boost::array<connectPayload_t, 1> dataTbs = {OK};
+    boost::system::error_code error;
+    boost::array<networkPayload, 1> dataRec;
+    connectPayload_t clientIds;
+
+    dataTbs[0].playerId = 1;
+    dataTbs[0].syncId = 1;
+    _start = true;
+             
+    boost::asio::read(sckt, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    if (error && error != boost::asio::error::eof) {
+        std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
+    } else if (dataRec[0].ACTION_NAME == CONNECT) {
+        std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+        _addEndpoint(sckt.remote_endpoint().address().to_string(), sckt.remote_endpoint().port());
+    } else {
+        std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
+    }
+    // write operation
+    sckt.send(boost::asio::buffer(dataTbs));
+}
+
+void rtp::Server::assyncConnect()
+{
+    //Non bloquant
+    _socketOptional.emplace(_ioContext);
+    _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
+    {
+        std::cout << "[Server][connect]: start accept" << std::endl;
+        if (error) {
+            std::cout << "[Server][connect]: connect failed" << std::endl;
+            // Failed to accept
+        } else {
+            std::cout << "[Server][connect]: connect success" << std::endl;
+            aferConnection(std::move(*_socketOptional));
+        }
+        assyncConnect();
+    });
+}
+
+void rtp::Server::connect()
+{
+    _ioContext.run();
+    _cout.lock();
+    std::cout << "[Server][connect]: End loop" << std::endl;
+    _cout.unlock();
+}
+
+
 void rtp::Server::run()
 {
     std::string input;
-    std::cout << "[Server][dataReception]: Running..." << std::endl;
-    connect();
-
-    std::thread dataReception(&rtp::Server::dataReception, this);
-    std::thread systems(&rtp::Server::systemsLoop, this);
+    std::cout << "[Server][RUN]: Running..." << std::endl;
+    
+    
+    assyncConnect();
+    std::thread connect(&rtp::Server::connect, this);
+    std::thread dataReception = std::thread(&rtp::Server::dataReception, this);
+    std::thread systems = std::thread(&rtp::Server::systemsLoop, this);
 
     while (!_isEnd)
     {
@@ -102,7 +113,7 @@ void rtp::Server::run()
         if (input == "help")
             _printHelp();
         if (input == "exit")
-            _exitServer(systems, dataReception);
+            _exitServer(systems, dataReception, connect);
     }
     std::cout << "[Server]: Bye!" << std::endl;
 }
@@ -114,7 +125,7 @@ void rtp::Server::_printHelp()
     _cout.unlock();
 }
 
-void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
+void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &co)
 {
     // Speak to user
     _cout.lock();
@@ -127,9 +138,13 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec)
     _socket.send_to(boost::asio::buffer(endmsg),
     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
     
+    //_socketTCP.send(boost::asio::buffer(boost::array<networkPayload, 1> {QUIT}));
+    //boost::asio::write(_socketTCP, boost::asio::buffer(boost::array<networkPayload, 1> {QUIT})/*, _acceptor.local_endpoint()*/);
+    
     // Joining threads
     sys.join();
     rec.join();
+    co.join();
 }
 
 void rtp::Server::systemsLoop()
@@ -138,6 +153,8 @@ void rtp::Server::systemsLoop()
     eng::Registry r;
 
     _setupRegistry(r);
+    // Temporary way to add player
+    _addPlayer(r, 1, 1);
 
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Registry is ready" << std::endl;
@@ -148,13 +165,16 @@ void rtp::Server::systemsLoop()
         // Receive data
         systems.receiveData(r);
 
+        // Update delta time
+        systems.updDeltaTime();
+
         // Apply new controls
-        systems.controlSystem(r);
         systems.controlMovementSystem(r);
         systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
+        systems.playerLogSystem(r);
 
         // Send the new data
         systems.sendData(r);
@@ -173,6 +193,22 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Synced>());
+}
+
+// Player Id will be stored inside playerstats later...
+void rtp::Server::_addPlayer(eng::Registry &r, int syncId, int playerId)
+{
+    eng::Entity player = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
+    r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
+    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    r.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    r.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    _cout.lock();
+    std::cout << "[Server][systemsLoop]: Player " << syncId << " has joined the registry" << std::endl;
+    _cout.unlock();
 }
 
 int rtp::Server::getNumberLobby()

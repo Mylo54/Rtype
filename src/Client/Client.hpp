@@ -27,8 +27,11 @@ namespace rtp {
             void send();
 
             /// @brief Connect client to server
-            /// @return 0 if successful, 1 otherwise
-            int connect();
+            /// @return a vector with data
+            /// [0]: 0 for success, 1 for failure
+            /// [1]: the playerId
+            /// [2]: the syncId
+            std::vector<int> connect();
 
         protected:
         private:
@@ -41,8 +44,10 @@ namespace rtp {
 
             /// @brief Adds a controllable player to a registry
             /// @param reg The Registry on which to adds the player 
+            /// @param playerId The player id (1, 2, 3 or 4)
+            /// @param syncId The sync component id
             /// @return The entity containing the player
-            eng::Entity _addPlayer(eng::Registry &reg);
+            eng::Entity _addPlayer(eng::Registry &reg, int playerId, int syncId);
 
             /// @brief Adds an enemy to a registry
             /// @param reg The Registry on which to adds the enemy 

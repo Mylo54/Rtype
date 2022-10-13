@@ -24,6 +24,7 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
+#include <ctime>
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
@@ -61,8 +62,14 @@ namespace rtp {
 
             void tcpThread();
 
+            void assyncConnect();
+
         protected:
         private:
+            /// @brief Adds a player into a registry, setting up everything
+            /// @param r The registry on which to add a player
+            void _addPlayer(eng::Registry &r, int syncId, int playerId);
+
             /// @brief Adds an endpoint into the vector of endpoints
             /// @param address The adress of the endpoint
             /// @param port The port of the endpoint
@@ -80,7 +87,7 @@ namespace rtp {
             /// @brief Exit and join everything on the server
             /// @param sys The system loop thread
             /// @param rec The reception loop thread
-            void _exitServer(std::thread &sys, std::thread &rec);
+            void _exitServer(std::thread &sys, std::thread &rec, std::thread &co);
 
             /// @brief Print a list of commands for the user
             void _printHelp();
@@ -89,22 +96,29 @@ namespace rtp {
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
 
+            void aferConnection(boost::asio::ip::tcp::socket sckt);
+
             // For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket;
-            boost::array<networkPayload, 1> _dataRec;
-            std::vector<networkPayload> _listDataRec;
+            boost::array<inputPayload_t, 1> _dataRec;
+            std::vector<inputPayload_t> _listDataRec;
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
 
             // For TCP
             boost::asio::io_service _ioService;
+            boost::asio::ip::tcp::acceptor _acceptor;
+            boost::asio::ip::tcp::socket _socketTCP;
+            std::optional<boost::asio::ip::tcp::socket> _socketOptional;
 
             // For thread
             std::mutex _mutex;
             std::mutex _cout;
-            bool _isEnd = false;
+            bool _isEnd;
+            bool _start;
 
-            
+            // Clock
+            std::clock_t _clock;
     };
 };
 
