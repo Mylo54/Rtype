@@ -11,14 +11,7 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
-<<<<<<< HEAD
-    eng::Entity player = _addPlayer(_manager.getTop());
     _addChatBox(_manager.getTop());
-    for (int i = 0; i < 10; i++)
-        _addEnemy(_manager.getTop());
-=======
-    //_addEnemy(_manager.getTop());
->>>>>>> 4704c074ba9c698e9533c24898163991c1dc29b3
     _addBackgrounds(_manager.getTop());
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
@@ -93,11 +86,8 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-<<<<<<< HEAD
     reg.registerComponents(eng::SparseArray<rtp::Writable>());
-=======
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
->>>>>>> 17ede686d27e476bf57c8115160c81ff1162a30f
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
@@ -210,12 +200,9 @@ void rtp::Client::systemsLoop()
 
         systems.eventCloseWindow();
         // Receive Inputs
-<<<<<<< HEAD
         //systems.receiveData(r);
         systems.updDeltaTime();
-=======
         systems.receiveData(r);
->>>>>>> 4704c074ba9c698e9533c24898163991c1dc29b3
         systems.controlSystem(r);
 
         // Send new events
