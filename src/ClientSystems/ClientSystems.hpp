@@ -18,6 +18,10 @@ namespace rtp
 {
     class ClientSystems {
         public:
+            enum ChatBoxStyle {
+                CHAT,
+                EVENT
+            };
             ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port,
             boost::asio::ip::udp::socket &socket);
             ~ClientSystems();
@@ -54,21 +58,6 @@ namespace rtp
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
 
-            /// @brief A system who handles inputs for chatting
-            /// @param r The registry on which to apply the system
-            void controlChatSystem(eng::Registry &r);
-
-            /// @brief A system who set a text in a Writable
-            /// @param r The registry on which to apply the system
-            /// @param message The new text to display
-            /// @param wrt the targeted Writable
-            void setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt);
-
-            /// @brief A system who set a text in a Writable
-            /// @param r The registry on which to apply the system
-            /// @param message The new text to display
-            /// @param name the name of the targeted Writable
-            void setText(eng::Registry &r, std::string message, std::string name);
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
             void controlMovementSystem(eng::Registry &r);
@@ -111,7 +100,29 @@ namespace rtp
             /// @brief A system who close the window
             void eventCloseWindow();
 
+            /// @brief Update the delta time
             void updDeltaTime();
+
+            /// @brief A system who handles inputs for chatting
+            /// @param r The registry on which to apply the system
+            void controlChatSystem(eng::Registry &r);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param wrt the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param name the name of the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::string name,  rtp::ClientSystems::ChatBoxStyle style);
+
+            /// @brief Write a message in the chat box
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            void writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style);
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets

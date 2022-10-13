@@ -145,7 +145,7 @@ eng::Entity rtp::Client::_addChatBox(eng::Registry &reg)
     eng::Entity chatBox = reg.spawnEntity();
     sf::Text txt;
 
-    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox"));
+    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
     reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 800, 0));
     return chatBox;
 }

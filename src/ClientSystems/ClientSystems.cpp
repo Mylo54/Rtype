@@ -63,6 +63,7 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
             ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
+            ctrl.value().event = sf::Keyboard::isKeyPressed(sf::Keyboard::V);
         }
     }
 }
@@ -199,44 +200,6 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
-        }
-    }
-}
-
-// Just a test, need to be really implemented
-void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
-{
-    auto &controllables = r.getComponents<Controllable>();
-    auto &writables = r.getComponents<Writable>();
-
-    for (int i = 0; i < controllables.size(); i++) {
-        auto &ctrl = controllables[i];
-
-        if (ctrl.has_value()) {
-            if (ctrl.value().chat) {
-                setText(r, "Wagadugu", "ChatBox");
-            }
-        }
-    }
-}
-
-void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt)
-{
-    if (wrt.has_value() && wrt.value()._name == "ChatBox") {
-        wrt.value()._txt.setStyle(sf::Text::Bold);
-        wrt.value()._txt.setString(message);
-    }
-}
-
-void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::string name)
-{
-    auto &writables = r.getComponents<Writable>();
-
-    for (int i = 0; i < writables.size(); i++) {
-        auto &wrt = writables[i];
-        if (wrt.has_value() && wrt.value()._name == name) {
-            // wrt.value()._txt.setStyle(sf::Text::Bold);
-            wrt.value()._txt.setString(message);
         }
     }
 }
@@ -422,4 +385,74 @@ void rtp::ClientSystems::eventCloseWindow()
 void rtp::ClientSystems::updDeltaTime()
 {
     _delta = _c.restart();
+}
+
+// Just a test, need to be really implemented
+void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
+{
+    auto &controllables = r.getComponents<Controllable>();
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            if (ctrl.value().chat) writeInChatBox(r, "Chat", ChatBoxStyle::CHAT);
+            if (ctrl.value().event) writeInChatBox(r, "Event", ChatBoxStyle::EVENT);
+        }
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style)
+{
+    if (wrt.has_value()) {
+        wrt.value()._txt.setStyle(sf::Text::Bold);
+        wrt.value()._txt.setString(message);
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::string name,  rtp::ClientSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < writables.size(); i++) {
+        auto &wrt = writables[i];
+        if (wrt.has_value() && wrt.value()._name == name) {
+            wrt.value()._txt.setString(message);
+            if (style == ClientSystems::CHAT) {
+                wrt.value()._txt.setStyle(sf::Text::Regular);
+                wrt.value()._txt.setFillColor(sf::Color::White);
+            }
+            if (style == ClientSystems::EVENT) {
+                wrt.value()._txt.setStyle(sf::Text::Italic);
+                wrt.value()._txt.setFillColor(sf::Color::Blue);
+            }
+        }
+    }
+}
+
+void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+    auto &positions = r.getComponents<Position>();
+
+    // Move all chat line up
+    for (int i = 5; i > 0; i--) {
+        for (int j = 0; j < writables.size(); j++) {
+            auto &wrt = writables[j];
+            std::stringstream toFind;
+            std::stringstream newName;
+            toFind << "ChatBox" << i;
+            newName << "ChatBox" << (i + 1);
+            if (wrt.has_value() && wrt.value()._name == toFind.str()) {
+                std::cout << "ToFind " << toFind.str() << std::endl;
+                // add condition for 5th one to delete
+                // if (i == 5) r.killEntity()
+                if (positions[j].has_value()) positions[j].value().y -= 5;
+                wrt.value()._name = newName.str();
+                break;
+            }
+        }
+    }
+    // setText(r, message, "ChatBox1", style);
 }
