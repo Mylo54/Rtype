@@ -328,37 +328,26 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
 }
 
-// This will get smaller when we'll get emplaceComponent function
 void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
-    boost::array<synced_component, 1UL> payload = {OK};
     int e = 0;
-    bool toComplete = false;
+    bool toBuild = false;
 
     while (true) {
-        _socket.receive(boost::asio::buffer(payload));
-        if (payload[0].COMPONENT_NAME == END_PACKET)
+        _socket.receive(boost::asio::buffer(_dataBuffer));
+        if (_dataBuffer[0].COMPONENT_NAME == END_PACKET)
             return;
-        e = _getSyncedEntity(r, payload[0].id);
-        toComplete = false;
+        auto &data = _dataBuffer[0];
+        e = _getSyncedEntity(r, _dataBuffer[0].syncId);
         if (e == -1) {
+            toBuild = true;
             e = r.spawnEntity().getId();
-            toComplete = true;
-            r.addComponent<Synced>(e, Synced(payload[0].id));
+            r.addComponent<Synced>(eng::Entity(e), Synced(_dataBuffer[0].syncId));
         }
-        if (payload[0].COMPONENT_NAME == POSITION) {
-            std::cout << std::any_cast<Position>(payload[0].body).x << std::endl;
-            r.emplaceComponent<Position>(eng::Entity(e), std::any_cast<Position>(payload[0].body));
-        }
-        if (payload[0].COMPONENT_NAME == VELOCITY)
-            r.emplaceComponent<Velocity>(eng::Entity(e), std::any_cast<Velocity>(payload[0].body));
-        if (payload[0].COMPONENT_NAME == ENEMY_STATS) {
-            r.emplaceComponent<EnemyStats>(eng::Entity(e), std::any_cast<EnemyStats>(payload[0].body));
-            if (toComplete)
-                _completeEnemy(r, e);
-        }
-        if (payload[0].COMPONENT_NAME == PLAYER_STATS)
-            r.emplaceComponent<PlayerStats>(eng::Entity(e), std::any_cast<PlayerStats>(payload[0].body));
+        if (_dataBuffer[0].COMPONENT_NAME == POSITION)
+            r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
+        if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
+            r.emplaceComponent<Velocity>(eng::Entity(e), Velocity(data.valueA, data.valueB));
     }
 }
 
@@ -370,7 +359,7 @@ int rtp::ClientSystems::_getSyncedEntity(eng::Registry &r, int syncId)
         if (synceds[i].has_value())
             if (synceds[i].value().id == syncId)
                 return i;
-    throw;
+    return (-1);
 }
 
 // Bullets are considered as (x, y) points

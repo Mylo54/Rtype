@@ -29,6 +29,13 @@ void rtp::Client::run()
     eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
     std::cout << "Player = " << player.getId() << std::endl;
     systemsLoop();
+    disconnect();
+}
+
+void rtp::Client::disconnect()
+{
+    // Disconnect here
+    return;
 }
 
 std::vector<int> rtp::Client::connect()
@@ -189,9 +196,8 @@ void rtp::Client::systemsLoop()
 
         systems.eventCloseWindow();
         // Receive Inputs
-        //systems.receiveData(r);
         systems.updDeltaTime();
-        //systems.receiveData(r);
+        systems.receiveData(r);
         systems.controlSystem(r);
 
         // Send new events
