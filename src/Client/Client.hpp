@@ -59,11 +59,6 @@ namespace rtp {
             /// @return A vector of entities, each representing a background
             std::vector<eng::Entity> _addBackgrounds(eng::Registry &reg);
 
-            /// @brief Add a chatbox to a registry
-            /// @param reg The Registry on which to add the backgrounds
-            /// @return The entity containing the chatbox
-            eng::Entity _addChatBox(eng::Registry &reg);
-
             eng::RegistryManager _manager;
             int _port;
             boost::asio::io_context _ioContext;

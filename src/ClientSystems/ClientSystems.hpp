@@ -123,6 +123,10 @@ namespace rtp
             /// @param r The registry on which to apply the system
             /// @param message The new text to display
             void writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style);
+
+            /// @brief Create a bottom chatBox line
+            /// @param reg The registry on which to apply the system
+            void addChatBox(eng::Registry &reg);
         protected:
         private:
             /// @brief A method that gets a synced entity id

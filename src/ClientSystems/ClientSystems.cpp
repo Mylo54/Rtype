@@ -62,8 +62,10 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-            ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
-            ctrl.value().event = sf::Keyboard::isKeyPressed(sf::Keyboard::V);
+            // ctrl.value().chat = sf::Event::KeyReleased()
+            // ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
+            // ctrl.value().event = sf::Keyboard::isKeyPressed(sf::Keyboard::V);
+            // ctrl.value().event = sf::Event::KeyReleased;
         }
     }
 }
@@ -195,9 +197,11 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
         if (sht.has_value() && ctrl.has_value()) {
             if (sht.value().nextFire > 0) {
                 sht.value().nextFire -= _delta.asSeconds();
+                ctrl.value().chat = false;
             }
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
+                ctrl.value().chat = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
@@ -434,13 +438,16 @@ void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
 
         if (ctrl.has_value()) {
             if (ctrl.value().chat) {
-                writeInChatBox(r, "Chat", ChatBoxStyle::CHAT);
+                std::stringstream ss;
+                ss << "Chat " << ctrl.value().count;
+                writeInChatBox(r, ss.str(), ChatBoxStyle::CHAT);
+                ctrl.value().count++;
                 ctrl.value().chat = false;
             }
             if (ctrl.value().event) {
                 writeInChatBox(r, "Event", ChatBoxStyle::EVENT);
                 ctrl.value().event = false;
-            }    
+            }
         }
     }
 }
@@ -478,8 +485,7 @@ void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, r
     auto &writables = r.getComponents<Writable>();
     auto &positions = r.getComponents<Position>();
 
-    std::cout << "Enter writeInChatBox" << std::endl;
-    // Move all chat line up
+    // Move all chat line up and change their name
     for (int i = 5; i > 0; i--) {
         for (int j = 0; j < writables.size(); j++) {
             auto &wrt = writables[j];
@@ -488,17 +494,31 @@ void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, r
             toFind << "ChatBox" << i;
             newName << "ChatBox" << (i + 1);
             if (wrt.has_value() && wrt.value()._name == toFind.str()) {
-                std::cout << "ToFind " << toFind.str() << std::endl;
-                // add condition for 5th one to delete
-                // if (i == 5) r.killEntity()
-                if (positions[j].has_value()) positions[j].value().y -= 5;
+                // condition to delete
+                if (i == 5) {
+                    r.killEntity(eng::Entity(j));
+                    break;
+                }
+                if (positions[j].has_value()) positions[j].value().y -= 30;
                 wrt.value()._name = newName.str();
                 break;
             }
         }
     }
-    // setText(r, message, "ChatBox1", style);
+    // Create ChatBox1
+    addChatBox(r);
+    // Write in ChatBox1
+    setText(r, message, "ChatBox1", style);
 }
+
+void rtp::ClientSystems::addChatBox(eng::Registry &reg)
+{
+    eng::Entity chatBox = reg.spawnEntity();
+
+    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
+    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
+}
+
 void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
 {
     int type = r.getComponents<EnemyStats>()[e].value().enemyType;

@@ -22,6 +22,7 @@ namespace rtp
             bool shoot = false;
             bool chat = false;
             bool event = false;
+            char count = 'a';
         protected:
         private:
     };

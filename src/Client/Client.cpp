@@ -11,7 +11,6 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
-    _addChatBox(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
@@ -154,16 +153,6 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
     reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
     reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/background.png"));
     return bgs;
-}
-
-eng::Entity rtp::Client::_addChatBox(eng::Registry &reg)
-{
-    eng::Entity chatBox = reg.spawnEntity();
-    sf::Text txt;
-
-    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
-    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 800, 0));
-    return chatBox;
 }
 
 //UDP
