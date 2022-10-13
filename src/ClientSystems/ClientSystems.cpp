@@ -433,8 +433,14 @@ void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
         auto &ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            if (ctrl.value().chat) writeInChatBox(r, "Chat", ChatBoxStyle::CHAT);
-            if (ctrl.value().event) writeInChatBox(r, "Event", ChatBoxStyle::EVENT);
+            if (ctrl.value().chat) {
+                writeInChatBox(r, "Chat", ChatBoxStyle::CHAT);
+                ctrl.value().chat = false;
+            }
+            if (ctrl.value().event) {
+                writeInChatBox(r, "Event", ChatBoxStyle::EVENT);
+                ctrl.value().event = false;
+            }    
         }
     }
 }
@@ -472,6 +478,7 @@ void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, r
     auto &writables = r.getComponents<Writable>();
     auto &positions = r.getComponents<Position>();
 
+    std::cout << "Enter writeInChatBox" << std::endl;
     // Move all chat line up
     for (int i = 5; i > 0; i--) {
         for (int j = 0; j < writables.size(); j++) {
