@@ -7,16 +7,21 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(int port): _port(port), _socketTCP(_ioService)
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), port})
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
+<<<<<<< HEAD
     eng::Entity player = _addPlayer(_manager.getTop());
     _addChatBox(_manager.getTop());
     for (int i = 0; i < 10; i++)
         _addEnemy(_manager.getTop());
+=======
+    //_addEnemy(_manager.getTop());
+>>>>>>> 4704c074ba9c698e9533c24898163991c1dc29b3
     _addBackgrounds(_manager.getTop());
-    _openSocket();
+    std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
+    std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
 
 rtp::Client::~Client()
@@ -29,16 +34,22 @@ void rtp::Client::run()
 
     if (c[0] == 1)
         return;
-    _addPlayer(_manager.getTop(), c[1], c[2]);
+    eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
+    std::cout << "Player = " << player.getId() << std::endl;
     systemsLoop();
 }
 
 std::vector<int> rtp::Client::connect()
 {
-    boost::array<networkPayload, 1> dataTbs = {CONNECT};
+    boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
 
+    dataTbs[0].addr1 = 127;
+    dataTbs[0].addr2 = 0;
+    dataTbs[0].addr3 = 0;
+    dataTbs[0].addr4 = 1;
+    dataTbs[0].port = _port;
     //connection
     try {
         _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3303));
@@ -51,7 +62,7 @@ std::vector<int> rtp::Client::connect()
         return (res);
     }
 
-    boost::asio::write( _socketTCP, boost::asio::buffer(dataTbs), _error);
+    boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
 
     if (_error)
         std::cout << "send failed: " << _error.message() << std::endl;
@@ -194,14 +205,17 @@ void rtp::Client::systemsLoop()
     rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
 
-    // TODO: make the loop speed not depend on framerate
 
     while (systems.windowOpen()) {
 
         systems.eventCloseWindow();
         // Receive Inputs
+<<<<<<< HEAD
         //systems.receiveData(r);
         systems.updDeltaTime();
+=======
+        systems.receiveData(r);
+>>>>>>> 4704c074ba9c698e9533c24898163991c1dc29b3
         systems.controlSystem(r);
 
         // Send new events

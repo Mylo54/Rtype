@@ -22,7 +22,8 @@ eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
 
 int main(int argc, char **argv)
 {
-    rtp::Client client(3232);
+    boost::asio::ip::port_type port = 3232;
+    rtp::Client client(port);
 
     client.run();
     /*
