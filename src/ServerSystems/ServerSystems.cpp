@@ -125,36 +125,53 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &sc = r.getComponents<Synced>();
     boost::array<synced_component, 1> dataTbs;
 
-    for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size(); i++) {
+    for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size() && i < sc.size(); i++) {
         // Send player infos
         // (not checking if ps and vs have values so it's dangerous O_o)
-        if (playerStats[i].has_value()) {
+        if (playerStats[i].has_value() && sc[i].has_value()) {
             auto &p = ps[i].value();
             auto &v = vs[i].value();
             auto &id_sync = sc[i].value();
             auto &player = playerStats[i].value();
-            // Send thoses values to each client
-            
-            /*dataTbs = {POSITION, id_sync.id, p};
+
+            dataTbs[0].COMPONENT_NAME = POSITION;
+            dataTbs[0].body = p;
+            dataTbs[0].id = id_sync.id;
             sendSyncedDataToAll(dataTbs);
-            dataTbs = {VELOCITY, id_sync.id, v};
+            dataTbs[0].COMPONENT_NAME = VELOCITY;
+            dataTbs[0].body = v;
+            dataTbs[0].id = id_sync.id;
             sendSyncedDataToAll(dataTbs);
-            dataTbs = {PLAYER_STATS, id_sync.id, player};
-            sendSyncedDataToAll(dataTbs);*/
+            dataTbs[0].COMPONENT_NAME = PLAYER_STATS;
+            dataTbs[0].body = player;
+            dataTbs[0].id = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
         }
     }
-    for (int i = 0; i < ps.size() && i < vs.size() && i < enemyStats.size(); i++) {
-        // Same but for enemies
-        if (enemyStats[i].has_value()) {
+    for (int i = 0; i < ps.size() && i < vs.size() && i < enemyStats.size() && i < sc.size(); i++) {
+        if (enemyStats[i].has_value() && sc[i].has_value()) {
             auto &p = ps[i].value();
             auto &v = vs[i].value();
             auto &enm = enemyStats[i].value();
-            // Send thoses values to each client
+            auto &id_sync = sc[i].value();
 
-           
+            dataTbs[0].COMPONENT_NAME = POSITION;
+            dataTbs[0].body = p;
+            dataTbs[0].id = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = VELOCITY;
+            dataTbs[0].body = v;
+            dataTbs[0].id = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = ENEMY_STATS;
+            dataTbs[0].body = enm;
+            dataTbs[0].id = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
         }
         // Then send shot events and from which player they arrived from
     }
+    dataTbs[0].COMPONENT_NAME = END_PACKET;
+    sendSyncedDataToAll(dataTbs);
 }
 
 void rtp::ServerSystems::sendSyncedDataToAll(boost::array<synced_component, 1> dataTbs)
@@ -171,22 +188,20 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
     while (_listDataRec.size() > 0) {
         e = _getSyncedEntity(r, _listDataRec.back().syncId);
         if (e != -1) {
-            // if (_listDataRec.back())
-            if (_listDataRec.back().ACTION_NAME == SHOT) {
+            if (_listDataRec.back().ACTION_NAME == SHOT)
                 r.getComponents<Controllable>()[e].value().shoot = true;
-            }
-            if (_listDataRec.back().ACTION_NAME == LEFT) {
+            if (_listDataRec.back().ACTION_NAME == XSTILL)
+                r.getComponents<Controllable>()[e].value().xAxis = 0;
+            if (_listDataRec.back().ACTION_NAME == LEFT)
                 r.getComponents<Controllable>()[e].value().xAxis = -1;
-            }
-            if (_listDataRec.back().ACTION_NAME == RIGHT) {
+            if (_listDataRec.back().ACTION_NAME == RIGHT)
                 r.getComponents<Controllable>()[e].value().xAxis = +1;
-            }
-            if (_listDataRec.back().ACTION_NAME == UP) {
+            if (_listDataRec.back().ACTION_NAME == YSTILL)
+                r.getComponents<Controllable>()[e].value().yAxis = 0;
+            if (_listDataRec.back().ACTION_NAME == UP)
                 r.getComponents<Controllable>()[e].value().yAxis = -1;
-            }
-            if (_listDataRec.back().ACTION_NAME == DOWN) {
+            if (_listDataRec.back().ACTION_NAME == DOWN)
                 r.getComponents<Controllable>()[e].value().yAxis = +1;
-            }
         }
         _listDataRec.pop_back();
     }

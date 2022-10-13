@@ -274,20 +274,20 @@ void rtp::ClientSystems::sendData(eng::Registry &r)
                 data[0].ACTION_NAME = SHOT;
                 _socket.send_to(boost::asio::buffer(data), _endpoint);
             }
-            if (ctrl.value().xAxis > 0) {
+            if (ctrl.value().xAxis > 0)
                 data[0].ACTION_NAME = RIGHT;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            } else if (ctrl.value().xAxis < 0) {
+            else if (ctrl.value().xAxis < 0)
                 data[0].ACTION_NAME = LEFT;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
-            if (ctrl.value().yAxis > 0) {
+            else
+                data[0].ACTION_NAME = XSTILL;
+            _socket.send_to(boost::asio::buffer(data), _endpoint);
+            if (ctrl.value().yAxis > 0)
                 data[0].ACTION_NAME = DOWN;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            } else if (ctrl.value().yAxis < 0) {
+            else if (ctrl.value().yAxis < 0)
                 data[0].ACTION_NAME = UP;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
+            else
+                data[0].ACTION_NAME = YSTILL;
+            _socket.send_to(boost::asio::buffer(data), _endpoint);
         }
     }
 }
@@ -307,40 +307,32 @@ void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
     boost::array<synced_component, 1UL> payload = {OK};
     int e = 0;
+    bool toComplete = false;
 
     while (true) {
         _socket.receive(boost::asio::buffer(payload));
         if (payload[0].COMPONENT_NAME == END_PACKET)
-            break;
+            return;
         e = _getSyncedEntity(r, payload[0].id);
+        toComplete = false;
         if (e == -1) {
             e = r.spawnEntity().getId();
+            toComplete = true;
             r.addComponent<Synced>(e, Synced(payload[0].id));
         }
         if (payload[0].COMPONENT_NAME == POSITION) {
-            if (r.getComponents<Position>().size() >= e && r.getComponents<Position>()[e].has_value())
-                r.getComponents<Position>()[e].value() = std::any_cast<Position>(payload[0].body);
-            else
-                r.addComponent<Position>(eng::Entity(e), std::any_cast<Position>(payload[0].body));
+            std::cout << std::any_cast<Position>(payload[0].body).x << std::endl;
+            r.emplaceComponent<Position>(eng::Entity(e), std::any_cast<Position>(payload[0].body));
         }
-        if (payload[0].COMPONENT_NAME == VELOCITY) {
-            if (r.getComponents<Velocity>().size() >= e && r.getComponents<Velocity>()[e].has_value())
-                r.getComponents<Velocity>()[e].value() = std::any_cast<Velocity>(payload[0].body);
-            else
-                r.addComponent<Velocity>(eng::Entity(e), std::any_cast<Velocity>(payload[0].body));
-        }
+        if (payload[0].COMPONENT_NAME == VELOCITY)
+            r.emplaceComponent<Velocity>(eng::Entity(e), std::any_cast<Velocity>(payload[0].body));
         if (payload[0].COMPONENT_NAME == ENEMY_STATS) {
-            if (r.getComponents<EnemyStats>().size() >= e && r.getComponents<EnemyStats>()[e].has_value())
-                r.getComponents<EnemyStats>()[e].value() = std::any_cast<EnemyStats>(payload[0].body);
-            else
-                r.addComponent<EnemyStats>(eng::Entity(e), std::any_cast<EnemyStats>(payload[0].body));
+            r.emplaceComponent<EnemyStats>(eng::Entity(e), std::any_cast<EnemyStats>(payload[0].body));
+            if (toComplete)
+                _completeEnemy(r, e);
         }
-        if (payload[0].COMPONENT_NAME == PLAYER_STATS) {
-            if (r.getComponents<PlayerStats>().size() >= e && r.getComponents<PlayerStats>()[e].has_value())
-                r.getComponents<PlayerStats>()[e].value() = std::any_cast<PlayerStats>(payload[0].body);
-            else
-                r.addComponent<PlayerStats>(eng::Entity(e), std::any_cast<PlayerStats>(payload[0].body));
-        }
+        if (payload[0].COMPONENT_NAME == PLAYER_STATS)
+            r.emplaceComponent<PlayerStats>(eng::Entity(e), std::any_cast<PlayerStats>(payload[0].body));
     }
 }
 
@@ -402,4 +394,12 @@ void rtp::ClientSystems::eventCloseWindow()
         if (this->_event.type == sf::Event::Closed)
             this->_w.close();
     }
+}
+
+void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
+{
+    int type = r.getComponents<EnemyStats>()[e].value().enemyType;
+    if (type == 0)
+        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
 }

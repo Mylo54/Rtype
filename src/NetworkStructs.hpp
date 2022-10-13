@@ -31,6 +31,8 @@ namespace rtp
         RIGHT,
         DOWN,
         LEFT,
+        XSTILL,
+        YSTILL,
         SHOT,
         QUIT,
         SYNCHRONISATION,
@@ -55,6 +57,15 @@ namespace rtp
         size_t id;
         std::any body;
     } synced_component;
+
+    typedef struct demandConnectPayload_s {
+        int ACTION_NAME;
+        int addr1; // 192
+        int addr2; // 168
+        int addr3; // 1
+        int addr4; // 14 par exemple
+        int port;
+    } demandConnectPayload_t;
 
     typedef struct connectPayload_s {
         int ACTION_NAME;
