@@ -20,6 +20,8 @@ namespace rtp
             int xAxis = 0;
             int yAxis = 0;
             bool shoot = false;
+            bool chat = false;
+            bool event = false;
         protected:
         private:
     };

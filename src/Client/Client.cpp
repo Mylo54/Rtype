@@ -12,6 +12,7 @@ rtp::Client::Client(int port): _port(port), _socketTCP(_ioService)
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     eng::Entity player = _addPlayer(_manager.getTop());
+    _addChatBox(_manager.getTop());
     for (int i = 0; i < 10; i++)
         _addEnemy(_manager.getTop());
     _addBackgrounds(_manager.getTop());
@@ -72,6 +73,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Background>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Writable>());
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
@@ -81,7 +83,7 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     reg.addComponent<rtp::Velocity>(player, rtp::Velocity());
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
-    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.005));
+    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
 
     return player;
@@ -94,7 +96,7 @@ eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
 
     reg.addComponent<rtp::Position>(enemy, rtp::Position(1920 + (rand() % 2000), rand() % 1080, 0));
     reg.addComponent<rtp::Velocity>(enemy, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+    reg.addComponent<rtp::Drawable>(enemy, rtp::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
     reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
 
@@ -138,6 +140,16 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
     return bgs;
 }
 
+eng::Entity rtp::Client::_addChatBox(eng::Registry &reg)
+{
+    eng::Entity chatBox = reg.spawnEntity();
+    sf::Text txt;
+
+    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
+    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 800, 0));
+    return chatBox;
+}
+
 //UDP
 void rtp::Client::send()
 {
@@ -166,7 +178,7 @@ void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
-    
+
     // TODO: make the loop speed not depend on framerate
 
     while (systems.windowOpen()) {
@@ -174,6 +186,7 @@ void rtp::Client::systemsLoop()
         systems.eventCloseWindow();
         // Receive Inputs
         //systems.receiveData(r);
+        systems.updDeltaTime();
         systems.controlSystem(r);
 
         // Send new events
@@ -181,6 +194,7 @@ void rtp::Client::systemsLoop()
 
         // Update data
         systems.controlFireSystem(r);
+        systems.controlChatSystem(r);
         systems.controlMovementSystem(r);
         systems.shootSystem(r);
         systems.positionSystem(r);
@@ -192,6 +206,7 @@ void rtp::Client::systemsLoop()
         systems.playSoundSystem(r);
         systems.clearSystem(r);
         systems.drawSystem(r);
+        systems.writeSystem(r);
         systems.backgroundSystem(r);
         systems.displaySystem(r);
     }

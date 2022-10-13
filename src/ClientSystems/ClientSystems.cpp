@@ -9,6 +9,8 @@
 
 rtp::ClientSystems::ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port, boost::asio::ip::udp::socket &socket) : _w(sf::RenderWindow(sf::VideoMode(dimWdw[0], dimWdw[1], dimWdw[2]), nameWdw)), _c(sf::Clock()), _socket(socket)
 {
+    _displayTime = 0;
+    
     _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
     _w.setFramerateLimit(60);
 }
@@ -60,6 +62,8 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
+            ctrl.value().event = sf::Keyboard::isKeyPressed(sf::Keyboard::V);
         }
     }
 }
@@ -94,8 +98,10 @@ void rtp::ClientSystems::clearSystem(eng::Registry &r)
 
 void rtp::ClientSystems::displaySystem(eng::Registry &r)
 {
-    _w.display();
-    _c.restart();
+    if ((_delta.asSeconds() + _displayTime) >= (1/60)) {
+        _w.display();
+        _displayTime = _delta.asSeconds() + _displayTime - (1/60);
+    }
 }
 
 // Some changes to optimize would be good
@@ -109,7 +115,7 @@ void rtp::ClientSystems::animateSystem(eng::Registry &r)
         if (spr.has_value()) {
             sf::IntRect rect = spr.value().sprite.getTextureRect();
             if (spr.value().sheetDirection != 0) {
-                spr.value().nextFrame -= _c.getElapsedTime().asSeconds();
+                spr.value().nextFrame -= _delta.asSeconds();
             }
             // Animate to the right
             if (spr.value().sheetDirection == 1 && spr.value().nextFrame <= 0) {
@@ -161,6 +167,22 @@ void rtp::ClientSystems::drawSystem(eng::Registry &r)
     }
 }
 
+void rtp::ClientSystems::writeSystem(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < positions.size() && i < writables.size(); i++) {
+        auto &pos = positions[i];
+        auto &wrt = writables[i];
+
+        if (pos.has_value() && wrt.has_value()) {
+            wrt.value()._txt.setPosition({pos.value().x, pos.value().y});
+            _w.draw(wrt.value()._txt);
+        }
+    }
+}
+
 void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 {
     auto &shooters = r.getComponents<Shooter>();
@@ -172,7 +194,7 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 
         if (sht.has_value() && ctrl.has_value()) {
             if (sht.value().nextFire > 0) {
-                sht.value().nextFire -= _c.getElapsedTime().asSeconds();
+                sht.value().nextFire -= _delta.asSeconds();
             }
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
@@ -252,8 +274,8 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += vel.value().x;
-            pos.value().y += vel.value().y;
+            pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
+            pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
         }
     }
 }
@@ -358,4 +380,79 @@ void rtp::ClientSystems::eventCloseWindow()
         if (this->_event.type == sf::Event::Closed)
             this->_w.close();
     }
+}
+
+void rtp::ClientSystems::updDeltaTime()
+{
+    _delta = _c.restart();
+}
+
+// Just a test, need to be really implemented
+void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
+{
+    auto &controllables = r.getComponents<Controllable>();
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            if (ctrl.value().chat) writeInChatBox(r, "Chat", ChatBoxStyle::CHAT);
+            if (ctrl.value().event) writeInChatBox(r, "Event", ChatBoxStyle::EVENT);
+        }
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style)
+{
+    if (wrt.has_value()) {
+        wrt.value()._txt.setStyle(sf::Text::Bold);
+        wrt.value()._txt.setString(message);
+    }
+}
+
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::string name,  rtp::ClientSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < writables.size(); i++) {
+        auto &wrt = writables[i];
+        if (wrt.has_value() && wrt.value()._name == name) {
+            wrt.value()._txt.setString(message);
+            if (style == ClientSystems::CHAT) {
+                wrt.value()._txt.setStyle(sf::Text::Regular);
+                wrt.value()._txt.setFillColor(sf::Color::White);
+            }
+            if (style == ClientSystems::EVENT) {
+                wrt.value()._txt.setStyle(sf::Text::Italic);
+                wrt.value()._txt.setFillColor(sf::Color::Blue);
+            }
+        }
+    }
+}
+
+void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+    auto &positions = r.getComponents<Position>();
+
+    // Move all chat line up
+    for (int i = 5; i > 0; i--) {
+        for (int j = 0; j < writables.size(); j++) {
+            auto &wrt = writables[j];
+            std::stringstream toFind;
+            std::stringstream newName;
+            toFind << "ChatBox" << i;
+            newName << "ChatBox" << (i + 1);
+            if (wrt.has_value() && wrt.value()._name == toFind.str()) {
+                std::cout << "ToFind " << toFind.str() << std::endl;
+                // add condition for 5th one to delete
+                // if (i == 5) r.killEntity()
+                if (positions[j].has_value()) positions[j].value().y -= 5;
+                wrt.value()._name = newName.str();
+                break;
+            }
+        }
+    }
+    // setText(r, message, "ChatBox1", style);
 }
