@@ -64,6 +64,8 @@ namespace rtp {
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
+
+            void updDeltaTime();
         protected:
         private:
             /// @brief A method that gets a synced entity id
@@ -75,10 +77,18 @@ namespace rtp {
             /// @todo find how to contain the data that we need to send to the client
             void _sendSubsystem();
 
+            /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;
+            /// @brief list (vector) of client endpoints
             std::vector<boost::asio::ip::udp::endpoint> &_endpoints;
+            /// @brief atomic variable of acces to listDataRec
             std::mutex &_mutex;
+            /// @brief List of all received payload
             std::vector<inputPayload_t> &_listDataRec;
+            /// @brief 
+            std::clock_t _clock;
+            /// @brief delta time in seconds
+            float _delta;
     };
 };
 

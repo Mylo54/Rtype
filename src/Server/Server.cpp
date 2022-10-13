@@ -162,13 +162,16 @@ void rtp::Server::systemsLoop()
         // Receive data
         systems.receiveData(r);
 
+        // Update delta time
+        systems.updDeltaTime();
+
         // Apply new controls
         systems.controlMovementSystem(r);
         systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
-        //systems.playerLogSystem(r);
+        systems.playerLogSystem(r);
 
         // Send the new data
         systems.sendData(r);
