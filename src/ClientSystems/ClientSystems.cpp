@@ -277,35 +277,40 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
             pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
             pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
         }
+        std::cout << "x : [" << pos.value().x << "] y [" << pos.value().y << "]" << std::endl;
     }
 }
 
 void rtp::ClientSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
+    auto &synceds = r.getComponents<Synced>();
+    boost::array<inputPayload_t, 1UL> data;
 
-    for (int i = 0; i < controllables.size(); i++) {
+    for (int i = 0; i < controllables.size() && i < synceds.size(); i++) {
         auto ctrl = controllables[i];
+        auto sync = synceds[i];
 
-        if (ctrl.has_value()) {
+        if (ctrl.has_value() && sync.has_value()) {
+            data[0].syncId = sync.value().id;
             if (ctrl.value().shoot) {
-                boost::array<networkPayload, 1> data = {SHOT};
+                data[0].ACTION_NAME = SHOT;
                 _socket.send_to(boost::asio::buffer(data), _endpoint);
             }
-            if (ctrl.value().xAxis > 0) {
-                boost::array<networkPayload, 1> data = {RIGHT};
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            } else if (ctrl.value().xAxis < 0) {
-                boost::array<networkPayload, 1> data = {LEFT};
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
-            if (ctrl.value().yAxis > 0) {
-                boost::array<networkPayload, 1> data = {DOWN};
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            } else if (ctrl.value().yAxis < 0) {
-                boost::array<networkPayload, 1> data = {UP};
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
+            if (ctrl.value().xAxis > 0)
+                data[0].ACTION_NAME = RIGHT;
+            else if (ctrl.value().xAxis < 0)
+                data[0].ACTION_NAME = LEFT;
+            else
+                data[0].ACTION_NAME = XSTILL;
+            _socket.send_to(boost::asio::buffer(data), _endpoint);
+            if (ctrl.value().yAxis > 0)
+                data[0].ACTION_NAME = DOWN;
+            else if (ctrl.value().yAxis < 0)
+                data[0].ACTION_NAME = UP;
+            else
+                data[0].ACTION_NAME = YSTILL;
+            _socket.send_to(boost::asio::buffer(data), _endpoint);
         }
     }
 }
@@ -320,11 +325,49 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
 }
 
+// This will get smaller when we'll get emplaceComponent function
 void rtp::ClientSystems::receiveData(eng::Registry &r)
 {
-    // Read the buffer of values received from the server
-    // For every entity having the "Synced" component (not existing yet),
-    // Emplace new values (Position, health, Velocities, etc ...)
+    boost::array<synced_component, 1UL> payload = {OK};
+    int e = 0;
+    bool toComplete = false;
+
+    while (true) {
+        _socket.receive(boost::asio::buffer(payload));
+        if (payload[0].COMPONENT_NAME == END_PACKET)
+            return;
+        e = _getSyncedEntity(r, payload[0].id);
+        toComplete = false;
+        if (e == -1) {
+            e = r.spawnEntity().getId();
+            toComplete = true;
+            r.addComponent<Synced>(e, Synced(payload[0].id));
+        }
+        if (payload[0].COMPONENT_NAME == POSITION) {
+            std::cout << std::any_cast<Position>(payload[0].body).x << std::endl;
+            r.emplaceComponent<Position>(eng::Entity(e), std::any_cast<Position>(payload[0].body));
+        }
+        if (payload[0].COMPONENT_NAME == VELOCITY)
+            r.emplaceComponent<Velocity>(eng::Entity(e), std::any_cast<Velocity>(payload[0].body));
+        if (payload[0].COMPONENT_NAME == ENEMY_STATS) {
+            r.emplaceComponent<EnemyStats>(eng::Entity(e), std::any_cast<EnemyStats>(payload[0].body));
+            if (toComplete)
+                _completeEnemy(r, e);
+        }
+        if (payload[0].COMPONENT_NAME == PLAYER_STATS)
+            r.emplaceComponent<PlayerStats>(eng::Entity(e), std::any_cast<PlayerStats>(payload[0].body));
+    }
+}
+
+int rtp::ClientSystems::_getSyncedEntity(eng::Registry &r, int syncId)
+{
+    auto synceds = r.getComponents<Synced>();
+
+    for (int i = 0; i < synceds.size(); i++)
+        if (synceds[i].has_value())
+            if (synceds[i].value().id == syncId)
+                return i;
+    throw;
 }
 
 // Bullets are considered as (x, y) points
@@ -336,11 +379,6 @@ void rtp::ClientSystems::playerBullets(eng::Registry &r)
     for (int i = 0; i < blts.size() && i < poss.size(); i++) {
         if (blts[i].has_value() && poss[i].has_value()) {
             _bulletAgainstEnemy(r, eng::Entity(i));
-            // std::cout << "i =" << i << std::endl;
-            // std::cout << "next =" << i + 1 << std::endl;
-            // std::cout << "bltsz =" << blts.size() << std::endl;
-            // std::cout << "possz =" << poss.size() << std::endl;
-
         }
     }
 }
@@ -362,7 +400,6 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
                 if (p.x <= pos.x + rct.width && p.y <= pos.y + rct.height) {
                     enm.health -= b.damage;
                     r.killEntity(blt);
-                    // std::cout << "Killed entity:" << blt.getId() << std::endl;
                 }
             }
         }
@@ -455,4 +492,11 @@ void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, r
         }
     }
     // setText(r, message, "ChatBox1", style);
+}
+void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
+{
+    int type = r.getComponents<EnemyStats>()[e].value().enemyType;
+    if (type == 0)
+        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
 }

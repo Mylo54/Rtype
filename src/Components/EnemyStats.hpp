@@ -12,11 +12,12 @@ namespace rtp
 {
     class EnemyStats {
         public:
-            EnemyStats(int pHealth = 10): health(pHealth)
+            EnemyStats(int pHealth = 10, int pEnemyType = 0): health(pHealth), enemyType(pEnemyType)
             {}
             ~EnemyStats() {}
 
             int health;
+            int enemyType;
         protected:
         private:
     };

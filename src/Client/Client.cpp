@@ -25,14 +25,19 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    int cnt = connect();
+    std::vector<int> c = connect();
+
+    if (c[0] == 1)
+        return;
+    _addPlayer(_manager.getTop(), c[1], c[2]);
     systemsLoop();
 }
 
-int rtp::Client::connect()
+std::vector<int> rtp::Client::connect()
 {
     boost::array<networkPayload, 1> dataTbs = {CONNECT};
-    boost::array<networkPayload, 1> dataRec;
+    boost::array<connectPayload_t, 1> dataRec;
+    std::vector<int> res;
 
     //connection
     try {
@@ -42,7 +47,8 @@ int rtp::Client::connect()
     catch (std::exception& e)
     {
         std::cerr << e.what() << std::endl;
-        return (1);
+        res.push_back(1);
+        return (res);
     }
 
     boost::asio::write( _socketTCP, boost::asio::buffer(dataTbs), _error);
@@ -52,13 +58,15 @@ int rtp::Client::connect()
 
     // getting response from server
     boost::asio::read(_socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), _error);
-
+    res.push_back(0);
+    res.push_back(dataRec[0].playerId);
+    res.push_back(dataRec[0].syncId);
     if (_error && _error != boost::asio::error::eof) {
         std::cout << "receive failed: " << _error.message() << std::endl;
     } else {
         std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
-    return (0);
+    return (res);
 }
 
 void rtp::Client::_setupRegistry(eng::Registry &reg)
@@ -72,11 +80,16 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::Background>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+<<<<<<< HEAD
     reg.registerComponents(eng::SparseArray<rtp::Writable>());
+=======
+    reg.registerComponents(eng::SparseArray<rtp::Synced>());
+>>>>>>> 17ede686d27e476bf57c8115160c81ff1162a30f
 }
 
-eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
+eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
 {
     eng::Entity player = reg.spawnEntity();
 
@@ -85,6 +98,8 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg)
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
 
     return player;
 }
@@ -211,5 +226,3 @@ void rtp::Client::systemsLoop()
         systems.displaySystem(r);
     }
 }
-
-//port 3303

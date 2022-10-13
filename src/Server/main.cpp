@@ -31,11 +31,15 @@ int printHelp()
 
 int main(int ac, char **av)
 {
-    std::string arg = av[1];
-    if (arg == "-h" || arg == "-help")
-        return (printHelp());
+    std::string arg;
+
+    if (ac >= 2) {
+        arg = av[1];
+        if ((arg == "-h" || arg == "-help"))
+            return (printHelp());
+    }
     try {
-        boost::asio::ip::port_type port(3033);
+        boost::asio::ip::port_type port(3303);
         rtp::Server srv(port);
         srv.run();
     }

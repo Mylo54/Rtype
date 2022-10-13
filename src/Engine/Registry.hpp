@@ -108,8 +108,21 @@ namespace eng
             }
 
             /// @brief I don't know what this function is for, also idk wtf params is...
-            template <typename Component, typename... Params>
-            typename SparseArray<Component>::reference_type emplaceComponent(Entity const &to, Params &&...p);
+            template <typename Component>
+            SparseArray<Component> &emplaceComponent(Entity const &to, Component &&c) {
+                int e = to.getId();
+
+                if (e < getComponents<Component>().size() && getComponents<Component>()[e].has_value())
+                    getComponents<Component>()[e] = c;
+                else
+                    getComponents<Component>().insertAt(to.getId(), c);
+                if (getDebugMode()) {
+                    _log.log(_name + ": emplacing of component to id "
+                    + std::to_string(to.getId()));
+                }
+                return getComponents<Component>();
+            }
+
             /// @brief enable/disable the debug mode
             /// @param isEnable new value of debugMode
             void setDebugMode(bool isEnable);

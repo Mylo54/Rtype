@@ -125,11 +125,18 @@ namespace rtp
             void writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style);
         protected:
         private:
+            /// @brief A method that gets a synced entity id
+            /// @param syncId The synced component id
+            /// @return The entity id
+            int _getSyncedEntity(eng::Registry &r, int syncId);
+
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system
             /// @param b The bullets data
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
+
+            void _completeEnemy(eng::Registry &r, int e);
 
             sf::Event _event;
             sf::RenderWindow _w;

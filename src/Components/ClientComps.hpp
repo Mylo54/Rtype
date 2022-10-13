@@ -16,5 +16,6 @@
 #include "Shooter.hpp"
 #include "Velocity.hpp"
 #include "EnemyStats.hpp"
+#include "Synced.hpp"
 
 #endif /* !CLIENTCOMPS_HPP_ */
