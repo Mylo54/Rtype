@@ -12,6 +12,7 @@ rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
     std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
     _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {
+    _clock = std::clock();
 }
 
 rtp::ServerSystems::~ServerSystems()
@@ -70,8 +71,9 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += vel.value().x;
-            pos.value().y += vel.value().y;
+            // std::cout << "Delta : "<< _delta << std::endl;
+            pos.value().x += (vel.value().x * _delta * 20);
+            pos.value().y += (vel.value().y * _delta * 20);
         }
     }
 }
@@ -218,4 +220,11 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
         }
     }
     return -1;
+}
+
+void rtp::ServerSystems::updDeltaTime()
+{
+    _clock = clock() - _clock;
+    _delta = (float)_clock/CLOCKS_PER_SEC;
+    _clock = clock();
 }

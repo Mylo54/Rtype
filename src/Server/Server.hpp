@@ -24,6 +24,7 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
+#include <ctime>
 
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
@@ -61,6 +62,8 @@ namespace rtp {
 
             void tcpThread();
 
+            void assyncConnect();
+
         protected:
         private:
             /// @brief Adds a player into a registry, setting up everything
@@ -93,6 +96,8 @@ namespace rtp {
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
 
+            void aferConnection(boost::asio::ip::tcp::socket sckt);
+
             // For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket;
@@ -104,6 +109,7 @@ namespace rtp {
             boost::asio::io_service _ioService;
             boost::asio::ip::tcp::acceptor _acceptor;
             boost::asio::ip::tcp::socket _socketTCP;
+            std::optional<boost::asio::ip::tcp::socket> _socketOptional;
 
             // For thread
             std::mutex _mutex;
@@ -111,7 +117,8 @@ namespace rtp {
             bool _isEnd;
             bool _start;
 
-            
+            // Clock
+            std::clock_t _clock;
     };
 };
 

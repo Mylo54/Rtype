@@ -7,7 +7,7 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port}), _acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303)), _socketTCP(_ioService)
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303)), _socketTCP(_ioContext)
 {
     this->_clientPort = 0;
     _port = port;
@@ -45,50 +45,51 @@ void rtp::Server::dataReception()
     _cout.unlock();
 }
 
+void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
+{
+    boost::array<connectPayload_t, 1> dataTbs = {OK};
+    boost::system::error_code error;
+    boost::array<networkPayload, 1> dataRec;
+    connectPayload_t clientIds;
+
+    dataTbs[0].playerId = 1;
+    dataTbs[0].syncId = 1;
+    _start = true;
+             
+    boost::asio::read(sckt, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    if (error && error != boost::asio::error::eof) {
+        std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
+    } else if (dataRec[0].ACTION_NAME == CONNECT) {
+        std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+        _addEndpoint(sckt.remote_endpoint().address().to_string(), sckt.remote_endpoint().port());
+    } else {
+        std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
+    }
+    // write operation
+    sckt.send(boost::asio::buffer(dataTbs));
+}
+
+void rtp::Server::assyncConnect()
+{
+    //Non bloquant
+    _socketOptional.emplace(_ioContext);
+    _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
+    {
+        std::cout << "[Server][connect]: start accept" << std::endl;
+        if (error) {
+            std::cout << "[Server][connect]: connect failed" << std::endl;
+            // Failed to accept
+        } else {
+            std::cout << "[Server][connect]: connect success" << std::endl;
+            aferConnection(std::move(*_socketOptional));
+        }
+        assyncConnect();
+    });
+}
 
 void rtp::Server::connect()
 {
-    //Non bloquant
-    _acceptor.async_accept(_socketTCP, [&] (boost::system::error_code error)
-    {
-        if (error) {
-            _cout.lock();
-            std::cout << "[Server][connect]: connect failed" << std::endl;
-            _cout.unlock();
-            // Failed to accept.  Schedule to try again (not shown).
-            connect();
-            return;
-        } else {
-            boost::array<connectPayload_t, 1> dataTbs = {OK};
-            boost::system::error_code error;
-            boost::array<networkPayload, 1> dataRec;
-            connectPayload_t clientIds;
-
-            dataTbs[0].playerId = 1;
-            dataTbs[0].syncId = 1;
-            _cout.lock();
-            std::cout << "[Server][connect]: connect success" << std::endl;
-            _cout.unlock();
-            _start = true;
-            boost::asio::read(_socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-            if (error && error != boost::asio::error::eof) {
-                _cout.lock();
-                std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
-                _cout.unlock();
-            } else if (dataRec[0].ACTION_NAME == CONNECT) {
-                _cout.lock();
-                std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;   
-                _cout.unlock(); 
-                _addEndpoint(_socketTCP.remote_endpoint().address().to_string(), _socketTCP.remote_endpoint().port());
-            } else {
-                std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
-            }
-            // write operation
-            _socketTCP.send(boost::asio::buffer(dataTbs));
-        }
-    });
-    //Blockant
-    _ioService.run();
+    _ioContext.run();
     _cout.lock();
     std::cout << "[Server][connect]: End loop" << std::endl;
     _cout.unlock();
@@ -100,6 +101,8 @@ void rtp::Server::run()
     std::string input;
     std::cout << "[Server][RUN]: Running..." << std::endl;
     
+    
+    assyncConnect();
     std::thread connect(&rtp::Server::connect, this);
     std::thread dataReception = std::thread(&rtp::Server::dataReception, this);
     std::thread systems = std::thread(&rtp::Server::systemsLoop, this);
@@ -162,13 +165,16 @@ void rtp::Server::systemsLoop()
         // Receive data
         systems.receiveData(r);
 
+        // Update delta time
+        systems.updDeltaTime();
+
         // Apply new controls
         systems.controlMovementSystem(r);
         systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
-        //systems.playerLogSystem(r);
+        systems.playerLogSystem(r);
 
         // Send the new data
         systems.sendData(r);
