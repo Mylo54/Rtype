@@ -145,6 +145,7 @@ namespace rtp
             float _displayTime;
             boost::asio::ip::udp::socket &_socket;
             boost::asio::ip::udp::endpoint _endpoint;
+            boost::array<server_payload_t ,1> _dataBuffer;
     };
 } // namespace rtp
 

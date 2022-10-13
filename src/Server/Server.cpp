@@ -49,7 +49,7 @@ void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
 {
     boost::array<connectPayload_t, 1> dataTbs = {OK};
     boost::system::error_code error;
-    boost::array<networkPayload, 1> dataRec;
+    boost::array<demandConnectPayload_s, 1> dataRec;
     connectPayload_t clientIds;
 
     dataTbs[0].playerId = 1;
@@ -61,7 +61,9 @@ void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
         std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
     } else if (dataRec[0].ACTION_NAME == CONNECT) {
         std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-        _addEndpoint(sckt.remote_endpoint().address().to_string(), sckt.remote_endpoint().port());
+        std::stringstream a;
+        a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
+        _addEndpoint(a.str(), dataRec[0].port);
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }

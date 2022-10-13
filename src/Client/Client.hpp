@@ -33,6 +33,9 @@ namespace rtp {
             /// [2]: the syncId
             std::vector<int> connect();
 
+            /// @brief Disconnect the client from the server
+            void disconnect();
+
         protected:
         private:
             /// @brief Opens a udp socket
