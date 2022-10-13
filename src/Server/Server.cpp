@@ -90,6 +90,7 @@ void rtp::Server::assyncConnect()
 void rtp::Server::connect()
 {
     _ioContext.run();
+    std::cout << "[Server][connect]: after run" << std::endl;
     _cout.lock();
     std::cout << "[Server][connect]: End loop" << std::endl;
     _cout.unlock();
@@ -137,6 +138,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &c
     boost::array<networkPayload, 1> endmsg = {QUIT};
     _socket.send_to(boost::asio::buffer(endmsg),
     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
+    _ioContext.stop();
     
     //_socketTCP.send(boost::asio::buffer(boost::array<networkPayload, 1> {QUIT}));
     //boost::asio::write(_socketTCP, boost::asio::buffer(boost::array<networkPayload, 1> {QUIT})/*, _acceptor.local_endpoint()*/);
@@ -174,7 +176,7 @@ void rtp::Server::systemsLoop()
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
-        systems.playerLogSystem(r);
+        //systems.playerLogSystem(r);
 
         // Send the new data
         systems.sendData(r);
