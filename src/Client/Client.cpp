@@ -202,7 +202,7 @@ void rtp::Client::systemsLoop()
         // Receive Inputs
         //systems.receiveData(r);
         systems.updDeltaTime();
-        systems.receiveData(r);
+        //systems.receiveData(r);
         systems.controlSystem(r);
 
         // Send new events
