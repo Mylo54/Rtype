@@ -104,6 +104,8 @@ namespace rtp
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
+            void _completeEnemy(eng::Registry &r, int e);
+
             sf::Event _event;
             sf::RenderWindow _w;
             sf::Clock _c;
