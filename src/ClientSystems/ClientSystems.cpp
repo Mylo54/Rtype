@@ -255,6 +255,7 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
             pos.value().x += vel.value().x;
             pos.value().y += vel.value().y;
         }
+        std::cout << "x : [" << pos.value().x << "] y [" << pos.value().y << "]" << std::endl;
     }
 }
 
