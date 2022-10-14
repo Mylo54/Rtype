@@ -14,10 +14,10 @@ include(build/conanbuildinfo.cmake)
 include(build/conan_paths.cmake)
 conan_basic_setup()
 
-find_package(SFML 2.5.1 COMPONENTS window graphics system network audio REQUIRED)
-find_package(asio REQUIRED)
-find_package(Threads REQUIRED)
-find_package(Boost REQUIRED)
+#find_package(SFML 2.5.1 COMPONENTS window graphics system network audio REQUIRED)
+#find_package(asio REQUIRED)
+#find_package(Threads REQUIRED)
+#find_package(Boost REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
     add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
@@ -45,7 +45,8 @@ add_executable(Client-Rtype ${ENGINE} ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rtype PUBLIC
-  ${CONAN_INCLUDE_DIRECTORIES}
+  ${CONAN_INCLUDE_DIRS_BOOST}
+  ${CONAN_INCLUDE_DIRS_SFML}
 )
 
 target_link_libraries(
@@ -60,7 +61,8 @@ add_executable(Server-Rtype ${ENGINE} ${SERVER_SYSTEMS} ${SRCS_SERVER})
 
 target_include_directories(
   Server-Rtype PUBLIC
-  ${CONAN_INCLUDE_DIRECTORIES}
+  ${CONAN_INCLUDE_DIRS_BOOST}
+  ${CONAN_INCLUDE_DIRS_SFML}
 )
 
 target_link_libraries(
