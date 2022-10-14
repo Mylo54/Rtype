@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
 set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(BOOST_STACKTRACE_USE_BACKTRACE FALSE)
 
 Project (R-TYPE)
 include(build/conanbuildinfo.cmake)
@@ -45,8 +46,7 @@ add_executable(Client-Rtype ${ENGINE} ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rtype PUBLIC
-  ${CONAN_INCLUDE_DIRS_BOOST}
-  ${CONAN_INCLUDE_DIRS_SFML}
+  ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
@@ -61,8 +61,7 @@ add_executable(Server-Rtype ${ENGINE} ${SERVER_SYSTEMS} ${SRCS_SERVER})
 
 target_include_directories(
   Server-Rtype PUBLIC
-  ${CONAN_INCLUDE_DIRS_BOOST}
-  ${CONAN_INCLUDE_DIRS_SFML}
+  ${CONAN_INCLUDE_DIRECTORIES}
 )
 
 target_link_libraries(
