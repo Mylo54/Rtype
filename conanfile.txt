@@ -5,6 +5,7 @@ boost/1.80.0
 
 [options]
 *:shared = True
+boost:shared=True
 sfml:graphics=True
 sfml:window=True
 sfml:audio=True
