@@ -15,7 +15,7 @@ jobs:
       - name: build
         run: |
           mkdir build
-          cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build . 
+          cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build . --config RELEASE 
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
