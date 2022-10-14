@@ -190,10 +190,9 @@ void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
-
+    systems.setMaxFrameRate(60);
 
     while (systems.windowOpen()) {
-
         systems.eventCloseWindow();
         // Receive Inputs
         systems.updDeltaTime();

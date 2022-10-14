@@ -18,6 +18,8 @@
 #include <thread>
 #include <condition_variable>
 #include <boost/container/vector.hpp>
+#include <ctime>
+#include <compare>
 
 namespace rtp {
     class ServerSystems {
@@ -66,6 +68,8 @@ namespace rtp {
             void receiveData(eng::Registry &r);
 
             void updDeltaTime();
+            /// @brief Limit the framerate if needed
+            void limitTime();
         protected:
         private:
             /// @brief A method that gets a synced entity id
@@ -85,10 +89,11 @@ namespace rtp {
             std::mutex &_mutex;
             /// @brief List of all received payload
             std::vector<inputPayload_t> &_listDataRec;
-            /// @brief 
-            std::clock_t _clock;
-            /// @brief delta time in seconds
-            float _delta;
+
+            std::chrono::steady_clock::time_point lastUpdate = std::chrono::steady_clock::now();
+            float _delta = 0;
+            float _tps = 60;
+
     };
 };
 

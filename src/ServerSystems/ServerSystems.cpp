@@ -12,7 +12,6 @@ rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
     std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
     _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {
-    _clock = std::clock();
 }
 
 rtp::ServerSystems::~ServerSystems()
@@ -55,8 +54,8 @@ void rtp::ServerSystems::playerLogSystem(eng::Registry &r)
             auto s = ss[i].value();
             auto sy = sys[i].value();
 
-            std::cout << "Player " << sy.id << " is at {" << p.x << ", ";
-            std::cout << p.y << "}" << std::endl;
+            // std::cout << "Player " << sy.id << " is at {" << p.x << ", ";
+            // std::cout << p.y << "}" << std::endl;
         }
     }
 }
@@ -71,9 +70,9 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            // std::cout << "Delta : "<< _delta << std::endl;
-            pos.value().x += (vel.value().x * _delta * 20);
-            pos.value().y += (vel.value().y * _delta * 20);
+            // pos.value().x += (vel.value().x * _delta * 20);
+            // pos.value().y += (vel.value().y * _delta * 20);
+            // std::cout << "X[" << pos.value().x << "] Y[" << pos.value().y << "]" << std::endl;
         }
     }
 }
@@ -230,7 +229,18 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 
 void rtp::ServerSystems::updDeltaTime()
 {
-    _clock = clock() - _clock;
-    _delta = (float)_clock/CLOCKS_PER_SEC;
-    _clock = clock();
+    std::chrono::_V2::steady_clock::time_point now = std::chrono::steady_clock::now();
+    _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
+    lastUpdate = now;
+    std::cout << _delta << std::endl;
+}
+
+void rtp::ServerSystems::limitTime()
+{
+    if ((_tps != 0) && ((1 / _tps) > _delta)) {
+        sleep((1 / _tps) - _delta);
+        std::cout << "sleep" << std::endl;
+    }
+    else
+        std::cout << "wake" << std::endl;
 }

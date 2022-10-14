@@ -127,6 +127,10 @@ namespace rtp
             /// @brief Create a bottom chatBox line
             /// @param reg The registry on which to apply the system
             void addChatBox(eng::Registry &reg);
+
+            /// @brief Set the max frame rate of the _w attribut
+            /// @param mfr new maximum frame rate (O to disable max limit)
+            void setMaxFrameRate(float mfr);
         protected:
         private:
             /// @brief A method that gets a synced entity id

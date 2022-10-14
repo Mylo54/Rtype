@@ -166,11 +166,12 @@ void rtp::Server::systemsLoop()
 
     while (!_isEnd)
     {
-        // Receive data
-        systems.receiveData(r);
-
         // Update delta time
         systems.updDeltaTime();
+        // Limit the frequence of the server
+        systems.limitTime();
+        // Receive data
+        systems.receiveData(r);
 
         // Apply new controls
         systems.controlMovementSystem(r);

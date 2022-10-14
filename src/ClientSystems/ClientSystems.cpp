@@ -280,6 +280,7 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
         if (pos.has_value() && vel.has_value()) {
             pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
             pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
+            std::cout << "X[" << pos.value().x << "] Y[" << pos.value().y << "]" << std::endl;
         }
     }
 }
@@ -514,4 +515,9 @@ void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
     if (type == 0)
         r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
+}
+
+void rtp::ClientSystems::setMaxFrameRate(float mfr)
+{
+    _w.setFramerateLimit(mfr);
 }
