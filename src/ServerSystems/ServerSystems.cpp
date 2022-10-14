@@ -126,8 +126,6 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     boost::array<server_payload_t, 1> dataTbs;
 
     for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size() && i < sc.size(); i++) {
-        // Send player infos
-        // (not checking if ps and vs have values so it's dangerous O_o)
         if (playerStats[i].has_value() && sc[i].has_value()) {
             auto &p = ps[i].value();
             auto &v = vs[i].value();
@@ -158,21 +156,19 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &enm = enemyStats[i].value();
             auto &id_sync = sc[i].value();
 
-            dataTbs[0].COMPONENT_NAME = POSITION;
-            dataTbs[0].valueA = p.x;
-            dataTbs[0].valueB = p.y;
-            dataTbs[0].valueC = p.z;
-            dataTbs[0].syncId = id_sync.id;
-            sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = VELOCITY;
-            dataTbs[0].valueA = v.x;
-            dataTbs[0].valueB = v.y;
-            dataTbs[0].syncId = id_sync.id;
-            sendSyncedDataToAll(dataTbs);
             dataTbs[0].COMPONENT_NAME = ENEMY_STATS;
             dataTbs[0].valueA = enm.enemyType;
             dataTbs[0].valueB = enm.health;
             dataTbs[0].syncId = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = POSITION;
+            dataTbs[0].valueA = p.x;
+            dataTbs[0].valueB = p.y;
+            dataTbs[0].valueC = p.z;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = VELOCITY;
+            dataTbs[0].valueA = v.x;
+            dataTbs[0].valueB = v.y;
             sendSyncedDataToAll(dataTbs);
         }
         // Then send shot events and from which player they arrived from

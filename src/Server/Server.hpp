@@ -92,11 +92,15 @@ namespace rtp {
             /// @brief Print a list of commands for the user
             void _printHelp();
 
+            /// @brief Adds a random enemy into the registry
+            void _addEnemy(eng::Registry &r);
+
+            void aferConnection(boost::asio::ip::tcp::socket sckt);
+
             boost::asio::ip::port_type _port;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
-
-            void aferConnection(boost::asio::ip::tcp::socket sckt);
+            bool _commandAddEnemy = false;
 
             // For UDP
             boost::asio::io_context _ioContext;
@@ -114,6 +118,7 @@ namespace rtp {
             // For thread
             std::mutex _mutex;
             std::mutex _cout;
+            std::mutex _commands;
             bool _isEnd;
             bool _start;
 

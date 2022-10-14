@@ -23,26 +23,11 @@ rtp::Server::~Server()
 void rtp::Server::dataReception()
 {
     while (!_isEnd) {
-        _cout.lock();
-        std::cout << "[Server][dataReception]: Waiting to receive" << std::endl;
-        _cout.unlock();
         size_t len = this->_socket.receive(boost::asio::buffer(this->_dataRec));
-
-        _cout.lock();
-        std::cout << "[Server][dataReception]: Received something!" << std::endl;
-        _cout.unlock();
-
         std::unique_lock<std::mutex> lk(this->_mutex);
         this->_listDataRec.push_back(inputPayload_t({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].syncId}));
         lk.unlock();
-        _cout.lock();
-        std::cout << "A client sent us the action type: <" << _dataRec[0].ACTION_NAME;
-        std::cout << "> for the synced component <" << _dataRec[0].syncId << std::endl;
-        _cout.unlock();
     }
-    _cout.lock();
-    std::cout << "[Server][dataReception]: Exiting data reception loop" << std::endl;
-    _cout.unlock();
 }
 
 void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
@@ -117,13 +102,31 @@ void rtp::Server::run()
             _printHelp();
         if (input == "exit")
             _exitServer(systems, dataReception, connect);
+        if (input == "addEnemy")
+            _commandAddEnemy = true;
     }
     std::cout << "[Server]: Bye!" << std::endl;
+}
+
+void rtp::Server::_addEnemy(eng::Registry &r)
+{
+    eng::Entity enm = r.spawnEntity();
+
+    r.addComponent<rtp::Position>(enm, rtp::Position(1920 + (rand() % 2000), rand() % 1080, 0));
+    r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
+    r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
+    r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
+    r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
+    _cout.lock();
+    std::cout << "[Server][systemsLoop]: added an enemy!" << std::endl;
+    _cout.unlock();
 }
 
 void rtp::Server::_printHelp()
 {
     _cout.lock();
+    std::cout << "[Server]: help\t display this message" << std::endl;
+    std::cout << "[Server]: addEnemy\t add a random enemy" << std::endl;
     std::cout << "[Server]: exit\t exits the server"<< std::endl;
     _cout.unlock();
 }
@@ -169,6 +172,10 @@ void rtp::Server::systemsLoop()
         // Receive data
         systems.receiveData(r);
 
+        if (_commandAddEnemy) {
+            _commandAddEnemy = false;
+            _addEnemy(r);
+        }
         // Update delta time
         systems.updDeltaTime();
 
@@ -198,6 +205,7 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
+    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
 }
 
 // Player Id will be stored inside playerstats later...
@@ -209,7 +217,7 @@ void rtp::Server::_addPlayer(eng::Registry &r, int syncId, int playerId)
     r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
     r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    r.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    r.addComponent<rtp::Synced>(player, rtp::Synced(0));
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Player " << syncId << " has joined the registry" << std::endl;
     _cout.unlock();

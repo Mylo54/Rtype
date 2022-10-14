@@ -105,7 +105,7 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(0));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
 
     return player;
