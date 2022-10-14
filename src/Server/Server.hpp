@@ -68,7 +68,7 @@ namespace rtp {
         private:
             /// @brief Adds a player into a registry, setting up everything
             /// @param r The registry on which to add a player
-            void _addPlayer(eng::Registry &r, int syncId, int playerId);
+            void _addPlayer(eng::Registry &r);
 
             /// @brief Adds an endpoint into the vector of endpoints
             /// @param address The adress of the endpoint
@@ -95,12 +95,15 @@ namespace rtp {
             /// @brief Adds a random enemy into the registry
             void _addEnemy(eng::Registry &r);
 
-            void aferConnection(boost::asio::ip::tcp::socket sckt);
+            void afterConnection(boost::asio::ip::tcp::socket sckt);
 
             boost::asio::ip::port_type _port;
             int _clientPort;
             std::list<rtp::Lobby> _listLobby;
             bool _commandAddEnemy = false;
+            bool _askNewPlayer = false;
+            int _nPlayer = 1;
+            int _lastPlayerSyncId = 0;
 
             // For UDP
             boost::asio::io_context _ioContext;

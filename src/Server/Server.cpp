@@ -30,17 +30,19 @@ void rtp::Server::dataReception()
     }
 }
 
-void rtp::Server::aferConnection(boost::asio::ip::tcp::socket sckt)
+void rtp::Server::afterConnection(boost::asio::ip::tcp::socket sckt)
 {
     boost::array<connectPayload_t, 1> dataTbs = {OK};
     boost::system::error_code error;
     boost::array<demandConnectPayload_s, 1> dataRec;
     connectPayload_t clientIds;
 
-    dataTbs[0].playerId = 1;
-    dataTbs[0].syncId = 1;
+    dataTbs[0].playerId = _nPlayer;
+    _askNewPlayer = true;
+    while (_askNewPlayer);
+    dataTbs[0].syncId = _lastPlayerSyncId;
     _start = true;
-             
+
     boost::asio::read(sckt, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
     if (error && error != boost::asio::error::eof) {
         std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
@@ -68,7 +70,7 @@ void rtp::Server::assyncConnect()
             // Failed to accept
         } else {
             std::cout << "[Server][connect]: connect success" << std::endl;
-            aferConnection(std::move(*_socketOptional));
+            afterConnection(std::move(*_socketOptional));
         }
         assyncConnect();
     });
@@ -160,9 +162,6 @@ void rtp::Server::systemsLoop()
     eng::Registry r;
 
     _setupRegistry(r);
-    // Temporary way to add player
-    _addPlayer(r, 1, 1);
-
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Registry is ready" << std::endl;
     _cout.unlock();
@@ -175,6 +174,10 @@ void rtp::Server::systemsLoop()
         if (_commandAddEnemy) {
             _commandAddEnemy = false;
             _addEnemy(r);
+        }
+        if (_askNewPlayer) {
+            _addPlayer(r);
+            _askNewPlayer = false;
         }
         // Update delta time
         systems.updDeltaTime();
@@ -209,18 +212,20 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
 }
 
 // Player Id will be stored inside playerstats later...
-void rtp::Server::_addPlayer(eng::Registry &r, int syncId, int playerId)
+void rtp::Server::_addPlayer(eng::Registry &r)
 {
     eng::Entity player = r.spawnEntity();
 
     r.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
-    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(_nPlayer));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    r.addComponent<rtp::Synced>(player, rtp::Synced(0));
+    r.addComponent<rtp::Synced>(player, rtp::Synced(player.getId()));
+    _lastPlayerSyncId = player.getId();
     _cout.lock();
-    std::cout << "[Server][systemsLoop]: Player " << syncId << " has joined the registry" << std::endl;
+    std::cout << "[Server][systemsLoop]: Player " << _nPlayer << "has joinded the game!" << std::endl;
     _cout.unlock();
+    _nPlayer++;
 }
 
 int rtp::Server::getNumberLobby()

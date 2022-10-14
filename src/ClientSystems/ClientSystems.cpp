@@ -544,5 +544,5 @@ void rtp::ClientSystems::_completePlayer(eng::Registry &r, int e)
         rect.top = 98;
     if (playerId == 4)
         rect.top = 147;
-    r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/player.png", 1, rect, 0.10));
+    r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
 }

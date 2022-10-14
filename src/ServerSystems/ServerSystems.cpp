@@ -131,21 +131,21 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &v = vs[i].value();
             auto &id_sync = sc[i].value();
             auto &player = playerStats[i].value();
-
-            dataTbs[0].COMPONENT_NAME = POSITION;
-            dataTbs[0].valueA = p.x;
-            dataTbs[0].valueB = p.y;
-            dataTbs[0].valueC = p.z;
-            dataTbs[0].syncId = id_sync.id;
-            sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = VELOCITY;
-            dataTbs[0].valueA = v.x;
-            dataTbs[0].valueB = v.y;
-            sendSyncedDataToAll(dataTbs);
+            
             dataTbs[0].COMPONENT_NAME = PLAYER_STATS;
             dataTbs[0].valueA = player.playerId;
             dataTbs[0].valueB = player.damage;
             dataTbs[0].valueC = player.lives;
+            dataTbs[0].syncId = id_sync.id;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = POSITION;
+            dataTbs[0].valueA = p.x;
+            dataTbs[0].valueB = p.y;
+            dataTbs[0].valueC = p.z;
+            sendSyncedDataToAll(dataTbs);
+            dataTbs[0].COMPONENT_NAME = VELOCITY;
+            dataTbs[0].valueA = v.x;
+            dataTbs[0].valueB = v.y;
             sendSyncedDataToAll(dataTbs);
         }
     }
