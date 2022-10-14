@@ -24,7 +24,6 @@ namespace rtp {
             ~Client();
             void run();
             void systemsLoop();
-            void send();
 
             /// @brief Connect client to server
             /// @return a vector with data
@@ -38,9 +37,6 @@ namespace rtp {
 
         protected:
         private:
-            /// @brief Opens a udp socket
-            void _openSocket();
-
             /// @brief Setup the registry with every sparse array needed
             /// @param r The Registry to setup
             void _setupRegistry(eng::Registry &reg);

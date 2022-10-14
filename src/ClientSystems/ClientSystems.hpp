@@ -146,6 +146,8 @@ namespace rtp
 
             void _completeEnemy(eng::Registry &r, int e);
 
+            void _completePlayer(eng::Registry &r, int e);
+
             sf::Event _event;
             sf::RenderWindow _w;
             sf::Clock _c;

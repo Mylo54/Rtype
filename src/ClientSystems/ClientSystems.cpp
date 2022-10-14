@@ -339,16 +339,29 @@ void rtp::ClientSystems::receiveData(eng::Registry &r)
         if (_dataBuffer[0].COMPONENT_NAME == END_PACKET)
             return;
         auto &data = _dataBuffer[0];
-        e = _getSyncedEntity(r, _dataBuffer[0].syncId);
+        e = _getSyncedEntity(r, data.syncId);
+        toBuild = false;
         if (e == -1) {
             toBuild = true;
             e = r.spawnEntity().getId();
-            r.addComponent<Synced>(eng::Entity(e), Synced(_dataBuffer[0].syncId));
+            r.addComponent<Synced>(eng::Entity(e), Synced(data.syncId));
+            writeInChatBox(r, "A new entity has been added by the server!", ChatBoxStyle::EVENT);
         }
         if (_dataBuffer[0].COMPONENT_NAME == POSITION)
             r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
         if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
             r.emplaceComponent<Velocity>(eng::Entity(e), Velocity(data.valueA, data.valueB));
+        if (data.COMPONENT_NAME == ENEMY_STATS) {
+            r.emplaceComponent<EnemyStats>(eng::Entity(e), EnemyStats(data.valueB, data.valueA));
+            if (toBuild)
+                _completeEnemy(r, e);
+        }
+        if (data.COMPONENT_NAME == PLAYER_STATS) {
+            r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, 10, data.valueB, data.valueC));
+            if (toBuild)
+                _completePlayer(r, e);
+        }
+
     }
 }
 
@@ -356,10 +369,13 @@ int rtp::ClientSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 {
     auto synceds = r.getComponents<Synced>();
 
-    for (int i = 0; i < synceds.size(); i++)
-        if (synceds[i].has_value())
-            if (synceds[i].value().id == syncId)
-                return i;
+    for (int i = 0; i < synceds.size(); i++) {
+        if (synceds[i].has_value()) {
+            if (synceds[i].value().id == syncId) {
+                return (i);
+            }
+        }
+    }
     return (-1);
 }
 
@@ -520,4 +536,19 @@ void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
 void rtp::ClientSystems::setMaxFrameRate(float mfr)
 {
     _w.setFramerateLimit(mfr);
+}
+
+void rtp::ClientSystems::_completePlayer(eng::Registry &r, int e)
+{
+    int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
+    sf::IntRect rect = {0, 0, 65, 49};
+    r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
+    r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
+    if (playerId == 2)
+        rect.top = 49;
+    if (playerId == 3)
+        rect.top = 98;
+    if (playerId == 4)
+        rect.top = 147;
+    r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
 }

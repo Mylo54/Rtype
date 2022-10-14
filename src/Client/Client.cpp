@@ -27,7 +27,6 @@ void rtp::Client::run()
     if (c[0] == 1)
         return;
     eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
-    std::cout << "Player = " << player.getId() << std::endl;
     systemsLoop();
     disconnect();
 }
@@ -102,12 +101,14 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId
 
     reg.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     reg.addComponent<rtp::Velocity>(player, rtp::Velocity());
-    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
-    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/player.png", 1, sf::IntRect(0, 0, 65, 49), 0.10));
+    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
+    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/players.png", 1, sf::IntRect(0, ((playerId - 1) * 49), 60, 49), 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
 
+    std::cout << "You are player " << playerId << std::endl;
+    std::cout << "rect: " << ((playerId - 1) * 49) << std::endl;
     return player;
 }
 
@@ -160,30 +161,6 @@ std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
     reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
     reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/background.png"));
     return bgs;
-}
-
-//UDP
-void rtp::Client::send()
-{
-    std::cout << "WAITING TO SEND\n";
-    boost::array<networkPayload, 1> data_tbs = {CONNECT};
-    _socket.send_to(boost::asio::buffer(data_tbs),
-    boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), 3303});
-
-
-    boost::array<networkPayload, 1> dataRec;
-    boost::asio::ip::udp::endpoint endpoint;
-    size_t len = this->_socket.receive_from(boost::asio::buffer(dataRec), endpoint);
-    if (dataRec[0].ACTION_NAME == ACTIONTYPE_PREGAME::OK) {
-        std::cout << "Connected to server" << std::endl;
-    } else {
-        send();
-    }
-}
-
-void rtp::Client::_openSocket()
-{
-    _socket.open(boost::asio::ip::udp::v4());
 }
 
 void rtp::Client::systemsLoop()
