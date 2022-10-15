@@ -19,7 +19,6 @@
 #include <condition_variable>
 #include <boost/container/vector.hpp>
 #include <ctime>
-#include <compare>
 
 namespace rtp {
     class ServerSystems {
@@ -70,6 +69,10 @@ namespace rtp {
             void updDeltaTime();
             /// @brief Limit the framerate if needed
             void limitTime();
+
+            /// @brief Prevents player from going out of the window and limit its velocity
+            /// @param reg The registry on which to apply the system
+            void limitPlayer(eng::Registry &r);
         protected:
         private:
             /// @brief A method that gets a synced entity id

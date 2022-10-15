@@ -128,6 +128,10 @@ namespace rtp
             /// @param reg The registry on which to apply the system
             void addChatBox(eng::Registry &reg);
 
+            /// @brief Prevents player from going out of the window and limit its velocity
+            /// @param reg The registry on which to apply the system
+            void limitPlayer(eng::Registry &reg);
+
             /// @brief Set the max frame rate of the _w attribut
             /// @param mfr new maximum frame rate (O to disable max limit)
             void setMaxFrameRate(float mfr);

@@ -114,7 +114,7 @@ void rtp::Server::_addEnemy(eng::Registry &r)
 {
     eng::Entity enm = r.spawnEntity();
 
-    r.addComponent<rtp::Position>(enm, rtp::Position(1920 + (rand() % 2000), rand() % 1080, 0));
+    r.addComponent<rtp::Position>(enm, rtp::Position(1920, rand() % 1080, 0));
     r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
     r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
     r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
@@ -127,9 +127,9 @@ void rtp::Server::_addEnemy(eng::Registry &r)
 void rtp::Server::_printHelp()
 {
     _cout.lock();
-    std::cout << "[Server]: help\t display this message" << std::endl;
+    std::cout << "[Server]: help\t\t display this message" << std::endl;
     std::cout << "[Server]: addEnemy\t add a random enemy" << std::endl;
-    std::cout << "[Server]: exit\t exits the server"<< std::endl;
+    std::cout << "[Server]: exit\t\t exits the server"<< std::endl;
     _cout.unlock();
 }
 
@@ -190,7 +190,7 @@ void rtp::Server::systemsLoop()
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
-        //systems.playerLogSystem(r);
+        systems.limitPlayer(r);
 
         // Send the new data
         systems.sendData(r);

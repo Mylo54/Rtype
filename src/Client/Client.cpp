@@ -102,13 +102,13 @@ eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId
     reg.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
     reg.addComponent<rtp::Velocity>(player, rtp::Velocity());
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
-    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/players.png", 1, sf::IntRect(0, ((playerId - 1) * 49), 60, 49), 0.10));
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
+    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/players.png", 1, rect, 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
 
     std::cout << "You are player " << playerId << std::endl;
-    std::cout << "rect: " << ((playerId - 1) * 49) << std::endl;
     return player;
 }
 
@@ -185,6 +185,7 @@ void rtp::Client::systemsLoop()
         systems.controlMovementSystem(r);
         systems.shootSystem(r);
         systems.positionSystem(r);
+        systems.limitPlayer(r);
         systems.animateSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
