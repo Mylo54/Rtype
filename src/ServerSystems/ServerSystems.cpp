@@ -252,9 +252,6 @@ void rtp::ServerSystems::updDeltaTime()
 void rtp::ServerSystems::limitTime()
 {
     if ((_tps != 0) && ((1 / _tps) > _delta)) {
-        std::cout << "la fête du sleep commence" << std::endl;
-        usleep(((1.0 / _tps) - _delta) * 1000000);
-        
+        usleep(((1.0 / _tps) - _delta) * 1000000);        
     }
-    std::cout << (1.0 / _tps) - _delta << std::endl;
 }
