@@ -560,7 +560,7 @@ void rtp::ClientSystems::setMaxFrameRate(float mfr)
 void rtp::ClientSystems::_completePlayer(eng::Registry &r, int e)
 {
     int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
-    sf::IntRect rect = {0, 0, 65, 49};
+    sf::IntRect rect = {0, 0, 60, 49};
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
     if (playerId == 2)
