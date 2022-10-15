@@ -70,9 +70,28 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            // pos.value().x += (vel.value().x * _delta * 20);
-            // pos.value().y += (vel.value().y * _delta * 20);
-            // std::cout << "X[" << pos.value().x << "] Y[" << pos.value().y << "]" << std::endl;
+            pos.value().x += (vel.value().x * _delta * 20);
+            pos.value().y += (vel.value().y * _delta * 20);
+        }
+    }
+}
+
+void rtp::ServerSystems::limitPlayer(eng::Registry &r)
+{
+    auto &pos = r.getComponents<Position>();
+    auto &ves = r.getComponents<Velocity>();
+    auto &pls = r.getComponents<PlayerStats>();
+
+    for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
+        if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
+            auto &position = pos[i].value();
+            auto &velocity = ves[i].value();
+            auto &playerSt = pls[i].value();
+
+            position.x = (position.x >= 1860) ? 1860 : position.x;
+            position.x = (position.x < 0) ? 0 : position.x;
+            position.y = (position.y >= 982) ? 982 : position.y;
+            position.y = (position.y < 0) ? 0 : position.y;
         }
     }
 }
@@ -232,6 +251,7 @@ void rtp::ServerSystems::updDeltaTime()
 
 void rtp::ServerSystems::limitTime()
 {
-    if ((_tps != 0) && ((1 / _tps) > _delta))
-        sleep((1 / _tps) - _delta);
+    if ((_tps != 0) && ((1 / _tps) > _delta)) {
+        usleep(((1.0 / _tps) - _delta) * 1000000);        
+    }
 }

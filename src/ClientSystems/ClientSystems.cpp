@@ -62,10 +62,6 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-            // ctrl.value().chat = sf::Event::KeyReleased()
-            // ctrl.value().chat = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
-            // ctrl.value().event = sf::Keyboard::isKeyPressed(sf::Keyboard::V);
-            // ctrl.value().event = sf::Event::KeyReleased;
         }
     }
 }
@@ -81,14 +77,14 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * 2;
-            vel.value().x += (vel.value().x > 0) ? -1 : 0;
-            vel.value().x += (vel.value().x < 0) ? 1 : 0;
+            vel.value().x += ctrl.value().xAxis * _delta.asSeconds() * 20 * 2;
+            vel.value().x += (vel.value().x > 0) ? -_delta.asSeconds() * 20 : 0;
+            vel.value().x += (vel.value().x < 0) ? _delta.asSeconds() * 20 : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * 2;
-            vel.value().y += (vel.value().y > 0) ? -1 : 0;
-            vel.value().y += (vel.value().y < 0) ? 1 : 0;
+            vel.value().y += ctrl.value().yAxis * _delta.asSeconds() * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? -_delta.asSeconds() * 20 : 0;
+            vel.value().y += (vel.value().y < 0) ? _delta.asSeconds() * 20 : 0;
         }
     }
 }
@@ -100,10 +96,8 @@ void rtp::ClientSystems::clearSystem(eng::Registry &r)
 
 void rtp::ClientSystems::displaySystem(eng::Registry &r)
 {
-    if ((_delta.asSeconds() + _displayTime) >= (1/60)) {
-        _w.display();
-        _displayTime = _delta.asSeconds() + _displayTime - (1/60);
-    }
+    _w.display();
+    _delta = _c.restart();
 }
 
 // Some changes to optimize would be good
@@ -201,7 +195,6 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
             }
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
-                ctrl.value().chat = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
@@ -280,6 +273,26 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
         if (pos.has_value() && vel.has_value()) {
             pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
             pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
+        }
+    }
+}
+
+void rtp::ClientSystems::limitPlayer(eng::Registry &r)
+{
+    auto &pos = r.getComponents<Position>();
+    auto &ves = r.getComponents<Velocity>();
+    auto &pls = r.getComponents<PlayerStats>();
+
+    for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
+        if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
+            auto &position = pos[i].value();
+            auto &velocity = ves[i].value();
+            auto &playerSt = pls[i].value();
+
+            position.x = (position.x >= 1860) ? 1860 : position.x;
+            position.x = (position.x < 0) ? 0 : position.x;
+            position.y = (position.y >= 982) ? 982 : position.y;
+            position.y = (position.y < 0) ? 0 : position.y;
         }
     }
 }
@@ -540,7 +553,7 @@ void rtp::ClientSystems::setMaxFrameRate(float mfr)
 void rtp::ClientSystems::_completePlayer(eng::Registry &r, int e)
 {
     int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
-    sf::IntRect rect = {0, 0, 65, 49};
+    sf::IntRect rect = {0, 0, 60, 49};
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
     if (playerId == 2)
