@@ -88,9 +88,9 @@ void rtp::ServerSystems::limitPlayer(eng::Registry &r)
             auto &velocity = ves[i].value();
             auto &playerSt = pls[i].value();
 
-            position.x = (position.x > 1920) ? 1919 : position.x;
+            position.x = (position.x >= 1860) ? 1860 : position.x;
             position.x = (position.x < 0) ? 0 : position.x;
-            position.y = (position.y > 1080) ? 1079 : position.y;
+            position.y = (position.y >= 982) ? 982 : position.y;
             position.y = (position.y < 0) ? 0 : position.y;
         }
     }
