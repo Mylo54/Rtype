@@ -190,7 +190,7 @@ void rtp::Server::systemsLoop()
 
         // Apply logic and physics calculations
         systems.positionSystem(r);
-        //systems.playerLogSystem(r);
+        systems.limitPlayer(r);
 
         // Send the new data
         systems.sendData(r);

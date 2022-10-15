@@ -284,6 +284,26 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
     }
 }
 
+void rtp::ClientSystems::limitPlayer(eng::Registry &r)
+{
+    auto &pos = r.getComponents<Position>();
+    auto &ves = r.getComponents<Velocity>();
+    auto &pls = r.getComponents<PlayerStats>();
+
+    for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
+        if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
+            auto &position = pos[i].value();
+            auto &velocity = ves[i].value();
+            auto &playerSt = pls[i].value();
+
+            position.x = (position.x > 1920) ? 1919 : position.x;
+            position.x = (position.x < 0) ? 0 : position.x;
+            position.y = (position.y > 1080) ? 1079 : position.y;
+            position.y = (position.y < 0) ? 0 : position.y;
+        }
+    }
+}
+
 void rtp::ClientSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();

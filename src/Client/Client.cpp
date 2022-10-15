@@ -173,8 +173,8 @@ void rtp::Client::systemsLoop()
         systems.eventCloseWindow();
         // Receive Inputs
         systems.updDeltaTime();
-        systems.receiveData(r);
         systems.controlSystem(r);
+        systems.receiveData(r);
 
         // Send new events
         systems.sendData(r);
@@ -185,6 +185,7 @@ void rtp::Client::systemsLoop()
         systems.controlMovementSystem(r);
         systems.shootSystem(r);
         systems.positionSystem(r);
+        systems.limitPlayer(r);
         systems.animateSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
