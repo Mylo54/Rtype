@@ -27,6 +27,14 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 #    add_compile_options(std:c++17)
 #endif()
 
+if (APPLE)
+	add_definitions(-DAPPLE)
+elseif (WIN32)
+	add_definitions(-DWINDOWS)
+	add_definitions(-D_WIN32_WINNT=0x0501)
+endif (APPLE)
+
+
 include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
 )
