@@ -244,7 +244,7 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 
 void rtp::ServerSystems::updDeltaTime()
 {
-    std::chrono::_V2::steady_clock::time_point now = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
     _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
     lastUpdate = now;
 }
@@ -252,6 +252,7 @@ void rtp::ServerSystems::updDeltaTime()
 void rtp::ServerSystems::limitTime()
 {
     if ((_tps != 0) && ((1 / _tps) > _delta)) {
-        usleep(((1.0 / _tps) - _delta) * 1000000);        
+        long long sleeptime = ((1.0 / _tps) - _delta) * 100000;
+        std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));       
     }
 }

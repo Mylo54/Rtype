@@ -31,7 +31,7 @@ if (APPLE)
 	add_definitions(-DAPPLE)
 elseif (WIN32)
 	add_definitions(-DWINDOWS)
-	add_definitions(-D_WIN32_WINNT=0x0501)
+	add_definitions(-D_WIN32_WINNT=0x0A00)
 endif (APPLE)
 
 
