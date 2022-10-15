@@ -60,9 +60,9 @@ namespace rtp {
 
             void systemsLoop();
 
-            void tcpThread();
-
             void assyncConnect();
+
+            void disconnect();
 
         protected:
         private:
@@ -96,6 +96,8 @@ namespace rtp {
             void _addEnemy(eng::Registry &r);
 
             void afterConnection(boost::asio::ip::tcp::socket sckt);
+            
+            void assyncDisconnect(std::vector<boost::asio::ip::tcp::socket>::iterator it);
 
             boost::asio::ip::port_type _port;
             int _clientPort;
@@ -117,6 +119,7 @@ namespace rtp {
             boost::asio::ip::tcp::acceptor _acceptor;
             boost::asio::ip::tcp::socket _socketTCP;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
+            std::vector<boost::asio::ip::tcp::socket *> _socketList;
 
             // For thread
             std::mutex _mutex;
