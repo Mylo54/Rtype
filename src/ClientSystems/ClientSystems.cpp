@@ -197,7 +197,6 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
             }
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
-                ctrl.value().chat = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
