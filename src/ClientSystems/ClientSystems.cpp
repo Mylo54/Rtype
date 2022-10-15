@@ -77,14 +77,14 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * 2;
-            vel.value().x += (vel.value().x > 0) ? -1 : 0;
-            vel.value().x += (vel.value().x < 0) ? 1 : 0;
+            vel.value().x += ctrl.value().xAxis * _delta.asSeconds() * 20 * 2;
+            vel.value().x += (vel.value().x > 0) ? -_delta.asSeconds() * 20 : 0;
+            vel.value().x += (vel.value().x < 0) ? _delta.asSeconds() * 20 : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * 2;
-            vel.value().y += (vel.value().y > 0) ? -1 : 0;
-            vel.value().y += (vel.value().y < 0) ? 1 : 0;
+            vel.value().y += ctrl.value().yAxis * _delta.asSeconds() * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? -_delta.asSeconds() * 20 : 0;
+            vel.value().y += (vel.value().y < 0) ? _delta.asSeconds() * 20 : 0;
         }
     }
 }
@@ -96,10 +96,8 @@ void rtp::ClientSystems::clearSystem(eng::Registry &r)
 
 void rtp::ClientSystems::displaySystem(eng::Registry &r)
 {
-    if ((_delta.asSeconds() + _displayTime) >= (1/60)) {
-        _w.display();
-        _displayTime = _delta.asSeconds() + _displayTime - (1/60);
-    }
+    _w.display();
+    _delta = _c.restart();
 }
 
 // Some changes to optimize would be good

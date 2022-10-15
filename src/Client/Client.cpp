@@ -171,9 +171,9 @@ void rtp::Client::systemsLoop()
 
     while (systems.windowOpen()) {
         systems.eventCloseWindow();
+        
         // Receive Inputs
-        systems.updDeltaTime();
-        systems.receiveData(r);
+        //systems.receiveData(r);
         systems.controlSystem(r);
 
         // Send new events
