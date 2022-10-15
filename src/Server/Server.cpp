@@ -61,14 +61,11 @@ void rtp::Server::afterConnection(boost::asio::ip::tcp::socket sckt)
 
 void rtp::Server::assyncConnect()
 {
-    //Non bloquant
     _socketOptional.emplace(_ioContext);
     _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
     {
-        std::cout << "[Server][connect]: start accept" << std::endl;
         if (error) {
             std::cout << "[Server][connect]: connect failed" << std::endl;
-            // Failed to accept
         } else {
             std::cout << "[Server][connect]: connect success" << std::endl;
             afterConnection(std::move(*_socketOptional));
@@ -80,25 +77,6 @@ void rtp::Server::assyncConnect()
 void rtp::Server::connect()
 {
     _ioContext.run();
-    std::cout << "[Server][connect]: after run" << std::endl;
-    _cout.lock();
-    std::cout << "[Server][connect]: End loop" << std::endl;
-    _cout.unlock();
-}
-
-void rtp::Server::assyncDisconnect(std::vector<boost::asio::ip::tcp::socket>::iterator it)
-{
-    /*boost::array<demandConnectPayload_s, 1> dataRec;
-    (*it).async_receive(boost::asio::buffer(dataRec), [this] (boost::system::error_code error)
-    {
-        if (error) {
-            std::cout << "[Server][connect]: connect failed" << std::endl;
-            // Failed to accept
-        } else {
-            std::cout << "[Server][connect]: connect success" << std::endl;
-        }
-        assyncDisconnect(it);
-    });*/
 }
 
 void rtp::Server::disconnect()
@@ -188,10 +166,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &c
     _socket.send_to(boost::asio::buffer(endmsg),
     boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
     _ioContext.stop();
-    
-    //_socketTCP.send(boost::asio::buffer(boost::array<networkPayload, 1> {QUIT}));
-    //boost::asio::write(_socketTCP, boost::asio::buffer(boost::array<networkPayload, 1> {QUIT})/*, _acceptor.local_endpoint()*/);
-    
+
     // Joining threads
     sys.join();
     rec.join();

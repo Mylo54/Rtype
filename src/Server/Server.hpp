@@ -58,10 +58,16 @@ namespace rtp {
             /// @return void
             void removeLobby(int position);
 
+            /// @brief thread fonction for the loop whith all systems
+            /// @return void
             void systemsLoop();
 
+            /// @brief fonction for client to connect to the server
+            /// @return void
             void assyncConnect();
 
+            /// @brief fonction when the client disconnect from the server
+            /// @return void
             void disconnect();
 
         protected:
@@ -95,9 +101,9 @@ namespace rtp {
             /// @brief Adds a random enemy into the registry
             void _addEnemy(eng::Registry &r);
 
+            /// @brief Execute when connection is established : confirm client connection
+            /// @param sckt : client socket
             void afterConnection(boost::asio::ip::tcp::socket sckt);
-            
-            void assyncDisconnect(std::vector<boost::asio::ip::tcp::socket>::iterator it);
 
             boost::asio::ip::port_type _port;
             int _clientPort;

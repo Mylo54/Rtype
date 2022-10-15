@@ -34,7 +34,7 @@ void rtp::Client::run()
 void rtp::Client::disconnect()
 {
     // Disconnect here
-    std::cout << "Disconnect" << std::endl;
+    std::cout << "[CLIENT][DISCONNECT] : send disconnect" << std::endl;
     boost::array<demandConnectPayload_s, 1> dataTbs = {LEAVE_GAME};
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
@@ -54,7 +54,7 @@ std::vector<int> rtp::Client::connect()
     //connection
     try {
         _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3303));
-        std::cout << "Client connect" << std::endl;
+        std::cout << "[Client][Connect]: connect success" << std::endl;
     }
     catch (std::exception& e)
     {
@@ -66,7 +66,7 @@ std::vector<int> rtp::Client::connect()
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
 
     if (_error)
-        std::cout << "send failed: " << _error.message() << std::endl;
+        std::cout << "[Client][Connect]: send failed: " << _error.message() << std::endl;
 
     // getting response from server
     boost::asio::read(_socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), _error);
@@ -74,9 +74,9 @@ std::vector<int> rtp::Client::connect()
     res.push_back(dataRec[0].playerId);
     res.push_back(dataRec[0].syncId);
     if (_error && _error != boost::asio::error::eof) {
-        std::cout << "receive failed: " << _error.message() << std::endl;
+        std::cout << "[Client][Connect]: receive failed: " << _error.message() << std::endl;
     } else {
-        std::cout << "action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+        std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
     return (res);
 }
