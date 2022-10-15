@@ -70,8 +70,8 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            // pos.value().x += (vel.value().x * _delta * 20);
-            // pos.value().y += (vel.value().y * _delta * 20);
+            pos.value().x += (vel.value().x * _delta * 20);
+            pos.value().y += (vel.value().y * _delta * 20);
             // std::cout << "X[" << pos.value().x << "] Y[" << pos.value().y << "]" << std::endl;
         }
     }
