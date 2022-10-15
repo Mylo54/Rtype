@@ -228,15 +228,10 @@ void rtp::ServerSystems::updDeltaTime()
     std::chrono::_V2::steady_clock::time_point now = std::chrono::steady_clock::now();
     _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
     lastUpdate = now;
-    std::cout << _delta << std::endl;
 }
 
 void rtp::ServerSystems::limitTime()
 {
-    if ((_tps != 0) && ((1 / _tps) > _delta)) {
+    if ((_tps != 0) && ((1 / _tps) > _delta))
         sleep((1 / _tps) - _delta);
-        std::cout << "sleep" << std::endl;
-    }
-    else
-        std::cout << "wake" << std::endl;
 }

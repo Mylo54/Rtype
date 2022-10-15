@@ -280,7 +280,6 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
         if (pos.has_value() && vel.has_value()) {
             pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
             pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
-            std::cout << "X[" << pos.value().x << "] Y[" << pos.value().y << "]" << std::endl;
         }
     }
 }

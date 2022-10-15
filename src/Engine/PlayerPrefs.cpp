@@ -41,7 +41,6 @@ void eng::PlayerPrefs::loadPrefs()
 
     file.open(_path);
     while (std::getline(file, str)) {
-        // std::cout << str << std::endl;
         loadPref(str);
     }
     file.close();
