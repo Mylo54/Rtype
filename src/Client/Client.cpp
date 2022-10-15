@@ -34,6 +34,9 @@ void rtp::Client::run()
 void rtp::Client::disconnect()
 {
     // Disconnect here
+    std::cout << "Disconnect" << std::endl;
+    boost::array<demandConnectPayload_s, 1> dataTbs = {LEAVE_GAME};
+    boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
 }
 
