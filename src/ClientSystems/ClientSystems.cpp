@@ -7,12 +7,10 @@
 
 #include "ClientSystems.hpp"
 
-rtp::ClientSystems::ClientSystems(std::vector<int> dimWdw, std::string nameWdw, std::string adress, int port, boost::asio::ip::udp::socket &socket) : _w(sf::RenderWindow(sf::VideoMode(dimWdw[0], dimWdw[1], dimWdw[2]), nameWdw)), _c(sf::Clock()), _socket(socket)
+rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
+sf::Time &delta, std::string adress, int port,
+boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _delta(delta)
 {
-    _displayTime = 0;
-    
-    _endpoint = {boost::asio::ip::make_address(adress), static_cast<boost::asio::ip::port_type>(port)};
-    _w.setFramerateLimit(60);
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -89,96 +87,6 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::clearSystem(eng::Registry &r)
-{
-    _w.clear();
-}
-
-void rtp::ClientSystems::displaySystem(eng::Registry &r)
-{
-    _w.display();
-    _delta = _c.restart();
-}
-
-// Some changes to optimize would be good
-void rtp::ClientSystems::animateSystem(eng::Registry &r)
-{
-    auto &sprites = r.getComponents<Drawable>();
-
-    for (int i = 0; i < sprites.size(); i++) {
-        auto &spr = sprites[i];
-
-        if (spr.has_value()) {
-            sf::IntRect rect = spr.value().sprite.getTextureRect();
-            if (spr.value().sheetDirection != 0) {
-                spr.value().nextFrame -= _delta.asSeconds();
-            }
-            // Animate to the right
-            if (spr.value().sheetDirection == 1 && spr.value().nextFrame <= 0) {
-                rect.left += rect.width;
-                if (rect.left >= spr.value().sizeX)
-                    rect.left = 0;
-                spr.value().nextFrame = spr.value().frameTime;
-            }
-            // Animate to the left
-            if (spr.value().sheetDirection == 2 && spr.value().nextFrame <= 0) {
-                rect.left -= rect.width;
-                if (rect.left < 0)
-                    rect.left = spr.value().sizeX;
-                spr.value().nextFrame = spr.value().frameTime;
-            }
-            // Animate downward
-            if (spr.value().sheetDirection == 3 && spr.value().nextFrame <= 0) {
-                rect.top += rect.height;
-                if (rect.top >= spr.value().sizeY)
-                    rect.top = 0;
-                spr.value().nextFrame = spr.value().frameTime;
-            }
-            // Animate upward
-            if (spr.value().sheetDirection == 4 && spr.value().nextFrame <= 0) {
-                rect.top -= rect.height;
-                if (rect.top < 0)
-                    rect.top = spr.value().sizeY;
-                spr.value().nextFrame = spr.value().frameTime;
-            }
-            spr.value().sprite.setTextureRect(rect);
-        }
-    }
-}
-
-void rtp::ClientSystems::drawSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<Position>();
-    auto &sprites = r.getComponents<Drawable>();
-
-    // Draw & update sheets
-    for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
-        auto &pos = positions[i];
-        auto &spr = sprites[i];
-
-        if (pos.has_value() && spr.has_value()) {
-            spr.value().sprite.setPosition({pos.value().x, pos.value().y});
-            _w.draw(spr.value().sprite);
-        }
-    }
-}
-
-void rtp::ClientSystems::writeSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<Position>();
-    auto &writables = r.getComponents<Writable>();
-
-    for (int i = 0; i < positions.size() && i < writables.size(); i++) {
-        auto &pos = positions[i];
-        auto &wrt = writables[i];
-
-        if (pos.has_value() && wrt.has_value()) {
-            wrt.value()._txt.setPosition({pos.value().x, pos.value().y});
-            _w.draw(wrt.value()._txt);
-        }
-    }
-}
-
 void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 {
     auto &shooters = r.getComponents<Shooter>();
@@ -197,24 +105,6 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
-        }
-    }
-}
-
-void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
-{
-    auto &bgs = r.getComponents<Background>();
-    auto &poss = r.getComponents<Position>();
-
-    for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
-        auto &pos = poss[i];
-        auto &bg = bgs[i];
-
-        if (pos.has_value() && bg.has_value()) {
-            if (pos.value().x <= -1920)
-                pos.value().x = 1920;
-            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
-            _w.draw(bg.value().sprite);
         }
     }
 }
@@ -297,40 +187,6 @@ void rtp::ClientSystems::limitPlayer(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::sendData(eng::Registry &r)
-{
-    auto &controllables = r.getComponents<Controllable>();
-    auto &synceds = r.getComponents<Synced>();
-    boost::array<inputPayload_t, 1UL> data;
-
-    for (int i = 0; i < controllables.size() && i < synceds.size(); i++) {
-        auto ctrl = controllables[i];
-        auto sync = synceds[i];
-
-        if (ctrl.has_value() && sync.has_value()) {
-            data[0].syncId = sync.value().id;
-            if (ctrl.value().shoot) {
-                data[0].ACTION_NAME = SHOT;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
-            if (ctrl.value().xAxis > 0)
-                data[0].ACTION_NAME = RIGHT;
-            else if (ctrl.value().xAxis < 0)
-                data[0].ACTION_NAME = LEFT;
-            else
-                data[0].ACTION_NAME = XSTILL;
-            _socket.send_to(boost::asio::buffer(data), _endpoint);
-            if (ctrl.value().yAxis > 0)
-                data[0].ACTION_NAME = DOWN;
-            else if (ctrl.value().yAxis < 0)
-                data[0].ACTION_NAME = UP;
-            else
-                data[0].ACTION_NAME = YSTILL;
-            _socket.send_to(boost::asio::buffer(data), _endpoint);
-        }
-    }
-}
-
 void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
 {
     auto &ennemies = r.getComponents<EnemyStats>();
@@ -339,56 +195,6 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
         if (ennemies[i].has_value())
             if (ennemies[i].value().health <= 0)
                 r.killEntity(eng::Entity(i));
-}
-
-void rtp::ClientSystems::receiveData(eng::Registry &r)
-{
-    int e = 0;
-    bool toBuild = false;
-
-    while (true) {
-        _socket.receive(boost::asio::buffer(_dataBuffer));
-        if (_dataBuffer[0].COMPONENT_NAME == END_PACKET)
-            return;
-        auto &data = _dataBuffer[0];
-        e = _getSyncedEntity(r, data.syncId);
-        toBuild = false;
-        if (e == -1) {
-            toBuild = true;
-            e = r.spawnEntity().getId();
-            r.addComponent<Synced>(eng::Entity(e), Synced(data.syncId));
-            writeInChatBox(r, "A new entity has been added by the server!", ChatBoxStyle::EVENT);
-        }
-        if (_dataBuffer[0].COMPONENT_NAME == POSITION)
-            r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
-        if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
-            r.emplaceComponent<Velocity>(eng::Entity(e), Velocity(data.valueA, data.valueB));
-        if (data.COMPONENT_NAME == ENEMY_STATS) {
-            r.emplaceComponent<EnemyStats>(eng::Entity(e), EnemyStats(data.valueB, data.valueA));
-            if (toBuild)
-                _completeEnemy(r, e);
-        }
-        if (data.COMPONENT_NAME == PLAYER_STATS) {
-            r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, data.valueB, data.valueC));
-            if (toBuild)
-                _completePlayer(r, e);
-        }
-
-    }
-}
-
-int rtp::ClientSystems::_getSyncedEntity(eng::Registry &r, int syncId)
-{
-    auto synceds = r.getComponents<Synced>();
-
-    for (int i = 0; i < synceds.size(); i++) {
-        if (synceds[i].has_value()) {
-            if (synceds[i].value().id == syncId) {
-                return (i);
-            }
-        }
-    }
-    return (-1);
 }
 
 // Bullets are considered as (x, y) points
@@ -425,24 +231,6 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
             }
         }
     }
-}
-
-bool rtp::ClientSystems::windowOpen()
-{
-    return this->_w.isOpen();
-}
-
-void rtp::ClientSystems::eventCloseWindow()
-{
-    while (this->_w.pollEvent(this->_event)) {
-        if (this->_event.type == sf::Event::Closed)
-            this->_w.close();
-    }
-}
-
-void rtp::ClientSystems::updDeltaTime()
-{
-    _delta = _c.restart();
 }
 
 // Just a test, need to be really implemented
@@ -535,32 +323,4 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
 
     reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
     reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
-}
-
-void rtp::ClientSystems::_completeEnemy(eng::Registry &r, int e)
-{
-    int type = r.getComponents<EnemyStats>()[e].value().enemyType;
-    if (type == 0)
-        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
-        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
-}
-
-void rtp::ClientSystems::setMaxFrameRate(float mfr)
-{
-    _w.setFramerateLimit(mfr);
-}
-
-void rtp::ClientSystems::_completePlayer(eng::Registry &r, int e)
-{
-    int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
-    sf::IntRect rect = {0, 0, 60, 49};
-    r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
-    r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
-    if (playerId == 2)
-        rect.top = 49;
-    if (playerId == 3)
-        rect.top = 98;
-    if (playerId == 4)
-        rect.top = 147;
-    r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
 }

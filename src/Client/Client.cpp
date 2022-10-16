@@ -148,8 +148,8 @@ void rtp::Client::_addBackgrounds(eng::Registry &reg)
             reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-20, 0));
             reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
         } else if (i < 4) {
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
             reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-10, 0));
+            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
         } else {
             reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-5, 0));
             reg.addComponent<rtp::Background>(bg, rtp::Background("assets/background.png"));
@@ -159,19 +159,21 @@ void rtp::Client::_addBackgrounds(eng::Registry &reg)
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(std::vector<int>({1920, 1080, 32}), "RTYPE", "127.0.0.1", 3303, _socket);
+    rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
+    rtp::NetworkSystems net("127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
-    systems.setMaxFrameRate(60);
+    gfx.setMaxFrameRate(60);
 
-    while (systems.windowOpen()) {
-        systems.eventCloseWindow();
+    while (gfx.windowOpen()) {
+        gfx.eventCloseWindow();
         
         // Receive Inputs
         systems.controlSystem(r);
-        systems.receiveData(r);
+        net.receiveData(r);
 
         // Send new events
-        systems.sendData(r);
+        net.sendData(r);
 
         // Update data
         systems.controlFireSystem(r);
@@ -180,16 +182,16 @@ void rtp::Client::systemsLoop()
         systems.shootSystem(r);
         systems.positionSystem(r);
         systems.limitPlayer(r);
-        systems.animateSystem(r);
+        gfx.animateSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
 
-        //Display & play sounds
+        // Display & play sounds
         systems.playSoundSystem(r);
-        systems.clearSystem(r);
-        systems.backgroundSystem(r);
-        systems.drawSystem(r);
-        systems.writeSystem(r);
-        systems.displaySystem(r);
+        gfx.clearSystem();
+        gfx.backgroundSystem(r);
+        gfx.drawSystem(r);
+        gfx.writeSystem(r);
+        gfx.displaySystem();
     }
 }
