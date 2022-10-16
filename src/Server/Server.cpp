@@ -185,8 +185,8 @@ void rtp::Server::systemsLoop()
 
     while (!_isEnd)
     {
-        // Receive data
-        systems.receiveData(r);
+        // Update delta time
+        systems.updDeltaTime();
 
         if (_commandAddEnemy) {
             _commandAddEnemy = false;
@@ -196,10 +196,9 @@ void rtp::Server::systemsLoop()
             _addPlayer(r);
             _askNewPlayer = false;
         }
-        // Update delta time
-        systems.updDeltaTime();
-        // Limit the frequence of the server
-        systems.limitTime();
+
+        // Receive data
+        systems.receiveData(r);
 
         // Apply new controls
         systems.controlMovementSystem(r);
@@ -211,6 +210,8 @@ void rtp::Server::systemsLoop()
 
         // Send the new data
         systems.sendData(r);
+        // Limit the frequence of the server
+        systems.limitTime();
     }
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Exiting systems loop" << std::endl;

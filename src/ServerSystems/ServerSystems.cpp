@@ -18,48 +18,6 @@ rtp::ServerSystems::~ServerSystems()
 {
 }
 
-void rtp::ServerSystems::addEndpoint(std::string address, int port)
-{
-    _endpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
-}
-
-void rtp::ServerSystems::removeEndPoint(std::string address, int port)
-{
-    auto it = _endpoints.begin();
-    bool found = false;
-
-    while (it != _endpoints.end()) {
-        if (it->address() == boost::asio::ip::make_address(address)
-            && it->port() == static_cast<boost::asio::ip::port_type>(port)) {
-            found = true;
-            break;
-        }
-        it++;
-    }
-    if (found)
-        _endpoints.erase(it);
-}
-
-void rtp::ServerSystems::playerLogSystem(eng::Registry &r)
-{
-    auto &ps = r.getComponents<Position>();
-    auto &ss = r.getComponents<PlayerStats>();
-    auto &cs = r.getComponents<Controllable>();
-    auto &sys = r.getComponents<Synced>();
-
-    for (int i = 0; i < ps.size() && i < ss.size() && cs.size() && i < sys.size(); i++) {
-        if (ps[i].has_value() && cs[i].has_value() && ss[i].has_value() && sys[i].has_value()) {
-            auto p = ps[i].value();
-            auto c = cs[i].value();
-            auto s = ss[i].value();
-            auto sy = sys[i].value();
-
-            // std::cout << "Player " << sy.id << " is at {" << p.x << ", ";
-            // std::cout << p.y << "}" << std::endl;
-        }
-    }
-}
-
 void rtp::ServerSystems::positionSystem(eng::Registry &r)
 {
     auto &positions = r.getComponents<Position>();
@@ -107,14 +65,14 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * 2;
-            vel.value().x += (vel.value().x > 0) ? -1 : 0;
-            vel.value().x += (vel.value().x < 0) ? 1 : 0;
+            vel.value().x += ctrl.value().xAxis * _delta* 20 * 2;
+            vel.value().x += (vel.value().x > 0) ? -_delta * 20 : 0;
+            vel.value().x += (vel.value().x < 0) ? _delta * 20 : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * 2;
-            vel.value().y += (vel.value().y > 0) ? -1 : 0;
-            vel.value().y += (vel.value().y < 0) ? 1 : 0;
+            vel.value().y += ctrl.value().yAxis * _delta * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? -_delta * 20 : 0;
+            vel.value().y += (vel.value().y < 0) ? _delta * 20 : 0;
         }
     }
 }
@@ -134,6 +92,16 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
     }
 }
 
+void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot = false)
+{
+    pl.COMPONENT_NAME = componentName;
+    pl.shot = shot;
+    pl.syncId = syncId;
+    pl.valueA = (values.size() > 0) ? values[0] : 0;
+    pl.valueB = (values.size() > 1) ? values[1] : 0;
+    pl.valueC = (values.size() > 2) ? values[2] : 0;
+}
+
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
     auto &ps = r.getComponents<Position>();
@@ -143,50 +111,31 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &sc = r.getComponents<Synced>();
     boost::array<server_payload_t, 1> dataTbs;
 
-    for (int i = 0; i < ps.size() && i < vs.size() && i < playerStats.size() && i < sc.size(); i++) {
-        if (playerStats[i].has_value() && sc[i].has_value()) {
+    for (int i = 0; i < sc.size(); i++) {
+        if (sc[i].has_value() && i < playerStats.size() && playerStats[i].has_value()) {
             auto &p = ps[i].value();
             auto &v = vs[i].value();
             auto &id_sync = sc[i].value();
             auto &player = playerStats[i].value();
-            
-            dataTbs[0].COMPONENT_NAME = PLAYER_STATS;
-            dataTbs[0].valueA = player.playerId;
-            dataTbs[0].valueB = player.damage;
-            dataTbs[0].valueC = player.lives;
-            dataTbs[0].syncId = id_sync.id;
+
+            _editDataTbs(dataTbs[0], PLAYER_STATS, {(float)player.playerId, (float)player.damage, (float)player.lives}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = POSITION;
-            dataTbs[0].valueA = p.x;
-            dataTbs[0].valueB = p.y;
-            dataTbs[0].valueC = p.z;
+            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = VELOCITY;
-            dataTbs[0].valueA = v.x;
-            dataTbs[0].valueB = v.y;
+            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
         }
-    }
-    for (int i = 0; i < ps.size() && i < vs.size() && i < enemyStats.size() && i < sc.size(); i++) {
-        if (enemyStats[i].has_value() && sc[i].has_value()) {
+        if (sc[i].has_value() && i < enemyStats.size() && enemyStats[i].has_value()) {
             auto &p = ps[i].value();
             auto &v = vs[i].value();
             auto &enm = enemyStats[i].value();
             auto &id_sync = sc[i].value();
 
-            dataTbs[0].COMPONENT_NAME = ENEMY_STATS;
-            dataTbs[0].valueA = enm.enemyType;
-            dataTbs[0].valueB = enm.health;
-            dataTbs[0].syncId = id_sync.id;
+            _editDataTbs(dataTbs[0], ENEMY_STATS, {(float)enm.enemyType, (float)enm.health}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = POSITION;
-            dataTbs[0].valueA = p.x;
-            dataTbs[0].valueB = p.y;
-            dataTbs[0].valueC = p.z;
+            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
-            dataTbs[0].COMPONENT_NAME = VELOCITY;
-            dataTbs[0].valueA = v.x;
-            dataTbs[0].valueB = v.y;
+            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
         }
         // Then send shot events and from which player they arrived from
@@ -232,13 +181,10 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 {
     auto synceds = r.getComponents<Synced>();
 
-    for (int i = 0; i < synceds.size(); i++) {
-        if (synceds[i].has_value() == true) {
-            if (synceds[i].value().id == syncId) {
+    for (int i = 0; i < synceds.size(); i++)
+        if (synceds[i].has_value() == true)
+            if (synceds[i].value().id == syncId)
                 return i;
-            }
-        }
-    }
     return -1;
 }
 

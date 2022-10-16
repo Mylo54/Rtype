@@ -43,10 +43,6 @@ namespace rtp {
             /// @param r The Registry on which to apply the system 
             void positionSystem(eng::Registry &r);
 
-            /// @brief A system who logs the infos of players
-            /// @param r The Registry on which to apply the system 
-            void playerLogSystem(eng::Registry &r);
-            
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
             void controlMovementSystem(eng::Registry &r);
@@ -84,6 +80,14 @@ namespace rtp {
             /// @brief A method for sending a package to every endpoint
             /// @todo find how to contain the data that we need to send to the client
             void _sendSubsystem();
+
+            /// @brief edit the serverpayload struct passed as argument
+            /// @param pl the serverpayload struct
+            /// @param componentName the component type enum
+            /// @param values the values in order (valueA, valueB, valueC) no more than 3
+            /// @param syncId the synchronization ID
+            /// @param shot if shot event (false by default)
+            void _editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot);
 
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;

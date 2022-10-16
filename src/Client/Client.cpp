@@ -176,8 +176,8 @@ void rtp::Client::systemsLoop()
         systems.eventCloseWindow();
         
         // Receive Inputs
-        //systems.receiveData(r);
         systems.controlSystem(r);
+        systems.receiveData(r);
 
         // Send new events
         systems.sendData(r);
