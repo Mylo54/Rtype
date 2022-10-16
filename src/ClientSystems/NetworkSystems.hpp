@@ -29,6 +29,8 @@ namespace rtp
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
+
+            void disconnectSystems(eng::Registry &r);
         protected:
         private:
             /// @brief A method that gets a synced entity id

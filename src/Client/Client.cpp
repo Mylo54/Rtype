@@ -29,14 +29,15 @@ void rtp::Client::run()
         return;
     eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
     systemsLoop();
-    disconnect();
+    //disconnect();
 }
 
 void rtp::Client::disconnect()
 {
     // Disconnect here
     std::cout << "[CLIENT][DISCONNECT] : send disconnect" << std::endl;
-    boost::array<demandConnectPayload_s, 1> dataTbs = {LEAVE_GAME};
+    boost::array<inputPayload_t, 1> dataTbs = {LEAVE_GAME};
+    //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), boost::asio::ip::port_type(_port)});
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
 }
@@ -194,4 +195,5 @@ void rtp::Client::systemsLoop()
         gfx.writeSystem(r);
         gfx.displaySystem();
     }
+    net.disconnectSystems(r);
 }

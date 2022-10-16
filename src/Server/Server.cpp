@@ -24,6 +24,10 @@ void rtp::Server::dataReception()
 {
     while (!_isEnd) {
         size_t len = this->_socket.receive(boost::asio::buffer(this->_dataRec));
+        if (this->_dataRec[0].ACTION_NAME == LEAVE_GAME) {
+            //_removeEndPoint(this->_socket.remote_endpoint().address().to_string(), this->_socket.remote_endpoint().port());
+            std::cout << "Removed " << this->_dataRec[0].ACTION_NAME << "in port : " <<  this->_dataRec[0].syncId << std::endl;
+        }
         std::unique_lock<std::mutex> lk(this->_mutex);
         this->_listDataRec.push_back(inputPayload_t({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].syncId}));
         lk.unlock();
@@ -89,20 +93,20 @@ void rtp::Server::disconnect()
     //}
 
     //for (std::vector<boost::asio::ip::tcp::socket>::iterator it = _socketList.begin(); it != _socketList.end(); it++) {
-    /*for (int i = 0; i < _socketList.size(); i++) {
-        std::cout << "[Server][disconnect] loop nbr : " << i << std::endl;
-        _socketList[i].async_receive(*_socketList[i], boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-        if (error && error != boost::asio::error::eof) {
-            std::cout << "[Server][disconnect]: Receive failed: " << error.message() << std::endl;
-        } else if (dataRec[0].ACTION_NAME == LEAVE_GAME) {
-            std::cout << "[Server][disconnect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-            std::stringstream a;
-            a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
-            //_addEndpoint(a.str(), dataRec[0].port);
-        } else {
-            std::cout << "[Server][disconnect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
-        }
-    }*/
+    //for (int i = 0; i < _socketList.size(); i++) {
+    //    std::cout << "[Server][disconnect] loop nbr : " << i << std::endl;
+    //    _socketList[i].async_receive(*_socketList[i], boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    //    if (error && error != boost::asio::error::eof) {
+    //        std::cout << "[Server][disconnect]: Receive failed: " << error.message() << std::endl;
+    //    } else if (dataRec[0].ACTION_NAME == LEAVE_GAME) {
+    //        std::cout << "[Server][disconnect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+    //        std::stringstream a;
+    //        a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
+    //        //_addEndpoint(a.str(), dataRec[0].port);
+    //    } else {
+    //        std::cout << "[Server][disconnect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
+    //    }
+    //}
 }
 
 void rtp::Server::run()

@@ -119,3 +119,20 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
         rect.top = 147;
     r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
 }
+
+void rtp::NetworkSystems::disconnectSystems(eng::Registry &r)
+{
+    auto &synceds = r.getComponents<Synced>();
+    boost::array<inputPayload_t, 1UL> data;
+
+    for (int i = 0; i < synceds.size(); i++) {
+        auto sync = synceds[i];
+        if (sync.has_value()) {
+            data[0].syncId = sync.value().id;
+            data[0].ACTION_NAME = LEAVE_GAME;
+            _socket.send_to(boost::asio::buffer(data), _endpoint);
+            std::cout << "[CLIENT][DISCONNECT] : send disconnect" << std::endl;
+
+        }
+    }
+}
