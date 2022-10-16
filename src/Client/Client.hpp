@@ -55,8 +55,11 @@ namespace rtp {
 
             /// @brief Add layers of backgrounds to a registry
             /// @param reg The Registry on which to add the backgrounds
-            /// @return A vector of entities, each representing a background
-            std::vector<eng::Entity> _addBackgrounds(eng::Registry &reg);
+            void _addBackgrounds(eng::Registry &reg);
+
+            /// @brief Add a text on the screen to display the score
+            /// @param reg The registry on which to add the text
+            void _addScore(eng::Registry &reg);
 
             eng::RegistryManager _manager;
             int _port;

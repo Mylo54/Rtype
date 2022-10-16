@@ -12,6 +12,7 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
+    _addScore(_manager.getTop());
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
@@ -130,40 +131,30 @@ eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
     return enemy;
 }
 
-std::vector<eng::Entity> rtp::Client::_addBackgrounds(eng::Registry &reg)
+void rtp::Client::_addScore(eng::Registry &reg)
 {
-    eng::Entity fg1 = reg.spawnEntity();
-    eng::Entity fg2 = reg.spawnEntity();
-    eng::Entity mg1 = reg.spawnEntity();
-    eng::Entity mg2 = reg.spawnEntity();
-    eng::Entity bg1 = reg.spawnEntity();
-    eng::Entity bg2 = reg.spawnEntity();
-    std::vector<eng::Entity> bgs = {fg1, fg2, mg1, mg2, bg1, bg2};
+    eng::Entity score = reg.spawnEntity();
 
-    // Foregrounds
-    reg.addComponent<rtp::Position>(fg1, rtp::Position(0, 0, 0));
-    reg.addComponent<rtp::Velocity>(fg1, rtp::Velocity(-20, 0));
-    reg.addComponent<rtp::Background>(fg1, rtp::Background("assets/foreground.png"));
-    reg.addComponent<rtp::Position>(fg2, rtp::Position(1920, 0, 0));
-    reg.addComponent<rtp::Velocity>(fg2, rtp::Velocity(-20, 0));
-    reg.addComponent<rtp::Background>(fg2, rtp::Background("assets/foreground.png"));
+    reg.addComponent<rtp::Position>(score, rtp::Position(1000, 0, 0));
+    reg.addComponent<rtp::Writable>(score, rtp::Writable("score", "SCORE:000 000"));
+}
 
-    // Middlegrounds
-    reg.addComponent<rtp::Position>(mg1, rtp::Position(0, 0, 0));
-    reg.addComponent<rtp::Velocity>(mg1, rtp::Velocity(-10, 0));
-    reg.addComponent<rtp::Background>(mg1, rtp::Background("assets/middleground.png"));
-    reg.addComponent<rtp::Position>(mg2, rtp::Position(1920, 0, 0));
-    reg.addComponent<rtp::Velocity>(mg2, rtp::Velocity(-10, 0));
-    reg.addComponent<rtp::Background>(mg2, rtp::Background("assets/middleground.png"));
-    
-    // Backgrounds
-    reg.addComponent<rtp::Position>(bg1, rtp::Position(0, 0, 0));
-    reg.addComponent<rtp::Velocity>(bg1, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Background>(bg1, rtp::Background("assets/background.png"));
-    reg.addComponent<rtp::Position>(bg2, rtp::Position(1920, 0, 0));
-    reg.addComponent<rtp::Velocity>(bg2, rtp::Velocity(-5, 0));
-    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/background.png"));
-    return bgs;
+void rtp::Client::_addBackgrounds(eng::Registry &reg)
+{
+    for (int i = 0; i < 6; i++) {
+        eng::Entity bg = reg.spawnEntity();
+        reg.addComponent<rtp::Position>(bg, rtp::Position((i % 2) * 1920, 0, 0));
+        if (i < 2) {
+            reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-20, 0));
+            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+        } else if (i < 4) {
+            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
+            reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-10, 0));
+        } else {
+            reg.addComponent<rtp::Velocity>(bg, rtp::Velocity(-5, 0));
+            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/background.png"));
+        }
+    }
 }
 
 void rtp::Client::systemsLoop()
@@ -196,9 +187,9 @@ void rtp::Client::systemsLoop()
         //Display & play sounds
         systems.playSoundSystem(r);
         systems.clearSystem(r);
+        systems.backgroundSystem(r);
         systems.drawSystem(r);
         systems.writeSystem(r);
-        systems.backgroundSystem(r);
         systems.displaySystem(r);
     }
 }

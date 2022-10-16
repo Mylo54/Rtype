@@ -20,7 +20,7 @@ namespace rtp
         public:
             Writable(std::string name,
             sf::String content = "Text",
-            const std::string fontPath = "assets/NeutronsDemoRegular.ttf",
+            const std::string fontPath = "assets/MetroidPrimeHunters.ttf",
             unsigned int charSize = 30,
             sf::Color color = sf::Color::White,
             sf::Text::Style style = sf::Text::Regular) {
