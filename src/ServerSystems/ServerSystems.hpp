@@ -51,6 +51,14 @@ namespace rtp {
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
 
+            /// @brief A system which damage enemies colliding a player's bullet
+            /// @param r The Registry on which to apply the system
+            void playerBullets(eng::Registry &r);
+
+            /// @brief A system which kill dead enemies
+            /// @param r The Registry on which to apply the system
+            void killDeadEnemies(eng::Registry &r);
+
             /// @brief A system which sends data to ALL clients
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
@@ -88,6 +96,12 @@ namespace rtp {
             /// @param syncId the synchronization ID
             /// @param shot if shot event (false by default)
             void _editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot);
+
+            /// @brief A short system which damage an enemy and destroys bullets
+            /// @param r The Registry on which to apply the system
+            /// @param b The bullets data
+            /// @param p The Position of the bullet
+            void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;

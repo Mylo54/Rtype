@@ -207,6 +207,8 @@ void rtp::Server::systemsLoop()
         // Apply logic and physics calculations
         systems.positionSystem(r);
         systems.limitPlayer(r);
+        systems.playerBullets(r);
+        systems.killDeadEnemies(r);
 
         // Send the new data
         systems.sendData(r);
@@ -229,6 +231,7 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
 }
 
 // Player Id will be stored inside playerstats later...

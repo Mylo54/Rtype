@@ -79,17 +79,70 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 
 void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 {
-    auto &shooters = r.getComponents<Shooter>();
     auto &controllables = r.getComponents<Controllable>();
+    auto &playerStats = r.getComponents<PlayerStats>();
+    auto &positions = r.getComponents<Position>();
 
-    for (int i = 0; i < controllables.size() && i < shooters.size(); i++) {
-        auto &sht = shooters[i];
+    for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
 
-        if (sht.has_value() && ctrl.has_value()) {
-            sht.value().shoot = ctrl.value().shoot;
+        if (ctrl.has_value() && ctrl.value().shoot) {
+            eng::Entity bullet = r.spawnEntity();
+            auto &pos = positions[i].value();
+            auto &plyr = playerStats[i].value();
+            
+            ctrl.value().shoot = false;
+            r.addComponent(bullet, rtp::Velocity(15, 0));
+            r.addComponent(bullet, rtp::Position(pos.x + 65, pos.y + 25, pos.z));
+            r.addComponent(bullet, rtp::Bullet(2));
         }
     }
+}
+
+// Bullets are considered as (x, y) points
+void rtp::ServerSystems::playerBullets(eng::Registry &r)
+{
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size() && i < poss.size(); i++) {
+        if (blts[i].has_value() && poss[i].has_value()) {
+            _bulletAgainstEnemy(r, eng::Entity(i));
+        }
+    }
+}
+
+void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
+{
+    auto &enms = r.getComponents<EnemyStats>();
+    auto &poss = r.getComponents<Position>();
+    auto &rcts = r.getComponents<RectCollider>();
+    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &b = r.getComponents<Bullet>()[blt.getId()].value();
+
+    for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
+        if (enms[i].has_value() && poss[i].has_value() && rcts[i].has_value()) {
+            auto &enm = enms[i].value();
+            auto &pos = poss[i].value();
+            auto &rct = rcts[i].value();
+            if (p.x >= pos.x && p.y >= pos.y) {
+                if (p.x <= pos.x + rct.width && p.y <= pos.y + rct.height) {
+                    enm.health -= b.damage;
+                    r.killEntity(blt);
+                }
+            }
+        }
+    }
+}
+
+void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
+{
+    auto &ennemies = r.getComponents<EnemyStats>();
+
+    for (int i = 0; i < ennemies.size(); i++)
+        if (ennemies[i].has_value())
+            if (ennemies[i].value().health <= 0)
+                r.killEntity(eng::Entity(i));
 }
 
 void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot = false)
