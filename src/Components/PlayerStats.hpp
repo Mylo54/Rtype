@@ -13,16 +13,15 @@ namespace rtp
     class PlayerStats {
         public:
             PlayerStats(int playerID,
-            int pHealth = 10,
             int pDamage = 1,
-            int pLives = 3): playerId(playerID), health(pHealth), damage(pDamage), lives(pLives)
+            int pLives = 3): playerId(playerID), damage(pDamage), lives(pLives)
             {}
             ~PlayerStats() {}
 
             int playerId;
-            int health;
             int damage;
             int lives;
+            int score = 0;
         protected:
         private:
     };

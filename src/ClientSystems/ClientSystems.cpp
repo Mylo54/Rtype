@@ -369,7 +369,7 @@ void rtp::ClientSystems::receiveData(eng::Registry &r)
                 _completeEnemy(r, e);
         }
         if (data.COMPONENT_NAME == PLAYER_STATS) {
-            r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, 10, data.valueB, data.valueC));
+            r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, data.valueB, data.valueC));
             if (toBuild)
                 _completePlayer(r, e);
         }
