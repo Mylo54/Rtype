@@ -28,20 +28,13 @@ For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www
 
 2. Compile on your os:
 
-**Linux:**
+**Linux && MacOS :**
 ```
-mkdir build
-cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
+./comp_linux.sh
 ```
 **Windows:**
 ```
-mkdir build
-cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .
-```
-**MacOS:**
-```
-mkdir build
-cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build .
+./comp_windows.sh
 ```
 
 ## Team :
