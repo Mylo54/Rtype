@@ -91,6 +91,15 @@ std::vector<int> rtp::Client::connect()
     dataTbs[0].port = _port;
 
     //connection
+
+    boost::asio::ip::tcp::resolver resolver(_ioService);
+
+    char* serverName = "localhost";
+
+
+    boost::asio::ip::tcp::resolver::query query(serverName, "daytime");
+    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+
     try {
         _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
         std::cout << "[Client][Connect]: connect success" << std::endl;
