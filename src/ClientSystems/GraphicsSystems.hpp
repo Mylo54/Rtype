@@ -75,6 +75,10 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void displaySystem();
 
+            /// @brief A system who set the state of a button according
+            /// @param r The Registry on which to apply the system
+            void buttonStateSystem(eng::Registry &r);
+
             /// @brief Update the delta time
             void updDeltaTime();
         protected:

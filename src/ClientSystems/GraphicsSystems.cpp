@@ -86,6 +86,37 @@ void rtp::GraphicsSystems::eventCatchWindow()
     }
 }
 
+void rtp::GraphicsSystems::buttonStateSystem(eng::Registry &r)
+{
+    auto &buttons = r.getComponents<Button>();
+    auto &positions = r.getComponents<Position>();
+    auto &sprite = r.getComponents<Drawable>();
+    auto mousePos = sf::Mouse::getPosition(_w);
+
+    for (int i = 0; i < buttons.size(); i++) {
+        if (buttons[i].has_value()) {
+            auto &btn = buttons[i].value();
+            auto &spr = sprite[i].value();
+            auto &pos = positions[i].value();
+            sf::IntRect rect = spr.sprite.getTextureRect();
+
+            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
+            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                rect.left = (spr.sheetDirection == 1) ? rect.width : 0;
+                rect.top = (spr.sheetDirection == 3) ? rect.height : 0;
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    rect.left += (spr.sheetDirection == 1) ? rect.width : 0;
+                    rect.top += (spr.sheetDirection == 3) ? rect.height : 0;
+                }
+            } else {
+                rect.left = (spr.sheetDirection == 1) ? 0 : rect.width;
+                rect.top = (spr.sheetDirection == 3) ? 0 : rect.height;
+            }
+            spr.sprite.setTextureRect(rect);
+        }
+    }
+}
+
 void rtp::GraphicsSystems::controlSystem(eng::Registry &r)
 {
     if (_isWindowFocused == false) {
@@ -173,7 +204,7 @@ void rtp::GraphicsSystems::animateSystem(eng::Registry &r)
     for (int i = 0; i < sprites.size(); i++) {
         auto &spr = sprites[i];
         
-        if (spr.has_value()) {
+        if (spr.has_value() && spr.value().frameTime != -1) {
             sf::IntRect rect = spr.value().sprite.getTextureRect();
             if (spr.value().sheetDirection != 0) {
                 spr.value().nextFrame -= _delta.asSeconds();

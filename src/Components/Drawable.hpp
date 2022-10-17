@@ -26,11 +26,12 @@ namespace rtp
             /// [3:up to down]
             /// [4:down to up]
             /// @param rect the dimensions of one sprite in your spritesheet
-            /// @param pFrameTime how much time from one frame to another
+            /// @param pFrameTime how much time from one frame to another,
+            /// -1 to not animate
             Drawable(std::string textureFilePath,
             int pSheetDirection = 0,
             sf::IntRect rect = {0, 0, 0, 0},
-            float pFrameTime = 1) {
+            float pFrameTime = -1) {
                 sheetDirection = pSheetDirection;
                 texture->loadFromFile(textureFilePath);
                 sprite.setTexture(*texture);

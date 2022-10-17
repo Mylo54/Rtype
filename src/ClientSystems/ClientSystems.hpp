@@ -55,6 +55,10 @@ namespace rtp
             /// @param r The registry on which to apply the system
             void controlMovementSystem(eng::Registry &r);
 
+            /// @brief A system who handle button clicking
+            /// @param r The registry on which to apply the system
+            void buttonSystem(eng::Registry &r);
+
             /// @brief A system that logs every loggable component
             /// @param r The Registry on which to apply the system
             void logSystem(eng::Registry &r);
