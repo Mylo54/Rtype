@@ -64,13 +64,18 @@ float interpolate(float a, float b)
     return res;
 }
 
+float midlerp(float a, float b)
+{
+    return a + 0.5 * (b - a);
+}
+
 void interpolatePos(eng::Registry &r, int e, rtp::Position nP)
 {
     try {
         auto p = r.getComponents<rtp::Position>()[e].value();
 
         r.emplaceComponent<rtp::Position>(eng::Entity(e),
-        rtp::Position(std::lerp(p.x, nP.x, 0.5), std::lerp(p.y, nP.y, 0.5), std::lerp(p.z, nP.z, 0.5)));
+        rtp::Position(midlerp(p.x, nP.x), midlerp(p.y, nP.y), midlerp(p.z, nP.z)));
     } catch (std::bad_optional_access &error) {
         r.addComponent<rtp::Position>(eng::Entity(e), rtp::Position(nP.x, nP.y, nP.z));
     }
@@ -82,7 +87,7 @@ void interpolateVel(eng::Registry &r, int e, rtp::Velocity nP)
         auto p = r.getComponents<rtp::Velocity>()[e].value();
 
         r.emplaceComponent<rtp::Velocity>(eng::Entity(e),
-        rtp::Velocity(std::lerp(p.x, nP.x, 0.0), std::lerp(p.y, nP.y, 0.0)));
+        rtp::Velocity(midlerp(p.x, nP.x), midlerp(p.y, nP.y)));
     } catch (std::bad_optional_access &error) {
         r.addComponent<rtp::Velocity>(eng::Entity(e), rtp::Velocity(nP.x, nP.y));
     }
