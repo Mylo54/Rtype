@@ -11,11 +11,16 @@
 #include <iostream>
 namespace eng
 {
+    /// @brief A class holding entity
     class Entity {
         public:
+            /// @brief Entity object constructor
+            /// @param id 
             Entity(size_t id);
             ~Entity();
 
+            /// @brief get the id of the entity
+            /// @return the id of the entity
             size_t getId() const;
         protected:
         private:

@@ -18,7 +18,7 @@ eng::PlayerPrefs::~PlayerPrefs()
 {
 }
 
-void eng::PlayerPrefs::loadPref(const std::string str)
+void eng::PlayerPrefs::_loadPref(const std::string str)
 {
     std::regex keyRgx("(\\w+) .*");
     std::regex valueRgx(".*\\[(\\w+)\\].*");
@@ -41,12 +41,12 @@ void eng::PlayerPrefs::loadPrefs()
 
     file.open(_path);
     while (std::getline(file, str)) {
-        loadPref(str);
+        _loadPref(str);
     }
     file.close();
 }
 
-bool eng::PlayerPrefs::prefLineMatch(const std::string str, std::string key)
+bool eng::PlayerPrefs::_prefLineMatch(const std::string str, std::string key)
 {
     std::regex keyRgx(key + ".*");
     std::smatch match;
@@ -68,7 +68,7 @@ void eng::PlayerPrefs::savePref(std::string key, std::string value)
 
     while(getline(filein, str))
     {
-        if (prefLineMatch(str, key))
+        if (_prefLineMatch(str, key))
             str = key + "\t\t[" + value + "]";
         str += "\n";
         fileout << str;

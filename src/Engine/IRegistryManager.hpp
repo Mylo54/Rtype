@@ -23,6 +23,7 @@
 #include <fstream>
 #include <cstdio>
 
+/// @brief An interface for registry managers
 class IRegistryManager {
     public:
         IRegistryManager();

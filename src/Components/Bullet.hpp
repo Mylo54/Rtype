@@ -10,6 +10,7 @@
 
 namespace rtp
 {
+    /// @brief A class holding in game projectiles
     class Bullet {
     public:
         /// @brief Bullet object constructor

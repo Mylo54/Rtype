@@ -16,8 +16,16 @@
 
 namespace rtp
 {
+    /// @brief A class holding your texts
     class Writable {
         public:
+            /// @brief Writable object constructor
+            /// @param name name of the Writable object
+            /// @param content text contained in the object
+            /// @param fontPath path to the font file
+            /// @param charSize size of the characters
+            /// @param color color of the characters
+            /// @param style style of the text
             Writable(std::string name,
             sf::String content = "Text",
             const std::string fontPath = "assets/MetroidPrimeHunters.ttf",

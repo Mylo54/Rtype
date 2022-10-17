@@ -32,11 +32,14 @@
 #include "../Engine/RegistryManager.hpp"
 
 namespace rtp {
+    /// @brief A class holding a server
     class Server {
         public:
+            /// @brief Server object constructor
+            /// @param port port of the server
             Server(boost::asio::ip::port_type port);
             ~Server();
-
+            /// @brief run the server
             void run();
             //void requestConnection();
 

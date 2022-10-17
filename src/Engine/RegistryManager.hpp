@@ -12,8 +12,10 @@
 
 namespace eng
 {
+    /// @brief A class managing registries
     class RegistryManager {
         public:
+            /// @brief RegistryManager object constructor
             RegistryManager();
             ~RegistryManager();
 

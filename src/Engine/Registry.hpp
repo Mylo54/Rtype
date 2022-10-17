@@ -19,8 +19,10 @@
 
 namespace eng
 {
+    /// @brief A class holding a registry
     class Registry {
         public:
+            /// @brief Registry object constructor
             Registry();
             ~Registry();
 

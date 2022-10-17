@@ -22,8 +22,14 @@
 #include <chrono>
 
 namespace rtp {
+    /// @brief A class holding every server systems
     class ServerSystems {
         public:
+            /// @brief ServerSystems object constructeur
+            /// @param socket udp socket of the server
+            /// @param mutex 
+            /// @param listDataRec 
+            /// @param endpoints 
             ServerSystems(boost::asio::ip::udp::socket &socket,
             std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);

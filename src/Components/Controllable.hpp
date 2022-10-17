@@ -12,6 +12,7 @@
 
 namespace rtp
 {
+    /// @brief A class handling every controllable components
     class Controllable {
         public:
             /// @brief Controllable object constructor

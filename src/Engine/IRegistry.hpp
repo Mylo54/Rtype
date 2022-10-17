@@ -23,6 +23,7 @@
 
 namespace eng
 {
+    /// @brief an interface for registries
     class IRegistry {
         public:
             virtual ~IRegistry() = default;

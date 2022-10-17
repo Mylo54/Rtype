@@ -12,8 +12,10 @@
 
 namespace eng
 {
+    /// @brief A class managing logging
     class Log {
         public:
+            /// @brief Log object constructor
             Log();
             ~Log();
             /// @brief set the path to the logging file
@@ -22,9 +24,15 @@ namespace eng
             /// @brief Get the path to the current logging file
             /// @return 
             std::string getPath();
+            /// @brief save a message in the log file
+            /// @param msg message to log
             void log(std::string msg);
+            /// @brief get the state of the log object
+            /// @return true if active, false otherwise
             bool isEnabled();
+            /// @brief enable logging
             void enable();
+            /// @brief disable logging
             void disable();
         protected:
         private:

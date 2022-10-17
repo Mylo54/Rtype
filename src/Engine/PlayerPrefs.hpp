@@ -13,8 +13,10 @@
 
 namespace eng
 {
+    /// @brief A class handling player preferences
     class PlayerPrefs {
         public:
+            /// @brief PlayerPrefs object construcor
             PlayerPrefs();
             ~PlayerPrefs();
 
@@ -23,7 +25,7 @@ namespace eng
 
             /// @brief Returns the value corresponding to key in the preference file if it exists.
             /// @param key key of the preference to get
-            /// @return 
+            /// @return the preference value
             std::string getPref(std::string key);
 
             /// @brief Sets the string value of the preference identified by the given key in the file
@@ -55,14 +57,16 @@ namespace eng
             std::string getPath();
         protected:
         private:
+            /// @brief load a single pref from player preferences file line
+            /// @param str a line of player preference file
+            void _loadPref(const std::string str);
+
+            bool _prefLineMatch(const std::string str, std::string key);
             /// @brief map containing player preferences <key, value>
             std::map<std::string, std::string> _strmap;
             /// @brief path to the player preferences file
             std::string _path;
 
-            void loadPref(const std::string str);
-
-            bool prefLineMatch(const std::string str, std::string key);
     };
 } // namespace eng
 

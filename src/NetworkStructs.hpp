@@ -14,6 +14,7 @@
 // Yeah so this is kinda bad...
 namespace rtp
 {
+    /// @brief Events happening before a game
     enum ACTIONTYPE_PREGAME {
         OK,
         KO,
@@ -26,6 +27,7 @@ namespace rtp
         LEAVE_GAME
     };
 
+    /// @brief Event happening during a game
     enum ACTIONTYPE_INGAME {
         UP,
         RIGHT,
