@@ -10,8 +10,13 @@
 
 namespace rtp
 {
+    /// @brief A class holding statistics of a player
     class PlayerStats {
         public:
+            /// @brief PlayerStats object constructor
+            /// @param playerID 
+            /// @param pDamage 
+            /// @param pLives 
             PlayerStats(int playerID,
             int pDamage = 1,
             int pLives = 3): playerId(playerID), damage(pDamage), lives(pLives)

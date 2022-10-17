@@ -8,8 +8,8 @@
 #include "NetworkSystems.hpp"
 
 rtp::NetworkSystems::NetworkSystems(std::string address, int port,
-boost::asio::ip::udp::socket &socket, int mySyncId): _socket(socket),
-_mySyncId(mySyncId)
+boost::asio::ip::udp::socket &socket, int mySyncId, sf::Time &delta):
+_socket(socket), _mySyncId(mySyncId), _delta(delta)
 {
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
 }
@@ -52,6 +52,47 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
     }
 }
 
+// interpolate two vectors with O=0
+float interpolate(float a, float b)
+{
+    float res = 0;
+
+    res = fabs(a - b);
+    res += fmin(a, b);
+    if (a <= 0 && b <= 0)
+        res = -res;
+    return res;
+}
+
+float midlerp(float a, float b)
+{
+    return a + 0.5 * (b - a);
+}
+
+void interpolatePos(eng::Registry &r, int e, rtp::Position nP)
+{
+    try {
+        auto p = r.getComponents<rtp::Position>()[e].value();
+
+        r.emplaceComponent<rtp::Position>(eng::Entity(e),
+        rtp::Position(midlerp(p.x, nP.x), midlerp(p.y, nP.y), midlerp(p.z, nP.z)));
+    } catch (std::bad_optional_access &error) {
+        r.addComponent<rtp::Position>(eng::Entity(e), rtp::Position(nP.x, nP.y, nP.z));
+    }
+}
+
+void interpolateVel(eng::Registry &r, int e, rtp::Velocity nP)
+{
+    try {
+        auto p = r.getComponents<rtp::Velocity>()[e].value();
+
+        r.emplaceComponent<rtp::Velocity>(eng::Entity(e),
+        rtp::Velocity(midlerp(p.x, nP.x), midlerp(p.y, nP.y)));
+    } catch (std::bad_optional_access &error) {
+        r.addComponent<rtp::Velocity>(eng::Entity(e), rtp::Velocity(nP.x, nP.y));
+    }
+}
+
 void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
     int e = 0;
@@ -70,7 +111,8 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             r.addComponent<Synced>(eng::Entity(e), Synced(data.syncId));
         }
         if (_dataBuffer[0].COMPONENT_NAME == POSITION)
-            r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
+            //r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
+            interpolatePos(r, e, Position(data.valueA, data.valueB, data.valueC));
         if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
             r.emplaceComponent<Velocity>(eng::Entity(e), Velocity(data.valueA, data.valueB));
         if (data.COMPONENT_NAME == ENEMY_STATS) {
@@ -103,9 +145,13 @@ int rtp::NetworkSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
 {
     int type = r.getComponents<EnemyStats>()[e].value().enemyType;
-    if (type == 0)
+    float scale = 1;
+    if (type == 0) {
+        scale = 3;
         r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
-        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
+        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
+        r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
+    }
 }
 
 void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)

@@ -213,7 +213,7 @@ void rtp::Client::_addBackgrounds(eng::Registry &reg)
 void rtp::Client::systemsLoop()
 {
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
-    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId);
+    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId, gfx.getDelta());
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     gfx.setMaxFrameRate(60);

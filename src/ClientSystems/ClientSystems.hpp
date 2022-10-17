@@ -23,6 +23,14 @@ namespace rtp
                 CHAT,
                 EVENT
             };
+
+            /// @brief ClientSystem object constructor
+            /// @param w render window of the client
+            /// @param c clock of the client
+            /// @param delta delta time of the server
+            /// @param adress adress of the server
+            /// @param port port of the server
+            /// @param socket udp socket of the server
             ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta,
             std::string adress, int port,boost::asio::ip::udp::socket &socket);
             ~ClientSystems();
@@ -103,8 +111,11 @@ namespace rtp
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
+            /// @brief The renderWindow of the client
             sf::RenderWindow &_w;
+            /// @brief The clock off the server
             sf::Clock &_c;
+            /// @brief The delta time of the server
             sf::Time &_delta;
     };
 } // namespace rtp

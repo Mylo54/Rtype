@@ -168,10 +168,14 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
 {
     auto &ennemies = r.getComponents<EnemyStats>();
 
-    for (int i = 0; i < ennemies.size(); i++)
-        if (ennemies[i].has_value())
-            if (ennemies[i].value().health <= 0)
+    for (int i = 0; i < ennemies.size(); i++) {
+        if (ennemies[i].has_value()) {
+            if (ennemies[i].value().health <= 0) {
                 r.killEntity(eng::Entity(i));
+            }
+        }
+
+    }
 }
 
 // Bullets are considered as (x, y) points

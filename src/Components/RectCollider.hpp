@@ -10,11 +10,13 @@
 
 namespace rtp
 {
-    // Don't use the colliders from the sfml
-    // because this component will likely go
-    // into the server after the split
+    /// @brief A class holding the hitbox of entities
+    /// Tips : Don't use the colliders from the sfml because this component will likely go into the server after the split
     class RectCollider {
     public:
+        /// @brief RectCollider object constructor
+        /// @param pWidth width of the hitbox
+        /// @param pHeight height of the hitbox
         RectCollider(int pWidth, int pHeight): width(pWidth), height(pHeight)
         {}
         ~RectCollider() {}

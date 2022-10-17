@@ -22,9 +22,15 @@
 namespace rtp {
     class Client {
         public:
+            /// @brief Client object constructor
+            /// @param port Port of connection to the server
             Client(boost::asio::ip::port_type port);
             ~Client();
+
+            /// @brief Run the client
             void run();
+
+            /// @brief The main loop of the client (using systems)
             void systemsLoop();
 
             /// @brief Connect client to server
@@ -63,6 +69,9 @@ namespace rtp {
             /// @param reg The registry on which to add the text
             void _addScore(eng::Registry &reg);
 
+            /// @brief Fill the structure sent to the server countaining the client adress
+            /// @param address The client adress
+            /// @return The filled structure
             boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);
 
             int _mySyncId = 0;

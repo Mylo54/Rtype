@@ -12,6 +12,8 @@ namespace rtp
 {
     class Bullet {
     public:
+        /// @brief Bullet object constructor
+        /// @param pDamage damage dealt by the projectile (1 by default)
         Bullet(int pDamage = 1): damage(pDamage)
         {}
         ~Bullet() {}

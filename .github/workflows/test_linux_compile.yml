@@ -1,5 +1,5 @@
 name: Linux compile
-on: [workflow_call, push, delete]
+on: [workflow_call]
 jobs:
   Linux-Compile:
     runs-on: ubuntu-latest

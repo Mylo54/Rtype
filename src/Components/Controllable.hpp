@@ -14,6 +14,7 @@ namespace rtp
 {
     class Controllable {
         public:
+            /// @brief Controllable object constructor
             Controllable() {}
             ~Controllable() {}
 
