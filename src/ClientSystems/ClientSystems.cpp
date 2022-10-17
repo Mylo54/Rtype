@@ -34,36 +34,6 @@ void rtp::ClientSystems::logSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::controlSystem(eng::Registry &r)
-{
-    auto &controllables = r.getComponents<Controllable>();
-
-    for (int i = 0; i < controllables.size(); i++) {
-        auto &ctrl = controllables[i];
-
-        if (ctrl.has_value()) {
-            // up and down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                ctrl.value().yAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                ctrl.value().yAxis = 1;
-            else
-                ctrl.value().yAxis = 0;
-            
-            // left and right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                ctrl.value().xAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                ctrl.value().xAxis = 1;
-            else
-                ctrl.value().xAxis = 0;
-            
-            // shoot
-            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-        }
-    }
-}
-
 void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<Velocity>();
@@ -323,4 +293,22 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
 
     reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
     reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
+}
+
+void rtp::ClientSystems::killBullets(eng::Registry &r)
+{
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size(); i++) {
+        if (blts[i].has_value()) {
+            auto blt = blts[i].value();
+            auto pos = poss[i].value();
+
+            if (pos.x > 1920 || pos.x < -1)
+                r.killEntity(eng::Entity(i));
+            else if (pos.y > 1080 || pos.y < -1)
+                r.killEntity(eng::Entity(i));
+        }
+    }
 }

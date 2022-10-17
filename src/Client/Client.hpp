@@ -63,6 +63,8 @@ namespace rtp {
             /// @param reg The registry on which to add the text
             void _addScore(eng::Registry &reg);
 
+            int _mySyncId = 0;
+
             eng::RegistryManager _manager;
             int _port;
             boost::asio::io_context _ioContext;

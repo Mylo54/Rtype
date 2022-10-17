@@ -8,7 +8,8 @@
 #include "NetworkSystems.hpp"
 
 rtp::NetworkSystems::NetworkSystems(std::string address, int port,
-boost::asio::ip::udp::socket &socket): _socket(socket)
+boost::asio::ip::udp::socket &socket, int mySyncId): _socket(socket),
+_mySyncId(mySyncId)
 {
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
 }
@@ -81,6 +82,8 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, data.valueB, data.valueC));
             if (toBuild)
                 _completePlayer(r, e);
+            if (data.syncId != _mySyncId)
+                r.getComponents<Shooter>()[e].value().shoot = data.shot;
         }
 
     }

@@ -186,9 +186,11 @@ void rtp::Server::systemsLoop()
         systems.limitPlayer(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
+        systems.killBullets(r);
 
         // Send the new data
         systems.sendData(r);
+
         // Limit the frequence of the server
         systems.limitTime();
     }

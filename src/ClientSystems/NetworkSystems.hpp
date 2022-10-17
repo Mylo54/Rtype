@@ -20,7 +20,7 @@ namespace rtp
     class NetworkSystems {
         public:
             NetworkSystems(std::string address, int port,
-            boost::asio::ip::udp::socket &socket);
+            boost::asio::ip::udp::socket &socket, int mySyncId);
             ~NetworkSystems();
 
             /// @brief A system which sends data to the server
@@ -57,6 +57,9 @@ namespace rtp
 
             /// @brief Container for received data
             boost::array<server_payload_t ,1> _dataBuffer;
+
+            /// @brief The sync id corresponding to the client character
+            int _mySyncId;
     };
 } // namespace rtp
 

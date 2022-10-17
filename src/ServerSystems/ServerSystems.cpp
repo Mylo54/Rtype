@@ -92,6 +92,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
             auto &plyr = playerStats[i].value();
             
             ctrl.value().shoot = false;
+            ctrl.value().hasShot = true;
             r.addComponent(bullet, rtp::Velocity(15, 0));
             r.addComponent(bullet, rtp::Position(pos.x + 65, pos.y + 25, pos.z));
             r.addComponent(bullet, rtp::Bullet(2));
@@ -162,6 +163,7 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
     auto &sc = r.getComponents<Synced>();
+    auto &ctrls = r.getComponents<Controllable>();
     boost::array<server_payload_t, 1> dataTbs;
 
     for (int i = 0; i < sc.size(); i++) {
@@ -170,8 +172,10 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &v = vs[i].value();
             auto &id_sync = sc[i].value();
             auto &player = playerStats[i].value();
+            auto &ctrl = ctrls[i].value();
 
-            _editDataTbs(dataTbs[0], PLAYER_STATS, {(float)player.playerId, (float)player.damage, (float)player.lives}, id_sync.id);
+            _editDataTbs(dataTbs[0], PLAYER_STATS, {(float)player.playerId, (float)player.damage, (float)player.lives}, id_sync.id, ctrl.hasShot);
+            ctrl.hasShot = false;
             sendSyncedDataToAll(dataTbs);
             _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
@@ -191,7 +195,6 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
         }
-        // Then send shot events and from which player they arrived from
     }
     dataTbs[0].COMPONENT_NAME = END_PACKET;
     sendSyncedDataToAll(dataTbs);
@@ -253,5 +256,23 @@ void rtp::ServerSystems::limitTime()
     if ((_tps != 0) && ((1 / _tps) > _delta)) {
         long long sleeptime = ((1.0 / _tps) - _delta) * 100000;
         std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));       
+    }
+}
+
+void rtp::ServerSystems::killBullets(eng::Registry &r)
+{
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size(); i++) {
+        if (blts[i].has_value()) {
+            auto blt = blts[i].value();
+            auto pos = poss[i].value();
+
+            if (pos.x > 1920 || pos.x < -1)
+                r.killEntity(eng::Entity(i));
+            else if (pos.y > 1080 || pos.y < -1)
+                r.killEntity(eng::Entity(i));
+        }
     }
 }
