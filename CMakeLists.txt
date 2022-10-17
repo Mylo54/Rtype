@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -v")
@@ -20,11 +20,11 @@ find_package(Threads REQUIRED)
 find_package(Boost REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
-    add_definitions("-std=c++20 -D_GLIBCXX_USE_CXX11_ABI=0")
+    add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 #if(MSVC)
-#    add_compile_options(std:c++20)
+#    add_compile_options(std:c++17)
 #endif()
 
 if (APPLE)
