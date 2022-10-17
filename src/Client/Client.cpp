@@ -43,9 +43,41 @@ void rtp::Client::disconnect()
     return;
 }
 
-std::vector<int> rtp::Client::connect()
+boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::string address)
 {
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
+
+    size_t pos = 0;
+    std::string token;
+
+    pos = address.find('.');
+    token = address.substr(0, pos);
+    dataTbs[0].addr1 = atoi(token.c_str());
+    address.erase(0, pos + 1);
+
+    pos = address.find('.');
+    token = address.substr(0, pos);
+    dataTbs[0].addr2 = atoi(token.c_str());
+    address.erase(0, pos + 1);
+
+    pos = address.find('.');
+    token = address.substr(0, pos);
+    dataTbs[0].addr3 = atoi(token.c_str());
+    address.erase(0, pos + 1);
+
+    pos = address.find('.');
+    token = address.substr(0, pos);
+    dataTbs[0].addr4 = atoi(token.c_str());
+    
+    dataTbs[0].port = _port;
+    std::cout << "addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
+
+    return dataTbs;
+}
+
+std::vector<int> rtp::Client::connect()
+{
+    boost::array<demandConnectPayload_s, 1> dataTbs;
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
 
@@ -62,31 +94,8 @@ std::vector<int> rtp::Client::connect()
         _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
         boost::asio::ip::address addr = _socketTCP.local_endpoint().address();
         std::cout << "[Client][Connect]: connect success " << addr.to_string() << std::endl;
-        std::string address = addr.to_string();
-        size_t pos = 0;
-        std::string token;
-
-        pos = address.find('.');
-        token = address.substr(0, pos);
-        dataTbs[0].addr1 = atoi(token.c_str());
-        address.erase(0, pos + 1);
-
-        pos = address.find('.');
-        token = address.substr(0, pos);
-        dataTbs[0].addr2 = atoi(token.c_str());
-        address.erase(0, pos + 1);
-
-        pos = address.find('.');
-        token = address.substr(0, pos);
-        dataTbs[0].addr3 = atoi(token.c_str());
-        address.erase(0, pos + 1);
-
-        pos = address.find('.');
-        token = address.substr(0, pos);
-        dataTbs[0].addr4 = atoi(token.c_str());
-    
-        dataTbs[0].port = _port;
-        std::cout << "addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
+        dataTbs = _fillDataToSend(addr.to_string());
+        
     }
     catch (std::exception& e)
     {
