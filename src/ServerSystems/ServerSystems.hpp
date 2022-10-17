@@ -108,6 +108,10 @@ namespace rtp {
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
+            /// @brief Get the delta time as seconds
+            /// @return the delta time as seconds
+            float _getDeltaAsSeconds();
+
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;
             /// @brief list (vector) of client endpoints
@@ -117,11 +121,14 @@ namespace rtp {
             /// @brief List of all received payload
             std::vector<inputPayload_t> &_listDataRec;
 
-            std::chrono::steady_clock::time_point _lastUpdate;
-            // as microseconds
-            long _timeElapsed = 0;
-            float _delta = 0;
+            /// @brief The delta time since last frame in microseconds
+            long _delta = 0;
+            /// @brief Elapsed time since
+            float _elapsedTime = 0;
+            /// @brief Tick per seconds of the server
             float _tps = 60;
+            /// @brief Saved value to update the delta time
+            std::chrono::steady_clock::time_point _lastUpdate;
     };
 };
 

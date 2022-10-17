@@ -29,8 +29,8 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * float(_timeElapsed) / 1000000 * 20);
-            pos.value().y += (vel.value().y * float(_timeElapsed) / 1000000 * 20);
+            pos.value().x += (vel.value().x * float(_delta) / 1000000 * 20);
+            pos.value().y += (vel.value().y * float(_delta) / 1000000 * 20);
         }
     }
 }
@@ -73,14 +73,14 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * (float(_timeElapsed) / 1000000 * 20 * 2);
-            vel.value().x += (vel.value().x > 0) ? (float(_timeElapsed) / 1000000 * (-1)) * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? (float(_timeElapsed) / 1000000 * 20) : 0;
+            vel.value().x += ctrl.value().xAxis * _getDeltaAsSeconds() * 20 * 2;
+            vel.value().x += (vel.value().x > 0) ? -(_getDeltaAsSeconds() * 20) : 0;
+            vel.value().x += (vel.value().x < 0) ? _getDeltaAsSeconds() * 20 : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * (float(_timeElapsed) / 1000000) * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? (float(_timeElapsed) / 1000000 * (-1)) * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? (float(_timeElapsed) / 1000000) * 20 : 0;
+            vel.value().y += ctrl.value().yAxis * _getDeltaAsSeconds() * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? -(_getDeltaAsSeconds() * 20) : 0;
+            vel.value().y += (vel.value().y < 0) ? _getDeltaAsSeconds() * 20 : 0;
         }
     }
 }
@@ -254,20 +254,20 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 
 void rtp::ServerSystems::limitTime()
 {
-    if ((_tps != 0) && ((1 / _tps) > _delta)) {
-        long long sleeptime = ((1.0 / _tps) - _delta) * 1000000;
+    if ((_tps != 0) && ((1 / _tps) > _elapsedTime)) {
+        long long sleeptime = ((1.0 / _tps) - _elapsedTime) * 1000000;
         std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));       
-        _timeElapsed = sleeptime + (_delta * 1000000);
+        _delta = sleeptime + (_elapsedTime * 1000000);
     }
     else {
-        _timeElapsed = _delta * 1000000;
+        _delta = _elapsedTime * 1000000;
     }
 }
 
 void rtp::ServerSystems::updDeltaTime()
 {
     std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+    _elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
     _lastUpdate = now;
 }
 
@@ -287,4 +287,9 @@ void rtp::ServerSystems::killBullets(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
         }
     }
+}
+
+float rtp::ServerSystems::_getDeltaAsSeconds()
+{
+    return (float(_delta) / 1000000);
 }
