@@ -14,6 +14,9 @@ namespace rtp
 {
     class AudioSource {
         public:
+            /// @brief AudioSource object constructor
+            /// @param filepath path to the audio file
+            /// @param pToPlay true : the sound will be played, false otherwise
             AudioSource(std::string filepath, bool pToPlay = false) {
                 toPlay = pToPlay;
                 buffer->loadFromFile(filepath);

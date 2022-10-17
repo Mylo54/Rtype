@@ -15,6 +15,9 @@ namespace rtp
 {
     class GraphicsSystems {
         public:
+            /// @brief GraphicsSystems object constructor
+            /// @param dimWdw 
+            /// @param nameWdw 
             GraphicsSystems(std::vector<int> dimWdw, std::string nameWdw);
             ~GraphicsSystems();
 

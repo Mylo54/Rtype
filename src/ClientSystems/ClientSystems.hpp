@@ -23,6 +23,14 @@ namespace rtp
                 CHAT,
                 EVENT
             };
+
+            /// @brief ClientSystem object constructor
+            /// @param w render window of the client
+            /// @param c clock of the client
+            /// @param delta delta time of the server
+            /// @param adress adress of the server
+            /// @param port port of the server
+            /// @param socket udp socket of the server
             ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta,
             std::string adress, int port,boost::asio::ip::udp::socket &socket);
             ~ClientSystems();
