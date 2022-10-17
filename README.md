@@ -24,18 +24,45 @@ This project aims to create an online multiplayer R-Type game. We had to impleme
 For the one unfamliar with the R-TYPE genre, [here is a bit about it](http://www.hardcoregaming101.net/r-type/).
 
 ## Installation :
+
 1. Install Conan
 
 2. Compile on your os:
 
 **Linux && MacOS :**
+
+``` bash
+$ ./comp_linux.sh
 ```
-./comp_linux.sh
-```
+
 **Windows:**
+
+``` bash
+$ ./comp_windows.sh
 ```
-./comp_windows.sh
+
+## Known issues :
+
+### Alsa-lib 
+
+The audio libraries may have weird installs on some linux distros, if that's the case, then run these lines
+
+``` bash
+$ ln -s /usr/lib64/alsa-lib/ ~/.conan/data/libalsa/1.2.7.2/_/_/package/45572951e04977fe87dc4117ce69daf41aa9589c/lib/
+$ ln -s /usr/lib64/pkgconfig/ ~/.conan/data/libalsa/1.2.7.2/_/_/package/45572951e04977fe87dc4117ce69daf41aa9589c/lib/
 ```
+
+and then, every time you open a new terminal:
+
+``` bash
+$ export ALSA_CONFIG_DIR=/usr/share/alsa
+```
+
+OR, you can just run the `fix_audio.sh` script and add `-first` if its your first time executing it.
+
+### Multiple clients on same system :
+
+When running multiple clients at the same time, if you input something on one window and then unfocus it, it will keep repeating the input.
 
 ## Team :
 The team is composed of :
