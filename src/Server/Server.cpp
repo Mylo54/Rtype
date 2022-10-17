@@ -154,6 +154,7 @@ void rtp::Server::systemsLoop()
 {
     rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
+    systems.setEnemyRate(5);
 
     _setupRegistry(r);
     _cout.lock();
@@ -186,7 +187,8 @@ void rtp::Server::systemsLoop()
         systems.limitPlayer(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
-        systems.killBullets(r);
+        systems.killOutOfBounds(r);
+        systems.spawnEnemies(r);
 
         // Send the new data
         systems.sendData(r);

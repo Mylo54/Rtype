@@ -79,9 +79,18 @@ namespace rtp {
             /// @param reg The registry on which to apply the system
             void limitPlayer(eng::Registry &r);
 
-            /// @brief Kill bullets that are offscreen
+            /// @brief Kill entities that are offscreen
             /// @param r The registry on which to apply the system
-            void killBullets(eng::Registry &r);
+            void killOutOfBounds(eng::Registry &r);
+
+            /// @brief Set the enemy spawn rate
+            /// @param seconds Each 'seconds' time we spawn a new enemy
+            void setEnemyRate(float seconds);
+
+            /// @brief A system which spawns enemies periodicaly
+            /// (Set the spawnRate with setEnemyRate(float))
+            /// @param r The Registry on which to apply the system
+            void spawnEnemies(eng::Registry &r);
         protected:
         protected:
         private:
@@ -107,6 +116,12 @@ namespace rtp {
             /// @param b The bullets data
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
+
+            /// @brief The time to wait between each enemy spawn
+            float _enemyRate;
+
+            /// @brief The timer until the next enemy spawns
+            float _enemyTimer;
 
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;

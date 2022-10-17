@@ -35,6 +35,29 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
     }
 }
 
+void rtp::ServerSystems::setEnemyRate(float seconds)
+{
+    _enemyRate = seconds;
+}
+
+void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
+{
+    _enemyTimer -= float(_timeElapsed) / 1000000;
+
+    if (_enemyTimer <= 0) {
+        eng::Entity enm = r.spawnEntity();
+
+        float posY = rand() % 1080;
+
+        r.addComponent<rtp::Position>(enm, rtp::Position(1919, posY, 0));
+        r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
+        r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
+        r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
+        r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
+        _enemyTimer = _enemyRate;
+    }
+}
+
 // Max speed should be defined elsewhere...
 void rtp::ServerSystems::limitPlayer(eng::Registry &r)
 {
@@ -271,14 +294,12 @@ void rtp::ServerSystems::updDeltaTime()
     _lastUpdate = now;
 }
 
-void rtp::ServerSystems::killBullets(eng::Registry &r)
+void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)
 {
-    auto &blts = r.getComponents<Bullet>();
     auto &poss = r.getComponents<Position>();
 
-    for (int i = 0; i < blts.size(); i++) {
-        if (blts[i].has_value()) {
-            auto blt = blts[i].value();
+    for (int i = 0; i < poss.size(); i++) {
+        if (poss[i].has_value()) {
             auto pos = poss[i].value();
 
             if (pos.x > 1920 || pos.x < -1)
