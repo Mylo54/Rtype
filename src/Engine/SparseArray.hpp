@@ -21,6 +21,7 @@ namespace eng
             using Container = std::vector<OptionalComponent>;
             using Iterator = typename Container::iterator;
         public:
+            /// @brief SparseArray object constructor
             SparseArray() {}
             ~SparseArray() {}
 

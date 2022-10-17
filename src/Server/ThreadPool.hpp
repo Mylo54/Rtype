@@ -17,8 +17,11 @@
 #include <condition_variable>
 
 namespace rtp {
+    /// @brief A class holding a thread pool, used for multi-threading
     class ThreadPool {
         public:
+            /// @brief ThreadPool object constructor
+            /// @param size number of thread
             ThreadPool(int size);
             ~ThreadPool();
             void addTask(std::function<int(void)> fct);

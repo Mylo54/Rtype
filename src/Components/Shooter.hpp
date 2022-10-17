@@ -13,8 +13,14 @@
 
 namespace rtp
 {
+    /// @brief A class handling shooting action
     class Shooter {
         public:
+            /// @brief Shooter object constructor
+            /// @param pBulletSpritePath path to the Sprite of the projectile
+            /// @param pSpeed speed of the projectile
+            /// @param pFireRate fire rate of the shooting entity
+            /// @param pShootPoint the shoot point of the shooting entity
             Shooter(std::string pBulletSpritePath,
             float pSpeed,
             float pFireRate,

@@ -10,7 +10,7 @@
 
 namespace rtp
 {
-    /// @brief A class holding statistics of a player
+    /// @brief A class holding Player statistics
     class PlayerStats {
         public:
             /// @brief PlayerStats object constructor

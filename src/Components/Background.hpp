@@ -13,6 +13,7 @@
 
 namespace rtp
 {
+    /// @brief A class holding a background visual element
     class Background {
         public:
             /// @brief Background object constructor

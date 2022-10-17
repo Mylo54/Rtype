@@ -12,6 +12,7 @@
 
 namespace rtp
 {
+    /// @brief A class holding audio components
     class AudioSource {
         public:
             /// @brief AudioSource object constructor

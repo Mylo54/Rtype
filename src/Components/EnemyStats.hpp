@@ -10,6 +10,7 @@
 
 namespace rtp
 {
+    /// @brief A class holding Enemy statistics
     class EnemyStats {
         public:
             /// @brief EnemyStats object constructor

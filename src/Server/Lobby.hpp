@@ -19,12 +19,13 @@
 #include <string.h>
 
 namespace rtp {
+    /// @brief A class holding a lobby
     class Lobby {
         public:
+            /// @brief Lobby object constructor
+            /// @param lobbyName name of the lobby
             Lobby(std::string lobbyName = "R-TYPE SERVER");
             ~Lobby();
-            
-            
 
         protected:
         private:
