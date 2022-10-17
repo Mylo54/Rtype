@@ -168,10 +168,10 @@ void rtp::Client::systemsLoop()
     gfx.setMaxFrameRate(60);
 
     while (gfx.windowOpen()) {
-        gfx.eventCloseWindow();
+        gfx.eventCatchWindow();
         
         // Receive Inputs
-        systems.controlSystem(r);
+        gfx.controlSystem(r);
         net.receiveData(r);
 
         // Send new events

@@ -42,8 +42,12 @@ namespace rtp
             /// @return true if open, false if closed
             bool windowOpen();
 
-            /// @brief A system who close the window
-            void eventCloseWindow();
+            /// @brief A system who handles inputs and stores actions
+            /// @param r The Registry on which to apply the system
+            void controlSystem(eng::Registry &r);
+
+            /// @brief A system who handle specific window event like closing or focus
+            void eventCatchWindow();
 
             /// @brief A system who clears the screen
             void clearSystem();
@@ -76,6 +80,7 @@ namespace rtp
             sf::Event _event;
             sf::Clock _c;
             sf::Time _delta;
+            bool _isWindowFocused = true;
     };
 } // namespace rtp
 

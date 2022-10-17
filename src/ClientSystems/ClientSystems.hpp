@@ -35,10 +35,6 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void animateSystem(eng::Registry &r);
 
-            /// @brief A system who handles inputs and stores actions
-            /// @param r The Registry on which to apply the system
-            void controlSystem(eng::Registry &r);
-
             /// @brief A system who handles the shooting
             /// @param r The Registry on which to apply the system
             void shootSystem(eng::Registry &r);

@@ -74,11 +74,48 @@ bool rtp::GraphicsSystems::windowOpen()
     return this->_w.isOpen();
 }
 
-void rtp::GraphicsSystems::eventCloseWindow()
+void rtp::GraphicsSystems::eventCatchWindow()
 {
     while (this->_w.pollEvent(this->_event)) {
         if (this->_event.type == sf::Event::Closed)
             this->_w.close();
+        if (this->_event.type == sf::Event::GainedFocus)
+            this->_isWindowFocused = true;
+        if (this->_event.type == sf::Event::LostFocus)
+            this->_isWindowFocused = false;
+    }
+}
+
+void rtp::GraphicsSystems::controlSystem(eng::Registry &r)
+{
+    if (_isWindowFocused == false) {
+        return;
+    }
+    auto &controllables = r.getComponents<Controllable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            // up and down
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                ctrl.value().yAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                ctrl.value().yAxis = 1;
+            else
+                ctrl.value().yAxis = 0;
+            
+            // left and right
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                ctrl.value().xAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                ctrl.value().xAxis = 1;
+            else
+                ctrl.value().xAxis = 0;
+            
+            // shoot
+            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        }
     }
 }
 
