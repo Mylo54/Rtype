@@ -13,6 +13,7 @@
 #include "../NetworkStructs.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include "ClientSystems.hpp"
 
 namespace rtp
 {

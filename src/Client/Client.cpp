@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), port})
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port})
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -37,7 +37,7 @@ void rtp::Client::disconnect()
     // Disconnect here
     std::cout << "[CLIENT][DISCONNECT] : send disconnect" << std::endl;
     boost::array<inputPayload_t, 1> dataTbs = {LEAVE_GAME};
-    //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), boost::asio::ip::port_type(_port)});
+    //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), boost::asio::ip::port_type(_port)});
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
 }
@@ -48,15 +48,44 @@ std::vector<int> rtp::Client::connect()
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
 
-    dataTbs[0].addr1 = 127;
-    dataTbs[0].addr2 = 0;
-    dataTbs[0].addr3 = 0;
-    dataTbs[0].addr4 = 1;
-    dataTbs[0].port = _port;
+
+    //ICI adress
+
+    //dataTbs[0].addr1 = 127;
+    //dataTbs[0].addr2 = 0;
+    //dataTbs[0].addr3 = 0;
+    //dataTbs[0].addr4 = 1;
+
     //connection
     try {
-        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 3303));
-        std::cout << "[Client][Connect]: connect success" << std::endl;
+        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
+        boost::asio::ip::address addr = _socketTCP.local_endpoint().address();
+        std::cout << "[Client][Connect]: connect success " << addr.to_string() << std::endl;
+        std::string address = addr.to_string();
+        size_t pos = 0;
+        std::string token;
+
+        pos = address.find('.');
+        token = address.substr(0, pos);
+        dataTbs[0].addr1 = atoi(token.c_str());
+        address.erase(0, pos + 1);
+
+        pos = address.find('.');
+        token = address.substr(0, pos);
+        dataTbs[0].addr2 = atoi(token.c_str());
+        address.erase(0, pos + 1);
+
+        pos = address.find('.');
+        token = address.substr(0, pos);
+        dataTbs[0].addr3 = atoi(token.c_str());
+        address.erase(0, pos + 1);
+
+        pos = address.find('.');
+        token = address.substr(0, pos);
+        dataTbs[0].addr4 = atoi(token.c_str());
+    
+        dataTbs[0].port = _port;
+        std::cout << "addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
     }
     catch (std::exception& e)
     {
