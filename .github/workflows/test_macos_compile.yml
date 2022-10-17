@@ -1,5 +1,5 @@
 name: MacOS compile
-on: [workflow_call]
+on: [workflow_call, push, delete]
 jobs:
   Macos-Compile:
     runs-on: macos-latest
