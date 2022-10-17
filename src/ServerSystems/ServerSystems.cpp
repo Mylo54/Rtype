@@ -66,14 +66,14 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * _delta* 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -_delta * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? _delta * 20 : 0;
+            vel.value().x += ctrl.value().xAxis * (float(_timeElapsed) / 1000000 * 20 * 2);
+            vel.value().x += (vel.value().x > 0) ? (float(_timeElapsed) / 1000000 * (-1)) * 20 : 0;
+            vel.value().x += (vel.value().x < 0) ? (float(_timeElapsed) / 1000000 * 20) : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * _delta * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -_delta * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? _delta * 20 : 0;
+            vel.value().y += ctrl.value().yAxis * (float(_timeElapsed) / 1000000) * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? (float(_timeElapsed) / 1000000 * (-1)) * 20 : 0;
+            vel.value().y += (vel.value().y < 0) ? (float(_timeElapsed) / 1000000) * 20 : 0;
         }
     }
 }
