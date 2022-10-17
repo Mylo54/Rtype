@@ -48,11 +48,12 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
         eng::Entity enm = r.spawnEntity();
 
         float posY = rand() % 1080;
+        int scale = 3;
 
         r.addComponent<rtp::Position>(enm, rtp::Position(1919, posY, 0));
         r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
         r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
-        r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
+        r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
         _enemyTimer = _enemyRate;
     }

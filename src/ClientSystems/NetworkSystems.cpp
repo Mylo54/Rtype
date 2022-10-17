@@ -52,6 +52,18 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
     }
 }
 
+// interpolate two vectors with O=0
+float interpolate(float a, float b)
+{
+    float res = 0;
+
+    res = fabs(a - b);
+    res += fmin(a, b);
+    if (a < 0 && b < 0)
+        res = -res;
+    return res;
+}
+
 void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
     int e = 0;
@@ -103,9 +115,13 @@ int rtp::NetworkSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
 {
     int type = r.getComponents<EnemyStats>()[e].value().enemyType;
-    if (type == 0)
+    float scale = 1;
+    if (type == 0) {
+        scale = 3;
         r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
-        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
+        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
+        r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
+    }
 }
 
 void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
