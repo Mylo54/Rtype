@@ -324,3 +324,21 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
     reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
     reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
 }
+
+void rtp::ClientSystems::killBullets(eng::Registry &r)
+{
+    auto &blts = r.getComponents<Bullet>();
+    auto &poss = r.getComponents<Position>();
+
+    for (int i = 0; i < blts.size(); i++) {
+        if (blts[i].has_value()) {
+            auto blt = blts[i].value();
+            auto pos = poss[i].value();
+
+            if (pos.x > 1920 || pos.x < -1)
+                r.killEntity(eng::Entity(i));
+            else if (pos.y > 1080 || pos.y < -1)
+                r.killEntity(eng::Entity(i));
+        }
+    }
+}

@@ -28,6 +28,7 @@ void rtp::Client::run()
     if (c[0] == 1)
         return;
     eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
+    _mySyncId = c[2];
     systemsLoop();
     //disconnect();
 }
@@ -161,7 +162,7 @@ void rtp::Client::_addBackgrounds(eng::Registry &reg)
 void rtp::Client::systemsLoop()
 {
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
-    rtp::NetworkSystems net("127.0.0.1", 3303, _socket);
+    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId);
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     gfx.setMaxFrameRate(60);
@@ -186,6 +187,7 @@ void rtp::Client::systemsLoop()
         gfx.animateSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
+        systems.killBullets(r);
 
         // Display & play sounds
         systems.playSoundSystem(r);

@@ -78,6 +78,11 @@ namespace rtp {
             /// @brief Prevents player from going out of the window and limit its velocity
             /// @param reg The registry on which to apply the system
             void limitPlayer(eng::Registry &r);
+
+            /// @brief Kill bullets that are offscreen
+            /// @param r The registry on which to apply the system
+            void killBullets(eng::Registry &r);
+        protected:
         protected:
         private:
             /// @brief A method that gets a synced entity id

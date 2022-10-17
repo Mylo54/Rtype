@@ -95,6 +95,10 @@ namespace rtp
             /// @brief Prevents player from going out of the window and limit its velocity
             /// @param reg The registry on which to apply the system
             void limitPlayer(eng::Registry &reg);
+
+            /// @brief Kill bullets that are offscreen
+            /// @param r The registry on which to apply the system
+            void killBullets(eng::Registry &r);
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets
