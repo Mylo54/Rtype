@@ -137,11 +137,13 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
     }
 }
 
+// Max speed should be defined elsewhere...
 void rtp::ClientSystems::limitPlayer(eng::Registry &r)
 {
     auto &pos = r.getComponents<Position>();
     auto &ves = r.getComponents<Velocity>();
     auto &pls = r.getComponents<PlayerStats>();
+    float maxSpeed = 15;
 
     for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
         if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
@@ -153,6 +155,11 @@ void rtp::ClientSystems::limitPlayer(eng::Registry &r)
             position.x = (position.x < 0) ? 0 : position.x;
             position.y = (position.y >= 982) ? 982 : position.y;
             position.y = (position.y < 0) ? 0 : position.y;
+
+            velocity.x = (velocity.x >= maxSpeed) ? maxSpeed : velocity.x;
+            velocity.x = (velocity.x <= -maxSpeed) ? -maxSpeed : velocity.x;
+            velocity.y = (velocity.y >= maxSpeed) ? maxSpeed : velocity.y;
+            velocity.y = (velocity.y <= -maxSpeed) ? -maxSpeed : velocity.y;
         }
     }
 }
