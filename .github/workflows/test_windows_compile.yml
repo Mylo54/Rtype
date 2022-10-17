@@ -1,5 +1,5 @@
 name: Windows compile
-on: [workflow_call, push, delete]
+on: [workflow_call]
 jobs:
   Windows-Compile:
     runs-on: windows-latest

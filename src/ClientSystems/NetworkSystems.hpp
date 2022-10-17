@@ -14,6 +14,8 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "ClientSystems.hpp"
+#include <iostream>
+#include <cmath>
 
 namespace rtp
 {
@@ -25,7 +27,8 @@ namespace rtp
             /// @param socket udp socket of the client
             /// @param mySyncId synchronisation id of the player
             NetworkSystems(std::string address, int port,
-            boost::asio::ip::udp::socket &socket, int mySyncId);
+            boost::asio::ip::udp::socket &socket, int mySyncId,
+            sf::Time &delta);
             ~NetworkSystems();
 
             /// @brief A system which sends data to the server
@@ -65,6 +68,8 @@ namespace rtp
 
             /// @brief The sync id corresponding to the client character
             int _mySyncId;
+
+            sf::Time &_delta;
     };
 } // namespace rtp
 
