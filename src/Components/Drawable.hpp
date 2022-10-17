@@ -14,9 +14,10 @@
 
 namespace rtp
 {
+    /// @brief A component holding your sprite
     class Drawable {
         public:
-            /// @brief A component holding your sprite
+            /// @brief Drawable object constructor
             /// @param textureFilePath path to your Sprite
             /// @param pSheetDirection the direction of your spritesheet
             /// [0:none]

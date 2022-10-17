@@ -15,6 +15,8 @@ namespace rtp
 {
     class Background {
         public:
+            /// @brief Background object constructor
+            /// @param textureFilePath path to the texture file to load
             Background(std::string textureFilePath)
             {
                 texture->loadFromFile(textureFilePath);

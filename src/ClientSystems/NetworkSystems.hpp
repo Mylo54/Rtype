@@ -21,6 +21,11 @@ namespace rtp
 {
     class NetworkSystems {
         public:
+            /// @brief NetworkSystems object constructor
+            /// @param address adress of the server
+            /// @param port port of the server
+            /// @param socket udp socket of the client
+            /// @param mySyncId synchronisation id of the player
             NetworkSystems(std::string address, int port,
             boost::asio::ip::udp::socket &socket, int mySyncId,
             sf::Time &delta);
