@@ -103,8 +103,11 @@ namespace rtp
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
+            /// @brief The renderWindow of the client
             sf::RenderWindow &_w;
+            /// @brief The clock off the server
             sf::Clock &_c;
+            /// @brief The delta time of the server
             sf::Time &_delta;
     };
 } // namespace rtp
