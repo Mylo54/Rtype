@@ -103,6 +103,9 @@ namespace rtp
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
 
+            /// @brief Client score
+            int _score = 0;
+
             /// @brief The renderWindow of the client
             sf::RenderWindow &_w;
             /// @brief The clock off the server
