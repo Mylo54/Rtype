@@ -12,9 +12,14 @@
 
 namespace rtp
 {
+    /// @brief Holds an id than allows the server & the client to synchronize
+    /// their components together
     class Synced {
         public:
-            Synced(int pId, bool pIsNew = true) : id(pId)
+            /// @brief A Synchronized identification number constructor
+            /// @param id_ The id
+            /// @param pIsNew 
+            Synced(int id_, bool pIsNew = true) : id(id_)
             {}
             ~Synced() {}
 
