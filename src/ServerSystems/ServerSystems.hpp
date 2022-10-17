@@ -117,10 +117,11 @@ namespace rtp {
             /// @brief List of all received payload
             std::vector<inputPayload_t> &_listDataRec;
 
-            std::chrono::steady_clock::time_point lastUpdate = std::chrono::steady_clock::now();
+            std::chrono::steady_clock::time_point _lastUpdate;
+            // as microseconds
+            long _timeElapsed = 0;
             float _delta = 0;
             float _tps = 60;
-
     };
 };
 

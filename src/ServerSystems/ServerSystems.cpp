@@ -12,6 +12,7 @@ rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
     std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
     _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {
+    _lastUpdate = std::chrono::steady_clock::now();
 }
 
 rtp::ServerSystems::~ServerSystems()
@@ -28,8 +29,8 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * _delta * 20);
-            pos.value().y += (vel.value().y * _delta * 20);
+            pos.value().x += (vel.value().x * float(_timeElapsed) / 1000000 * 20);
+            pos.value().y += (vel.value().y * float(_timeElapsed) / 1000000 * 20);
         }
     }
 }
@@ -244,19 +245,23 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
     return -1;
 }
 
-void rtp::ServerSystems::updDeltaTime()
-{
-    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
-    lastUpdate = now;
-}
-
 void rtp::ServerSystems::limitTime()
 {
     if ((_tps != 0) && ((1 / _tps) > _delta)) {
-        long long sleeptime = ((1.0 / _tps) - _delta) * 100000;
+        long long sleeptime = ((1.0 / _tps) - _delta) * 1000000;
         std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));       
+        _timeElapsed = sleeptime + (_delta * 1000000);
     }
+    else {
+        _timeElapsed = _delta * 1000000;
+    }
+}
+
+void rtp::ServerSystems::updDeltaTime()
+{
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    _delta = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+    _lastUpdate = now;
 }
 
 void rtp::ServerSystems::killBullets(eng::Registry &r)
