@@ -314,6 +314,27 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
     reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
 }
 
+void rtp::ClientSystems::buttonSystem(eng::Registry &r)
+{
+    auto &buttons = r.getComponents<Button>();
+    auto &positions = r.getComponents<Position>();
+    auto mousePos = sf::Mouse::getPosition(_w);
+
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        return;
+    for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
+        if (buttons[i].has_value() && positions[i].has_value()) {
+            auto &btn = buttons[i].value();
+            auto &pos = positions[i].value();
+            
+            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
+            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                btn.btnFunction();
+            }
+        }
+    }
+}
+
 void rtp::ClientSystems::killBullets(eng::Registry &r)
 {
     auto &blts = r.getComponents<Bullet>();

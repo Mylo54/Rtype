@@ -21,6 +21,7 @@
 #include "PlayerStats.hpp"
 #include "Writable.hpp"
 #include "Synced.hpp"
+#include "Button.hpp"
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"

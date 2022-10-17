@@ -13,6 +13,7 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _addScore(_manager.getTop());
+    addButton(_manager.getTop());
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
@@ -150,6 +151,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Writable>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
+    reg.registerComponents(eng::SparseArray<rtp::Button>());
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
@@ -210,6 +212,25 @@ void rtp::Client::_addBackgrounds(eng::Registry &reg)
     }
 }
 
+/*
+void btn_func(void)
+{
+    std::cout << "Hello World!" << std::endl;
+}
+
+void addButton(eng::Registry &r)
+{
+    eng::Entity btn = r.spawnEntity();
+    int scale = 4;
+
+    r.addComponent<rtp::Position>(btn, rtp::Position(100, 100, 0));
+    r.addComponent<rtp::Button>(btn, rtp::Button(btn_func, 0, 0, 128 * scale, 32 * scale));
+    r.addComponent<rtp::Writable>(btn, rtp::Writable("Button", "Hello Chloe"));
+    r.addComponent<rtp::Drawable>(btn, rtp::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+
+    r.getComponents<rtp::Drawable>()[btn.getId()].value().sprite.setScale(4, 4);
+}*/
+
 void rtp::Client::systemsLoop()
 {
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
@@ -236,6 +257,8 @@ void rtp::Client::systemsLoop()
         systems.positionSystem(r);
         systems.limitPlayer(r);
         gfx.animateSystem(r);
+        gfx.buttonStateSystem(r);
+        systems.buttonSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
         systems.killBullets(r);
