@@ -13,7 +13,7 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _addScore(_manager.getTop());
-    addButton(_manager.getTop());
+    //addButton(_manager.getTop());
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
