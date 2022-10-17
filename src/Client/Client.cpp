@@ -81,7 +81,6 @@ std::vector<int> rtp::Client::connect()
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
 
-
     //ICI adress
 
     dataTbs[0].addr1 = 0;
@@ -92,18 +91,24 @@ std::vector<int> rtp::Client::connect()
 
     //connection
 
-    boost::asio::ip::tcp::resolver resolver(_ioService);
+    boost::asio::ip::tcp::resolver resolver(_ioContext);
 
-    char* serverName = "localhost";
+    std::string serverName = "localhost";
 
-
-    boost::asio::ip::tcp::resolver::query query(serverName, "daytime");
+    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::iterator end;
 
     try {
-        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
-        std::cout << "[Client][Connect]: connect success" << std::endl;
-        std::cout << "[Client][Connect]: addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
+
+        boost::system::error_code error = boost::asio::error::host_not_found;
+        _socketTCP.connect(*(resolver.resolve(query)), error);
+        if (error) {
+            std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
+        } else {
+            std::cout << "[Client][Connect]: connect success" << std::endl;
+
+        }
     }
     catch (std::exception& e)
     {
