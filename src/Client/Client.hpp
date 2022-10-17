@@ -63,6 +63,8 @@ namespace rtp {
             /// @param reg The registry on which to add the text
             void _addScore(eng::Registry &reg);
 
+            boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);
+
             int _mySyncId = 0;
 
             eng::RegistryManager _manager;
