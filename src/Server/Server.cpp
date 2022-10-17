@@ -83,43 +83,16 @@ void rtp::Server::connect()
     _ioContext.run();
 }
 
-void rtp::Server::disconnect()
-{
-    boost::array<demandConnectPayload_s, 1> dataRec;
-    boost::system::error_code error;
-
-    //while (!_isEnd) {
-    //    
-    //}
-
-    //for (std::vector<boost::asio::ip::tcp::socket>::iterator it = _socketList.begin(); it != _socketList.end(); it++) {
-    //for (int i = 0; i < _socketList.size(); i++) {
-    //    std::cout << "[Server][disconnect] loop nbr : " << i << std::endl;
-    //    _socketList[i].async_receive(*_socketList[i], boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-    //    if (error && error != boost::asio::error::eof) {
-    //        std::cout << "[Server][disconnect]: Receive failed: " << error.message() << std::endl;
-    //    } else if (dataRec[0].ACTION_NAME == LEAVE_GAME) {
-    //        std::cout << "[Server][disconnect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-    //        std::stringstream a;
-    //        a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
-    //        //_addEndpoint(a.str(), dataRec[0].port);
-    //    } else {
-    //        std::cout << "[Server][disconnect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
-    //    }
-    //}
-}
-
 void rtp::Server::run()
 {
     std::string input;
-    std::cout << "[Server][RUN]: Running..." << std::endl;
+    std::cout << "[Server][run]: Running..." << std::endl;
     
     
     assyncConnect();
     std::thread connect(&rtp::Server::connect, this);
     std::thread dataReception = std::thread(&rtp::Server::dataReception, this);
     std::thread systems = std::thread(&rtp::Server::systemsLoop, this);
-    //std::thread disco = std::thread(&rtp::Server::disconnect, this);
 
     while (!_isEnd)
     {

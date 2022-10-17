@@ -66,10 +66,6 @@ namespace rtp {
             /// @return void
             void assyncConnect();
 
-            /// @brief fonction when the client disconnect from the server
-            /// @return void
-            void disconnect();
-
         protected:
         private:
             /// @brief Adds a player into a registry, setting up everything
