@@ -7,7 +7,7 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303)), _socketTCP(_ioContext)
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)), _socketTCP(_ioContext)
 {
     this->_clientPort = 0;
     _port = port;
@@ -141,7 +141,7 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &c
     // Send a last msg to end data thread
     boost::array<networkPayload, 1> endmsg = {QUIT};
     _socket.send_to(boost::asio::buffer(endmsg),
-    boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), _port));
+    boost::asio::ip::udp::endpoint(boost::asio::ip::make_address("0.0.0.0"), _port));
     _ioContext.stop();
 
     // Joining threads
@@ -154,6 +154,7 @@ void rtp::Server::systemsLoop()
 {
     rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
+    systems.setEnemyRate(5);
 
     _setupRegistry(r);
     _cout.lock();
@@ -186,7 +187,8 @@ void rtp::Server::systemsLoop()
         systems.limitPlayer(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
-        systems.killBullets(r);
+        systems.killOutOfBounds(r);
+        systems.spawnEnemies(r);
 
         // Send the new data
         systems.sendData(r);

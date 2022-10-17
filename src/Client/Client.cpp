@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), port})
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -77,25 +77,33 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
 
 std::vector<int> rtp::Client::connect()
 {
-    boost::array<demandConnectPayload_s, 1> dataTbs;
+    boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
 
 
     //ICI adress
 
-    //dataTbs[0].addr1 = 127;
-    //dataTbs[0].addr2 = 0;
-    //dataTbs[0].addr3 = 0;
-    //dataTbs[0].addr4 = 1;
+    dataTbs[0].addr1 = 0;
+    dataTbs[0].addr2 = 0;
+    dataTbs[0].addr3 = 0;
+    dataTbs[0].addr4 = 0;
+    dataTbs[0].port = _port;
 
     //connection
+
+    boost::asio::ip::tcp::resolver resolver(_ioService);
+
+    char* serverName = "localhost";
+
+
+    boost::asio::ip::tcp::resolver::query query(serverName, "daytime");
+    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+
     try {
-        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 3303));
-        boost::asio::ip::address addr = _socketTCP.local_endpoint().address();
-        std::cout << "[Client][Connect]: connect success " << addr.to_string() << std::endl;
-        dataTbs = _fillDataToSend(addr.to_string());
-        
+        _socketTCP.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
+        std::cout << "[Client][Connect]: connect success" << std::endl;
+        std::cout << "[Client][Connect]: addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
     }
     catch (std::exception& e)
     {
