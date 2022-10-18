@@ -97,8 +97,15 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
     int e = 0;
     bool toBuild = false;
+    bool start = false;
 
     while (true) {
+        while (!start) {
+            _socket.receive(boost::asio::buffer(_dataBuffer));
+            if (_dataBuffer[0].COMPONENT_NAME == END_PACKET) {
+                start = true;
+            }
+        }
         _socket.receive(boost::asio::buffer(_dataBuffer));
         if (_dataBuffer[0].COMPONENT_NAME == END_PACKET)
             return;
