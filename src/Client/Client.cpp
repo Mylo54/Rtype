@@ -239,7 +239,7 @@ void rtp::Client::systemsLoop()
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
-    ss << "You are PLAYER " << _myPlayerId;
+    ss << "You are Player " << _myPlayerId;
     gfx.setMaxFrameRate(60);
     net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
     while (gfx.windowOpen()) {
