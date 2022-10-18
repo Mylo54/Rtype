@@ -352,3 +352,19 @@ void rtp::ClientSystems::killBullets(eng::Registry &r)
         }
     }
 }
+
+void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
+{
+    auto &sounds = r.getComponents<Music>();
+
+    for (int i = 0; i < sounds.size(); i++) {
+        auto &snd = sounds[i];
+
+        if (snd.has_value()) {
+            if (snd.value().toPlay) {
+                snd.value().toPlay = false;
+                snd.value().music->play();
+            }
+        }
+    }
+}

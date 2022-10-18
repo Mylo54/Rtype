@@ -13,7 +13,7 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _addScore(_manager.getTop());
-    //addButton(_manager.getTop());
+    _addMusic(_manager.getTop(), "assets/music.ogg");
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
@@ -152,6 +152,14 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Writable>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
+    reg.registerComponents(eng::SparseArray<rtp::Music>());
+}
+
+void rtp::Client::_addMusic(eng::Registry &reg, std::string filepath)
+{
+    eng::Entity music = reg.spawnEntity();
+
+    reg.addComponent<rtp::Music>(music, rtp::Music(filepath, true));
 }
 
 eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
@@ -263,7 +271,8 @@ void rtp::Client::systemsLoop()
         systems.killDeadEnemies(r);
         systems.killBullets(r);
 
-        // Display & play sounds
+        // Display & play sounds/music
+        systems.playMusicSystem(r);
         systems.playSoundSystem(r);
         gfx.clearSystem();
         gfx.backgroundSystem(r);
@@ -271,5 +280,5 @@ void rtp::Client::systemsLoop()
         gfx.writeSystem(r);
         gfx.displaySystem();
     }
-    net.disconnectSystems(r);
+    //net.disconnectSystems(r);
 }

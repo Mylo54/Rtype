@@ -67,6 +67,10 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void playSoundSystem(eng::Registry &r);
 
+            /// @brief A system that plays every music set to play
+            /// @param r The Registry on which to apply the system
+            void playMusicSystem(eng::Registry &r);
+            
             /// @brief A system which damage enemies colliding a player's bullet
             /// @param r The Registry on which to apply the system
             void playerBullets(eng::Registry &r);

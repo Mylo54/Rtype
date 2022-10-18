@@ -49,6 +49,11 @@ namespace rtp {
             /// @param r The Registry to setup
             void _setupRegistry(eng::Registry &reg);
 
+            /// @brief Adds a music to the registry
+            /// @param reg the registry on which to add the music
+            /// @param filepath the filepath on where to find the music
+            void _addMusic(eng::Registry &reg, std::string filepath);
+
             /// @brief Adds a controllable player to a registry
             /// @param reg The Registry on which to adds the player 
             /// @param playerId The player id (1, 2, 3 or 4)
