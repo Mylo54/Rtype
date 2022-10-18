@@ -167,6 +167,10 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
     if (playerId == 4)
         rect.top = 147;
     r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
+
+    std::stringstream ss;
+    ss << "Player " << playerId << " joined the game!";
+    writeInChatBox(r, ss.str(), EVENT);
 }
 
 void rtp::NetworkSystems::disconnectSystems(eng::Registry &r)
@@ -184,4 +188,71 @@ void rtp::NetworkSystems::disconnectSystems(eng::Registry &r)
 
         }
     }
+}
+
+void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::NetworkSystems::ChatBoxStyle style)
+{
+    if (wrt.has_value()) {
+        wrt.value()._txt.setStyle(sf::Text::Bold);
+        wrt.value()._txt.setString(message);
+    }
+}
+
+void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::string name,  rtp::NetworkSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+
+    for (int i = 0; i < writables.size(); i++) {
+        auto &wrt = writables[i];
+        if (wrt.has_value() && wrt.value()._name == name) {
+            wrt.value()._txt.setString(message);
+            if (style == NetworkSystems::CHAT) {
+                wrt.value()._txt.setStyle(sf::Text::Regular);
+                wrt.value()._txt.setFillColor(sf::Color::White);
+            }
+            if (style == NetworkSystems::EVENT) {
+                wrt.value()._txt.setStyle(sf::Text::Italic);
+                wrt.value()._txt.setFillColor(sf::Color::Blue);
+            }
+        }
+    }
+}
+
+void rtp::NetworkSystems::writeInChatBox(eng::Registry &r, std::string message, rtp::NetworkSystems::ChatBoxStyle style)
+{
+    auto &writables = r.getComponents<Writable>();
+    auto &positions = r.getComponents<Position>();
+
+    // Move all chat line up and change their name
+    for (int i = 5; i > 0; i--) {
+        for (int j = 0; j < writables.size(); j++) {
+            auto &wrt = writables[j];
+            std::stringstream toFind;
+            std::stringstream newName;
+            toFind << "ChatBox" << i;
+            newName << "ChatBox" << (i + 1);
+            if (wrt.has_value() && wrt.value()._name == toFind.str()) {
+                // condition to delete
+                if (i == 5) {
+                    r.killEntity(eng::Entity(j));
+                    break;
+                }
+                if (positions[j].has_value()) positions[j].value().y -= 30;
+                wrt.value()._name = newName.str();
+                break;
+            }
+        }
+    }
+    // Create ChatBox1
+    addChatBox(r);
+    // Write in ChatBox1
+    setText(r, message, "ChatBox1", style);
+}
+
+void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
+{
+    eng::Entity chatBox = reg.spawnEntity();
+
+    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
+    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
 }

@@ -30,6 +30,7 @@ void rtp::Client::run()
         return;
     eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
     _mySyncId = c[2];
+    _myPlayerId = c[1];
     systemsLoop();
     //disconnect();
 }
@@ -245,8 +246,10 @@ void rtp::Client::systemsLoop()
     rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId, gfx.getDelta());
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     eng::Registry &r = _manager.getTop();
+    std::stringstream ss;
+    ss << "You are Player " << _myPlayerId;
     gfx.setMaxFrameRate(60);
-
+    net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
     while (gfx.windowOpen()) {
         gfx.eventCatchWindow();
         

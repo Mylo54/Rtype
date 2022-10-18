@@ -80,6 +80,7 @@ namespace rtp {
             boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);
 
             int _mySyncId = 0;
+            int _myPlayerId = 0;
 
             eng::RegistryManager _manager;
             int _port;
