@@ -21,6 +21,10 @@ namespace rtp
 {
     class NetworkSystems {
         public:
+            enum ChatBoxStyle {
+                CHAT,
+                EVENT
+            };
             /// @brief NetworkSystems object constructor
             /// @param address adress of the server
             /// @param port port of the server
@@ -40,6 +44,27 @@ namespace rtp
             void receiveData(eng::Registry &r);
 
             void disconnectSystems(eng::Registry &r);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param wrt the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::NetworkSystems::ChatBoxStyle style);
+
+            /// @brief A system who set a text in a Writable
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            /// @param name the name of the targeted Writable
+            void setText(eng::Registry &r, std::string message, std::string name,  rtp::NetworkSystems::ChatBoxStyle style);
+
+            /// @brief Write a message in the chat box
+            /// @param r The registry on which to apply the system
+            /// @param message The new text to display
+            void writeInChatBox(eng::Registry &r, std::string message, rtp::NetworkSystems::ChatBoxStyle style);
+
+            /// @brief Create a bottom chatBox line
+            /// @param reg The registry on which to apply the system
+            void addChatBox(eng::Registry &reg);
         protected:
         private:
             /// @brief A method that gets a synced entity id
