@@ -12,10 +12,10 @@
 <a href="https://codedocs.xyz/Mylo54/Rtype.svg" alt="Documentation">
         <img src="https://codedocs.xyz/Mylo54/Rtype.svg" /></a>
 
-[![Linux compile](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml)
-[![Windows compile](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml)
-[![MacOS compile](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml)
-[![Mirroring](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml/badge.svg)](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml)
+[![Linux compile](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml/badge.svg?branch=master)](https://github.com/Mylo54/Rtype/actions/workflows/test_linux_compile.yml)
+[![Windows compile](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml/badge.svg?branch=master)](https://github.com/Mylo54/Rtype/actions/workflows/test_windows_compile.yml)
+[![MacOS compile](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml/badge.svg?branch=master)](https://github.com/Mylo54/Rtype/actions/workflows/test_macos_compile.yml)
+[![Mirroring](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml/badge.svg?branch=master)](https://github.com/Mylo54/Rtype/actions/workflows/push_on_teck.yml)
 
 A 3rd year Epitech Project.
 
@@ -39,6 +39,26 @@ $ ./comp_linux.sh
 
 ``` bash
 $ ./comp_windows.sh
+```
+
+## Execution :
+
+### Client
+
+``` bash
+$ ./build/bin/Server-Rtype
+```
+
+### Server
+
+``` bash
+$ ./build/bin/Client-Rtype
+```
+
+or
+
+``` bash
+$ sudo docker build . -t test_v2_dock && sudo docker run --rm -it test_v2_dock
 ```
 
 ## Known issues :
