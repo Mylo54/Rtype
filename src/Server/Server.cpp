@@ -13,7 +13,6 @@ rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext,
     _port = port;
     _isEnd = false;
     _start = false;
-    //_socket.local_endpoint().port(_port);
 }
 
 rtp::Server::~Server()
