@@ -33,14 +33,29 @@ int main(int ac, char **av)
 {
     std::string arg;
 
+
     if (ac >= 2) {
         arg = av[1];
         if ((arg == "-h" || arg == "-help"))
             return (printHelp());
     }
     try {
+
+        // GETTING IP
+        boost::asio::io_service netService;
+        boost::asio::ip::udp::resolver   resolver(netService);
+        boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), "google.com", "");
+        boost::asio::ip::udp::resolver::iterator endpoints = resolver.resolve(query);
+        boost::asio::ip::udp::endpoint ep = *endpoints;
+        boost::asio::ip::udp::socket socket(netService);
+        socket.connect(ep);
+        boost::asio::ip::address addr = socket.local_endpoint().address();
+        std::cout << "My IP according to google is: " << addr.to_string() << std::endl;
+
+
+
         boost::asio::ip::port_type port(3303);
-        rtp::Server srv(port);
+        rtp::Server srv(port, addr);
         srv.run();
     }
     catch (const std::exception &error) {

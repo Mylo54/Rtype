@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
+rtp::Client::Client(boost::asio::ip::port_type port, std::string &serverAddr): _port(port), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), port})
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -16,6 +16,8 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     _addMusic(_manager.getTop(), "assets/music.ogg");
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
+    _serverAddr = serverAddr;
+    std::cout << "first DEBUG {" << _serverAddr << "}" << std::endl;
 }
 
 rtp::Client::~Client()
@@ -95,9 +97,11 @@ std::vector<int> rtp::Client::connect()
 
     boost::asio::ip::tcp::resolver resolver(_ioContext);
 
-    std::string serverName = "localhost";
+    //std::string serverName = "localhost";
 
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+
+    std::cout << "DEBUG : query serverAddr : {" << _serverAddr << "}" << std::endl;
+    boost::asio::ip::tcp::resolver::query query(_serverAddr, "3303");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
 
@@ -243,8 +247,8 @@ void addButton(eng::Registry &r)
 void rtp::Client::systemsLoop()
 {
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
-    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId, gfx.getDelta());
-    rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
+    rtp::NetworkSystems net(_serverAddr, 3303, _socket, _mySyncId, gfx.getDelta());
+    rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), _serverAddr, 3303, _socket);
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
     ss << "You are Player " << _myPlayerId;

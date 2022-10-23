@@ -37,7 +37,7 @@ namespace rtp {
         public:
             /// @brief Server object constructor
             /// @param port port of the server
-            Server(boost::asio::ip::port_type port);
+            Server(boost::asio::ip::port_type port, boost::asio::ip::address addr);
             ~Server();
             /// @brief run the server
             void run();
@@ -120,7 +120,6 @@ namespace rtp {
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
 
             // For TCP
-            boost::asio::io_service _ioService;
             boost::asio::ip::tcp::acceptor _acceptor;
             boost::asio::ip::tcp::socket _socketTCP;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
