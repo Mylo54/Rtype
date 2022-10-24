@@ -37,6 +37,7 @@ endif (APPLE)
 
 
 include_directories(
+  external/EngineCoreSuper/include
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
@@ -58,6 +59,12 @@ target_include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
+target_link_directories(
+  Client-Rtype
+  PRIVATE
+  external/EngineCoreSuper/build
+)
+
 target_link_libraries(
   Client-Rtype
   EngineCoreSuper
@@ -71,6 +78,11 @@ add_executable(Server-Rtype ${SERVER_SYSTEMS} ${SRCS_SERVER})
 target_include_directories(
   Server-Rtype PUBLIC
   ${CONAN_INCLUDE_DIRECTORIES}
+)
+
+target_link_directories(
+  Server-Rtype PUBLIC
+  external/EngineCoreSuper/build
 )
 
 target_link_libraries(
