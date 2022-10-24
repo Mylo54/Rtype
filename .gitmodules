@@ -1,0 +1,3 @@
+[submodule "external/EngineCoreSuper"]
+	path = external/EngineCoreSuper
+	url = git@github.com:Visclodev/EngineCoreSuper.git
