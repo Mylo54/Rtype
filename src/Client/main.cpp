@@ -30,6 +30,7 @@ int main(int argc, char **argv)
     }
     std::string serverAddr(argv[1]);
     boost::asio::ip::port_type port = (rand() % 1000) + 3000;
+    std::cout << "DEBUG001 : query serverAddr : {" << serverAddr << "}" << std::endl;
     rtp::Client client(port, serverAddr);
 
     client.run();

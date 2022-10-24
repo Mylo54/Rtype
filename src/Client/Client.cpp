@@ -9,6 +9,7 @@
 
 rtp::Client::Client(boost::asio::ip::port_type port, std::string &serverAddr): _port(port), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), port})
 {
+    std::cout << "DEBUG01 : query serverAddr : {" << _serverAddr << "}" << std::endl;
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
@@ -81,6 +82,7 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
 
 std::vector<int> rtp::Client::connect()
 {
+    std::cout << "DEBUG1 : query serverAddr : {" << _serverAddr << "}" << std::endl;
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
