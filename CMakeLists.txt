@@ -21,7 +21,7 @@ find_package(Threads REQUIRED)
 find_package(Boost REQUIRED)
 
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
-    add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
+    #add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 #if(MSVC)
