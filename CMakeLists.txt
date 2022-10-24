@@ -10,6 +10,7 @@ set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
 set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 Project (R-TYPE)
+
 include(build/conanbuildinfo.cmake)
 include(build/conan_paths.cmake)
 conan_basic_setup()
@@ -41,7 +42,6 @@ include_directories(
 
 #####   Files
 
-FILE(GLOB_RECURSE ENGINE src/Engine/*.cpp)
 FILE(GLOB_RECURSE CLIENT_SYSTEMS src/ClientSystems/*.cpp)
 FILE(GLOB_RECURSE SERVER_SYSTEMS src/ServerSystems/*.cpp)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
@@ -49,7 +49,7 @@ FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${ENGINE} ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
+add_executable(Client-Rtype ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rtype PUBLIC
@@ -58,13 +58,13 @@ target_include_directories(
 
 target_link_libraries(
   Client-Rtype
-  PRIVATE
+  EngineCoreSuper
   ${CONAN_LIBS}
 )
 
 #####    SERVER
 
-add_executable(Server-Rtype ${ENGINE} ${SERVER_SYSTEMS} ${SRCS_SERVER})
+add_executable(Server-Rtype ${SERVER_SYSTEMS} ${SRCS_SERVER})
 
 target_include_directories(
   Server-Rtype PUBLIC
@@ -73,6 +73,6 @@ target_include_directories(
 
 target_link_libraries(
   Server-Rtype
-  PRIVATE
+  EngineCoreSuper
   ${CONAN_LIBS}
 )

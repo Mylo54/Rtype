@@ -8,7 +8,7 @@
 #ifndef CLIENTSYSTEMS_HPP_
 #define CLIENTSYSTEMS_HPP_
 
-#include "../Engine/Registry.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
 #include <boost/asio.hpp>
@@ -87,7 +87,7 @@ namespace rtp
             /// @param r The registry on which to apply the system
             /// @param message The new text to display
             /// @param wrt the targeted Writable
-            void setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style);
+            void setText(eng::Registry &r, std::string message, std::optional<eng::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style);
 
             /// @brief A system who set a text in a Writable
             /// @param r The registry on which to apply the system
