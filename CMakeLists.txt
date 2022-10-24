@@ -40,6 +40,8 @@ include_directories(
   ${CONAN_INCLUDE_DIRECTORIES}
 )
 
+add_subdirectory(external/EngineCoreSuper)
+
 #####   Files
 
 FILE(GLOB_RECURSE CLIENT_SYSTEMS src/ClientSystems/*.cpp)
