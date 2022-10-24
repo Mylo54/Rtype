@@ -12,9 +12,10 @@ jobs:
         uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
         run: conan profile new default --detect
+      - name: pull EngineCoreSuper submodule
+        run:  git submodule update --init --recursive
       - name: build
         run: |
-          git submodule update --init --recursive
           mkdir -p build
           cd build
           conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
