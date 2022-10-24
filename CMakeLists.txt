@@ -20,8 +20,9 @@ find_package(asio REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Boost REQUIRED)
 
+#todo: trouver un autre moyen parce que on compile pas sous linux avec le flag abi=0
 if(CMAKE_COMPILER_IS_GNUCXX) # Pour régler le problème du sf:string:string undefined
-    add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
+    #add_definitions("-std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 #if(MSVC)
