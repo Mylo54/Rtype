@@ -314,7 +314,7 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
     reg.addComponent<eng::Position>(chatBox, eng::Position(0, 980, 0));
 }
 
-void rtp::ClientSystems::buttonSystem(eng::Registry &r)
+void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &manager)
 {
     auto &buttons = r.getComponents<Button>();
     auto &positions = r.getComponents<eng::Position>();
@@ -329,7 +329,7 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r)
             
             if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
             && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
-                btn.btnFunction();
+                btn.btnFunction(manager);
             }
         }
     }

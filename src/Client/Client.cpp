@@ -9,11 +9,8 @@
 
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
 {
-    _manager.addRegistry("R1");
-    _setupRegistry(_manager.getTop());
-    _addBackgrounds(_manager.getTop());
-    _addScore(_manager.getTop());
-    _addMusic(_manager.getTop(), "assets/music.ogg");
+    //Game game(_manager);
+    MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
@@ -24,13 +21,13 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    std::vector<int> c = connect();
+    /*std::vector<int> c = connect();
 
     if (c[0] == 1)
         return;
-    eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
+    //eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
     _mySyncId = c[2];
-    _myPlayerId = c[1];
+    _myPlayerId = c[1];*/
     systemsLoop();
     //disconnect();
 }
@@ -43,6 +40,24 @@ void rtp::Client::disconnect()
     //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), boost::asio::ip::port_type(_port)});
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
+}
+
+
+eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
+{
+    eng::Entity player = reg.spawnEntity();
+
+    reg.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
+    reg.addComponent<rtp::Velocity>(player, rtp::Velocity());
+    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
+    reg.addComponent<rtp::Drawable>(player, rtp::Drawable("assets/players.png", 1, rect, 0.10));
+    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+
+    std::cout << "You are player " << playerId << std::endl;
+    return player;
 }
 
 boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::string address)
@@ -137,90 +152,6 @@ std::vector<int> rtp::Client::connect()
     return (res);
 }
 
-void rtp::Client::_setupRegistry(eng::Registry &reg)
-{
-    reg.registerComponents(eng::SparseArray<eng::Velocity>());
-    reg.registerComponents(eng::SparseArray<eng::Position>());
-    reg.registerComponents(eng::SparseArray<eng::Drawable>());
-    reg.registerComponents(eng::SparseArray<eng::Sound>());
-    reg.registerComponents(eng::SparseArray<eng::Music>());
-    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
-    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
-    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
-    reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
-    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
-    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-    reg.registerComponents(eng::SparseArray<eng::Writable>());
-    reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::Button>());
-}
-
-void rtp::Client::_addMusic(eng::Registry &reg, std::string filepath)
-{
-    eng::Entity music = reg.spawnEntity();
-
-    reg.addComponent<eng::Music>(music, eng::Music(filepath, true));
-}
-
-eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
-{
-    eng::Entity player = reg.spawnEntity();
-
-    reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
-    reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
-    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
-    reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
-    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-
-    std::cout << "You are player " << playerId << std::endl;
-    return player;
-}
-
-eng::Entity rtp::Client::_addEnemy(eng::Registry &reg)
-{
-    eng::Entity enemy = reg.spawnEntity();
-    float scale = (rand() % 10) + 1;
-
-    reg.addComponent<eng::Position>(enemy, eng::Position(1920 + (rand() % 2000), rand() % 1080, 0));
-    reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-5, 0));
-    reg.addComponent<eng::Drawable>(enemy, eng::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.10));
-    reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
-    reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
-
-    reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
-    return enemy;
-}
-
-void rtp::Client::_addScore(eng::Registry &reg)
-{
-    eng::Entity score = reg.spawnEntity();
-
-    reg.addComponent<eng::Position>(score, eng::Position(1000, 0, 0));
-    reg.addComponent<eng::Writable>(score, eng::Writable("score", "SCORE:000 000"));
-}
-
-void rtp::Client::_addBackgrounds(eng::Registry &reg)
-{
-    for (int i = 0; i < 6; i++) {
-        eng::Entity bg = reg.spawnEntity();
-        reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
-        if (i < 2) {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-20, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
-        } else if (i < 4) {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-10, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
-        } else {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-5, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/background.png"));
-        }
-    }
-}
-
 /*
 void btn_func(void)
 {
@@ -254,33 +185,33 @@ void rtp::Client::systemsLoop()
         gfx.eventCatchWindow();
         
         // Receive Inputs
-        gfx.controlSystem(r);
-        net.receiveData(r);
+        //gfx.controlSystem(_manager.getTop());
+        //net.receiveData(_manager.getTop());
 
         // Send new events
-        net.sendData(r);
+        //net.sendData(_manager.getTop());
 
         // Update data
-        systems.controlFireSystem(r);
-        systems.controlChatSystem(r);
-        systems.controlMovementSystem(r);
-        systems.shootSystem(r);
-        systems.positionSystem(r);
-        systems.limitPlayer(r);
-        gfx.animateSystem(r);
-        gfx.buttonStateSystem(r);
-        systems.buttonSystem(r);
-        systems.playerBullets(r);
-        systems.killDeadEnemies(r);
-        systems.killBullets(r);
+        //systems.controlFireSystem(_manager.getTop());
+        //systems.controlChatSystem(_manager.getTop());
+        //systems.controlMovementSystem(_manager.getTop());
+        //systems.shootSystem(_manager.getTop());
+        //systems.positionSystem(_manager.getTop());
+        //systems.limitPlayer(_manager.getTop());
+        //gfx.animateSystem(_manager.getTop());
+        gfx.buttonStateSystem(_manager.getTop());
+        systems.buttonSystem(_manager.getTop(), _manager);
+        //systems.playerBullets(r);
+        //systems.killDeadEnemies(r);
+        //systems.killBullets(r);
 
         // Display & play sounds/music
-        systems.playMusicSystem(r);
-        systems.playSoundSystem(r);
+        //systems.playMusicSystem(r);
+        //systems.playSoundSystem(r);
         gfx.clearSystem();
-        gfx.backgroundSystem(r);
-        gfx.drawSystem(r);
-        gfx.writeSystem(r);
+        //gfx.backgroundSystem(r);
+        gfx.drawSystem(_manager.getTop());
+        gfx.writeSystem(_manager.getTop());
         gfx.displaySystem();
     }
     //net.disconnectSystems(r);
