@@ -9,7 +9,7 @@
 
 rtp::Game::Game(eng::RegistryManager &manager) : _manager(manager)
 {
-    _manager.addRegistry("R1");
+    _manager.addRegistry("R2");
     _setupRegistry(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _addScore(_manager.getTop());

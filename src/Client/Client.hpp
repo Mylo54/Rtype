@@ -19,6 +19,7 @@
 #include "../Engine/RegistryManager.hpp"
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
+#include "MainMenu.hpp"
 
 namespace rtp {
     class Client {

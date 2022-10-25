@@ -9,14 +9,8 @@
 
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
 {
-    _manager.addRegistry("R1");
-
-    Game game(_manager);
-    
-    //_setupRegistry(_manager.getTop());
-    //_addBackgrounds(_manager.getTop());
-    //_addScore(_manager.getTop());
-    //_addMusic(_manager.getTop(), "assets/music.ogg");*/
+    //Game game(_manager);
+    MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
 }
@@ -27,13 +21,13 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    std::vector<int> c = connect();
+    /*std::vector<int> c = connect();
 
     if (c[0] == 1)
         return;
-    eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
+    //eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
     _mySyncId = c[2];
-    _myPlayerId = c[1];
+    _myPlayerId = c[1];*/
     systemsLoop();
     //disconnect();
 }
@@ -191,33 +185,33 @@ void rtp::Client::systemsLoop()
         gfx.eventCatchWindow();
         
         // Receive Inputs
-        gfx.controlSystem(r);
-        net.receiveData(r);
+        //gfx.controlSystem(_manager.getTop());
+        //net.receiveData(_manager.getTop());
 
         // Send new events
-        net.sendData(r);
+        //net.sendData(_manager.getTop());
 
         // Update data
-        systems.controlFireSystem(r);
-        systems.controlChatSystem(r);
-        systems.controlMovementSystem(r);
-        systems.shootSystem(r);
-        systems.positionSystem(r);
-        systems.limitPlayer(r);
-        gfx.animateSystem(r);
-        gfx.buttonStateSystem(r);
-        systems.buttonSystem(r);
-        systems.playerBullets(r);
-        systems.killDeadEnemies(r);
-        systems.killBullets(r);
+        //systems.controlFireSystem(_manager.getTop());
+        //systems.controlChatSystem(_manager.getTop());
+        //systems.controlMovementSystem(_manager.getTop());
+        //systems.shootSystem(_manager.getTop());
+        //systems.positionSystem(_manager.getTop());
+        //systems.limitPlayer(_manager.getTop());
+        //gfx.animateSystem(_manager.getTop());
+        gfx.buttonStateSystem(_manager.getTop());
+        systems.buttonSystem(_manager.getTop(), _manager);
+        //systems.playerBullets(r);
+        //systems.killDeadEnemies(r);
+        //systems.killBullets(r);
 
         // Display & play sounds/music
-        systems.playMusicSystem(r);
-        systems.playSoundSystem(r);
+        //systems.playMusicSystem(r);
+        //systems.playSoundSystem(r);
         gfx.clearSystem();
-        gfx.backgroundSystem(r);
-        gfx.drawSystem(r);
-        gfx.writeSystem(r);
+        //gfx.backgroundSystem(r);
+        gfx.drawSystem(_manager.getTop());
+        gfx.writeSystem(_manager.getTop());
         gfx.displaySystem();
     }
     //net.disconnectSystems(r);
