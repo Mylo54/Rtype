@@ -19,8 +19,8 @@ rtp::ClientSystems::~ClientSystems()
 
 void rtp::ClientSystems::logSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &velocities = r.getComponents<Velocity>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &velocities = r.getComponents<eng::Velocity>();
 
     for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
         auto &pos = positions[i];
@@ -36,7 +36,7 @@ void rtp::ClientSystems::logSystem(eng::Registry &r)
 
 void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 {
-    auto &velocities = r.getComponents<Velocity>();
+    auto &velocities = r.getComponents<eng::Velocity>();
     auto &controllables = r.getComponents<Controllable>();
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
@@ -81,7 +81,7 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
 
 void rtp::ClientSystems::shootSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
     auto &shooters = r.getComponents<Shooter>();
 
     for (int i = 0; i < positions.size() && i < shooters.size(); i++) {
@@ -95,10 +95,10 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 float z = pos.value().z;
                 sht.value().shoot = false;
                 eng::Entity bullet = r.spawnEntity();
-                r.addComponent(bullet, rtp::Velocity(15, 0));
-                r.addComponent(bullet, rtp::Position(x, y, z));
-                r.addComponent(bullet, rtp::Drawable(sht.value().bulletSpritePath));
-                r.addComponent(bullet, rtp::AudioSource("assets/fire.wav", true));
+                r.addComponent(bullet, eng::Velocity(15, 0));
+                r.addComponent(bullet, eng::Position(x, y, z));
+                r.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
+                r.addComponent(bullet, eng::Sound("assets/fire.wav", true));
                 r.addComponent(bullet, rtp::Bullet(2));
             }
         }
@@ -107,7 +107,7 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
 
 void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
 {
-    auto &sounds = r.getComponents<AudioSource>();
+    auto &sounds = r.getComponents<eng::Sound>();
 
     for (int i = 0; i < sounds.size(); i++) {
         auto &snd = sounds[i];
@@ -123,8 +123,8 @@ void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
 
 void rtp::ClientSystems::positionSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &velocities = r.getComponents<Velocity>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &velocities = r.getComponents<eng::Velocity>();
 
     for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
         auto &pos = positions[i];
@@ -140,8 +140,8 @@ void rtp::ClientSystems::positionSystem(eng::Registry &r)
 // Max speed should be defined elsewhere...
 void rtp::ClientSystems::limitPlayer(eng::Registry &r)
 {
-    auto &pos = r.getComponents<Position>();
-    auto &ves = r.getComponents<Velocity>();
+    auto &pos = r.getComponents<eng::Position>();
+    auto &ves = r.getComponents<eng::Velocity>();
     auto &pls = r.getComponents<PlayerStats>();
     float maxSpeed = 15;
 
@@ -190,7 +190,7 @@ void rtp::ClientSystems::killDeadEnemies(eng::Registry &r)
 void rtp::ClientSystems::playerBullets(eng::Registry &r)
 {
     auto &blts = r.getComponents<Bullet>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < blts.size() && i < poss.size(); i++) {
         if (blts[i].has_value() && poss[i].has_value()) {
@@ -202,9 +202,9 @@ void rtp::ClientSystems::playerBullets(eng::Registry &r)
 void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
     auto &rcts = r.getComponents<RectCollider>();
-    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
     for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
@@ -226,7 +226,7 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
-    auto &writables = r.getComponents<Writable>();
+    auto &writables = r.getComponents<eng::Writable>();
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
@@ -247,7 +247,7 @@ void rtp::ClientSystems::controlChatSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style)
+void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::optional<eng::Writable> &wrt,  rtp::ClientSystems::ChatBoxStyle style)
 {
     if (wrt.has_value()) {
         wrt.value()._txt.setStyle(sf::Text::Bold);
@@ -257,7 +257,7 @@ void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::opt
 
 void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::string name,  rtp::ClientSystems::ChatBoxStyle style)
 {
-    auto &writables = r.getComponents<Writable>();
+    auto &writables = r.getComponents<eng::Writable>();
 
     for (int i = 0; i < writables.size(); i++) {
         auto &wrt = writables[i];
@@ -277,8 +277,8 @@ void rtp::ClientSystems::setText(eng::Registry &r, std::string message, std::str
 
 void rtp::ClientSystems::writeInChatBox(eng::Registry &r, std::string message, rtp::ClientSystems::ChatBoxStyle style)
 {
-    auto &writables = r.getComponents<Writable>();
-    auto &positions = r.getComponents<Position>();
+    auto &writables = r.getComponents<eng::Writable>();
+    auto &positions = r.getComponents<eng::Position>();
 
     // Move all chat line up and change their name
     for (int i = 5; i > 0; i--) {
@@ -310,14 +310,14 @@ void rtp::ClientSystems::addChatBox(eng::Registry &reg)
 {
     eng::Entity chatBox = reg.spawnEntity();
 
-    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
-    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
+    reg.addComponent<eng::Writable>(chatBox, eng::Writable("ChatBox1"));
+    reg.addComponent<eng::Position>(chatBox, eng::Position(0, 980, 0));
 }
 
 void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &manager)
 {
     auto &buttons = r.getComponents<Button>();
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
     auto mousePos = sf::Mouse::getPosition(_w);
 
     if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -338,7 +338,7 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
 void rtp::ClientSystems::killBullets(eng::Registry &r)
 {
     auto &blts = r.getComponents<Bullet>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < blts.size(); i++) {
         if (blts[i].has_value()) {
@@ -355,7 +355,7 @@ void rtp::ClientSystems::killBullets(eng::Registry &r)
 
 void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
 {
-    auto &sounds = r.getComponents<Music>();
+    auto &sounds = r.getComponents<eng::Music>();
 
     for (int i = 0; i < sounds.size(); i++) {
         auto &snd = sounds[i];

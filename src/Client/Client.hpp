@@ -16,7 +16,7 @@
 #include "../ClientSystems/ClientSystems.hpp"
 #include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
-#include "../Engine/RegistryManager.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
 #include "MainMenu.hpp"
