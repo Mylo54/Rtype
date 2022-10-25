@@ -127,6 +127,11 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             if (toBuild)
                 _completeEnemy(r, e);
         }
+        if (data.COMPONENT_NAME == BONUS) {
+            r.emplaceComponent<Bonus>(eng::Entity(e), Bonus(data.valueA));
+            if (toBuild)
+                _completeBonus(r, e);
+        }
         if (data.COMPONENT_NAME == PLAYER_STATS) {
             r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, data.valueB, data.valueC));
             if (toBuild)
@@ -157,6 +162,19 @@ void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
         scale = 3;
         r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
+        r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
+    }
+}
+
+void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
+{
+    std::cout << "Bonus spawn on client" << std::endl;
+    int type = r.getComponents<Bonus>()[e].value().type;
+    float scale = 1;
+    if (type == 0) {
+        scale = 1;
+        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/bonus.png", 1, sf::IntRect(0, 0, 50, 50), 0.010));
+        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(16 * scale, 16 * scale));
         r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
     }
 }

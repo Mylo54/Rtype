@@ -97,7 +97,14 @@ namespace rtp {
             /// (Set the spawnRate with setEnemyRate(float))
             /// @param r The Registry on which to apply the system
             void spawnEnemies(eng::Registry &r);
-        protected:
+
+            /// @brief Set the bonus spawn rate
+            /// @param seconds Each 'seconds' time we spawn a new bonus
+            void setBonusRate(float seconds);
+
+            /// @brief A system which spawns bonuses periodicaly
+            /// @param r (Set the spawnRate with setBonusRate(float))
+            void spawnBonus(eng::Registry &r);
         protected:
         private:
             /// @brief A method that gets a synced entity id
@@ -132,6 +139,12 @@ namespace rtp {
 
             /// @brief The timer until the next enemy spawns
             float _enemyTimer;
+
+            /// @brief The time to wait between each bonus spawn
+            float _bonusRate;
+
+            /// @brief The timer until the next bonus spawns
+            float _bonusTimer;
 
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;

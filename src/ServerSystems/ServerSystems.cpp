@@ -59,6 +59,30 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
     }
 }
 
+void rtp::ServerSystems::setBonusRate(float seconds)
+{
+    _bonusRate = seconds;
+}
+
+void rtp::ServerSystems::spawnBonus(eng::Registry &r)
+{
+    _bonusTimer -= _getDeltaAsSeconds();
+
+    if (_bonusTimer <= 0) {
+        eng::Entity bns = r.spawnEntity();
+
+        float posY = rand() % 1080;
+        int scale = 3;
+
+        r.addComponent<rtp::Position>(bns, rtp::Position(1919, posY, 0));
+        r.addComponent<rtp::Velocity>(bns, rtp::Velocity(-5, 0));
+        r.addComponent<rtp::Bonus>(bns, rtp::Bonus(0));
+        r.addComponent<rtp::RectCollider>(bns, rtp::RectCollider(16 * scale, 16 * scale));
+        r.addComponent<rtp::Synced>(bns, rtp::Synced(bns.getId()));
+        _bonusTimer = _bonusRate;
+    }
+}
+
 // Max speed should be defined elsewhere...
 void rtp::ServerSystems::limitPlayer(eng::Registry &r)
 {
@@ -194,6 +218,7 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &vs = r.getComponents<Velocity>();
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
+    auto &bonus = r.getComponents<Bonus>();
     auto &sc = r.getComponents<Synced>();
     auto &ctrls = r.getComponents<Controllable>();
     boost::array<server_payload_t, 1> dataTbs;
@@ -221,6 +246,19 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
             auto &id_sync = sc[i].value();
 
             _editDataTbs(dataTbs[0], ENEMY_STATS, {(float)enm.enemyType, (float)enm.health}, id_sync.id);
+            sendSyncedDataToAll(dataTbs);
+            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
+            sendSyncedDataToAll(dataTbs);
+            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
+            sendSyncedDataToAll(dataTbs);
+        }
+        if (sc[i].has_value() && i < bonus.size() && bonus[i].has_value()) {
+            auto &p = ps[i].value();
+            auto &v = vs[i].value();
+            auto &bns = bonus[i].value();
+            auto &id_sync = sc[i].value();
+
+            _editDataTbs(dataTbs[0], BONUS, {(float)bns.type}, id_sync.id);
             sendSyncedDataToAll(dataTbs);
             _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
             sendSyncedDataToAll(dataTbs);

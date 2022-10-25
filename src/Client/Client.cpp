@@ -154,6 +154,7 @@ void rtp::Client::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<rtp::Music>());
+    reg.registerComponents(eng::SparseArray<rtp::Bonus>());
 }
 
 void rtp::Client::_addMusic(eng::Registry &reg, std::string filepath)
