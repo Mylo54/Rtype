@@ -168,7 +168,6 @@ void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
 
 void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
 {
-    std::cout << "Bonus spawn on client" << std::endl;
     int type = r.getComponents<Bonus>()[e].value().type;
     float scale = 1;
     if (type == 0) {

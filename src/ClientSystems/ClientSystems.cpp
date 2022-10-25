@@ -368,3 +368,20 @@ void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
         }
     }
 }
+
+void rtp::ClientSystems::killOutOfBounds(eng::Registry &r)
+{
+    auto &poss = r.getComponents<Position>();
+    auto &drawables = r.getComponents<Drawable>();
+
+    for (int i = 0; i < poss.size() && i < drawables.size(); i++) {
+        if (poss[i].has_value() && drawables[i].has_value()) {
+            auto pos = poss[i].value();
+            auto drw = drawables[i].value();
+            if (pos.x > 1920 || pos.x < (-1 * drw.sizeX))
+                r.killEntity(eng::Entity(i));
+            else if (pos.y > 1080 || pos.y < (-1 * drw.sizeY))
+                r.killEntity(eng::Entity(i));
+        }
+    }
+}

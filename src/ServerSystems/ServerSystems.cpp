@@ -64,7 +64,7 @@ void rtp::ServerSystems::setBonusRate(float seconds)
     _bonusRate = seconds;
 }
 
-void rtp::ServerSystems::spawnBonus(eng::Registry &r)
+void rtp::ServerSystems::spawnBonus(eng::Registry &r, float x, float y)
 {
     _bonusTimer -= _getDeltaAsSeconds();
 
@@ -72,10 +72,12 @@ void rtp::ServerSystems::spawnBonus(eng::Registry &r)
         eng::Entity bns = r.spawnEntity();
 
         float posY = rand() % 1080;
+        float velX = (rand() % 5) * (-1);
+        float velY = (rand() % 5) - 2;
         int scale = 3;
 
-        r.addComponent<rtp::Position>(bns, rtp::Position(1919, posY, 0));
-        r.addComponent<rtp::Velocity>(bns, rtp::Velocity(-5, 0));
+        r.addComponent<rtp::Position>(bns, rtp::Position(x, y, 0));
+        r.addComponent<rtp::Velocity>(bns, rtp::Velocity(velX, velY));
         r.addComponent<rtp::Bonus>(bns, rtp::Bonus(0));
         r.addComponent<rtp::RectCollider>(bns, rtp::RectCollider(16 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(bns, rtp::Synced(bns.getId()));
@@ -195,11 +197,18 @@ void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
 {
     auto &ennemies = r.getComponents<EnemyStats>();
+    auto &positions = r.getComponents<Position>();
 
-    for (int i = 0; i < ennemies.size(); i++)
-        if (ennemies[i].has_value())
-            if (ennemies[i].value().health <= 0)
+    for (int i = 0; i < ennemies.size() && i < positions.size(); i++)
+        if (ennemies[i].has_value() && positions[i].has_value())
+            if (ennemies[i].value().health <= 0) {
+                if (rand() % 5 == 0) {
+                    std::cout << "Bonus loot" << std::endl;
+                    spawnBonus(r, positions[i].value().x, positions[i].value().y);
+                }
                 r.killEntity(eng::Entity(i));
+            }
+    
 }
 
 void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot = false)

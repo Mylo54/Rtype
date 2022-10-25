@@ -111,6 +111,10 @@ namespace rtp
             /// @brief Kill bullets that are offscreen
             /// @param r The registry on which to apply the system
             void killBullets(eng::Registry &r);
+
+            /// @brief Kill entities that are offscreen
+            /// @param r The registry on which to apply the system
+            void killOutOfBounds(eng::Registry &r);
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets

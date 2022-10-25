@@ -103,8 +103,11 @@ namespace rtp {
             void setBonusRate(float seconds);
 
             /// @brief A system which spawns bonuses periodicaly
-            /// @param r (Set the spawnRate with setBonusRate(float))
-            void spawnBonus(eng::Registry &r);
+            /// (Set the spawnRate with setBonusRate(float))
+            /// @param r The Registry on which to apply the system
+            /// @param x The horizontal origin position of the bonus
+            /// @param y The vertical origin position of the bonus
+            void spawnBonus(eng::Registry &r, float x, float y);
         protected:
         private:
             /// @brief A method that gets a synced entity id

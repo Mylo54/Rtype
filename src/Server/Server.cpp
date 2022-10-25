@@ -190,7 +190,7 @@ void rtp::Server::systemsLoop()
         systems.killDeadEnemies(r);
         systems.killOutOfBounds(r);
         systems.spawnEnemies(r);
-        systems.spawnBonus(r);
+        // systems.spawnBonus(r);
 
         // Send the new data
         systems.sendData(r);

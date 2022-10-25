@@ -273,6 +273,7 @@ void rtp::Client::systemsLoop()
         systems.buttonSystem(r);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
+        systems.killOutOfBounds(r);
         systems.killBullets(r);
 
         // Display & play sounds/music
