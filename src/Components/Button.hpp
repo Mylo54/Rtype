@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <functional>
-#include "../Engine/RegistryManager.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 
 namespace rtp
 {
