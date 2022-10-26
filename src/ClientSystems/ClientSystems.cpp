@@ -11,6 +11,7 @@ rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
 sf::Time &delta, std::string adress, int port,
 boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _delta(delta)
 {
+    _isButtonRelease = false;
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -320,6 +321,21 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
     auto &positions = r.getComponents<eng::Position>();
     auto mousePos = sf::Mouse::getPosition(_w);
 
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isButtonRelease == true) {
+        _isButtonRelease = false;
+        for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
+            if (buttons[i].has_value() && positions[i].has_value()) {
+                auto &btn = buttons[i].value();
+                auto &pos = positions[i].value();
+
+                if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
+                && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                    btn.btnFunction(manager);
+                }
+            }
+        }
+        return;
+    }
     if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
         return;
     for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
@@ -329,7 +345,7 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
             
             if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
             && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
-                btn.btnFunction(manager);
+                _isButtonRelease = true;
             }
         }
     }

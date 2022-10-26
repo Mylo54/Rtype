@@ -7,16 +7,19 @@
 
 #include "MainMenu.hpp"
 
-void btnFuncStart(eng::RegistryManager &manager)
+int btnFuncStart(eng::RegistryManager &manager)
 {
-    rtp::Game game(manager);
+    //rtp::Game game(manager);
+
+    return 0;
 }
 
-rtp::MainMenu::MainMenu(eng::RegistryManager &manager) : _manager(manager)
+rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co) : _manager(manager), _singlePlayerBtnFct(co)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
+
 }
 
 void rtp::MainMenu::_setupRegistry(eng::Registry &reg)
@@ -56,7 +59,7 @@ void rtp::MainMenu::_addButtonStartLocal(eng::Registry &r)
     int scale = 2;
 
     r.addComponent<eng::Position>(btn, eng::Position(100, 100, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Singleplayer", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
@@ -69,7 +72,7 @@ void rtp::MainMenu::_addButtonMultiplayer(eng::Registry &r)
     int scale = 4;
 
     r.addComponent<eng::Position>(btn, eng::Position(100, 250, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Multiplayer", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 

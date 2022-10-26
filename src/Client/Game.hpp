@@ -24,6 +24,13 @@ namespace rtp {
         public:
             Game(eng::RegistryManager &manager);
             ~Game();
+
+            /// @brief Adds a controllable player to a registry
+            /// @param reg The Registry on which to adds the player 
+            /// @param playerId The player id (1, 2, 3 or 4)
+            /// @param syncId The sync component id
+            /// @return The entity containing the player
+            eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
             
         protected:
             /// @brief Setup the registry with every sparse array needed
@@ -34,13 +41,6 @@ namespace rtp {
             /// @param reg the registry on which to add the music
             /// @param filepath the filepath on where to find the music
             void _addMusic(eng::Registry &reg, std::string filepath);
-
-            /// @brief Adds a controllable player to a registry
-            /// @param reg The Registry on which to adds the player 
-            /// @param playerId The player id (1, 2, 3 or 4)
-            /// @param syncId The sync component id
-            /// @return The entity containing the player
-            eng::Entity _addPlayer(eng::Registry &reg, int playerId, int syncId);
 
             /// @brief Adds an enemy to a registry
             /// @param reg The Registry on which to adds the enemy 

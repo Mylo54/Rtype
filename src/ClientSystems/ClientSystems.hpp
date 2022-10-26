@@ -128,6 +128,7 @@ namespace rtp
             sf::Clock &_c;
             /// @brief The delta time of the server
             sf::Time &_delta;
+            bool _isButtonRelease;
     };
 } // namespace rtp
 

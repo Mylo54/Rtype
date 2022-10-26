@@ -263,3 +263,68 @@ void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
     reg.addComponent<eng::Writable>(chatBox, eng::Writable("ChatBox1"));
     reg.addComponent<eng::Position>(chatBox, eng::Position(0, 980, 0));
 }
+
+std::vector<int> rtp::NetworkSystems::connect(int port)
+{
+    boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
+    boost::array<connectPayload_t, 1> dataRec;
+    std::vector<int> res;
+    boost::asio::io_context ioContext;
+
+    //ICI adress
+
+    dataTbs[0].addr1 = 0;
+    dataTbs[0].addr2 = 0;
+    dataTbs[0].addr3 = 0;
+    dataTbs[0].addr4 = 0;
+    dataTbs[0].port = port;
+
+    //connection
+
+    boost::asio::ip::tcp::resolver resolver(ioContext);
+
+    std::string serverName = "localhost";
+
+    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::iterator end;
+
+    boost::asio::ip::tcp::socket socketTCP{ioContext};
+    boost::system::error_code error;
+
+    try {
+
+        boost::system::error_code error = boost::asio::error::host_not_found;
+        socketTCP.connect(*(resolver.resolve(query)), error);
+        if (error) {
+            std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
+        } else {
+            std::cout << "[Client][Connect]: connect success" << std::endl;
+
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        res.push_back(1);
+        return (res);
+    }
+
+    boost::asio::write(socketTCP, boost::asio::buffer(dataTbs), error);
+
+    if (error)
+        std::cout << "[Client][Connect]: send failed: " << error.message() << std::endl;
+
+    // getting response from server
+    boost::asio::read(socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    res.push_back(0);
+    res.push_back(dataRec[0].playerId);
+    res.push_back(dataRec[0].syncId);
+    if (error && error != boost::asio::error::eof) {
+        std::cout << "[Client][Connect]: receive failed: " << error.message() << std::endl;
+    } else {
+        std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+    }
+    _mySyncId = res[2];
+    return (res);
+}

@@ -10,9 +10,10 @@
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
 {
     //Game game(_manager);
-    MainMenu mm(_manager);
+    //MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
+    patate = 0;
 }
 
 rtp::Client::~Client()
@@ -92,11 +93,13 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
     return dataTbs;
 }
 
-std::vector<int> rtp::Client::connect()
+int rtp::Client::connect(eng::RegistryManager &manager)
 {
+    rtp::Game game(_manager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
+    patate = 5;
 
     //ICI adress
 
@@ -131,7 +134,7 @@ std::vector<int> rtp::Client::connect()
     {
         std::cerr << e.what() << std::endl;
         res.push_back(1);
-        return (res);
+        return (1);
     }
 
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
@@ -149,38 +152,37 @@ std::vector<int> rtp::Client::connect()
     } else {
         std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
-    return (res);
+
+    if (res[0] == 1)
+        return (1);
+    
+    eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
+    _mySyncId = res[2];
+    _myPlayerId = res[1];
+    return (0);
 }
 
-/*
-void btn_func(void)
+void test()
 {
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "test" << std::endl;
 }
-
-void addButton(eng::Registry &r)
-{
-    eng::Entity btn = r.spawnEntity();
-    int scale = 4;
-
-    r.addComponent<rtp::Position>(btn, rtp::Position(100, 100, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btn_func, 0, 0, 128 * scale, 32 * scale));
-    r.addComponent<rtp::Writable>(btn, rtp::Writable("Button", "Hello Chloe"));
-    r.addComponent<rtp::Drawable>(btn, rtp::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
-
-    r.getComponents<rtp::Drawable>()[btn.getId()].value().sprite.setScale(4, 4);
-}*/
 
 void rtp::Client::systemsLoop()
 {
+    std::cout << "patate before = " << this->patate << std::endl;
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
-    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, _mySyncId, gfx.getDelta());
+    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, 0, gfx.getDelta());
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
+    std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
+    rtp::MainMenu mm(_manager, co);
+
+    std::cout << "patate after = " << this->patate << std::endl;
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
     //ss << "You are Player " << _myPlayerId;
     gfx.setMaxFrameRate(60);
     net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+
     while (gfx.windowOpen()) {
         gfx.eventCatchWindow();
         
@@ -206,10 +208,10 @@ void rtp::Client::systemsLoop()
         systems.killBullets(r);
 
         // Display & play sounds/music
-        systems.playMusicSystem(r);
-        systems.playSoundSystem(r);
+        systems.playMusicSystem(_manager.getTop());
+        systems.playSoundSystem(_manager.getTop());
         gfx.clearSystem();
-        gfx.backgroundSystem(r);
+        gfx.backgroundSystem(_manager.getTop());
         gfx.drawSystem(_manager.getTop());
         gfx.writeSystem(_manager.getTop());
         gfx.displaySystem();

@@ -14,14 +14,6 @@ rtp::Game::Game(eng::RegistryManager &manager) : _manager(manager)
     _addBackgrounds(_manager.getTop());
     _addScore(_manager.getTop());
     _addMusic(_manager.getTop(), "assets/music.ogg");
-
-    /*std::vector<int> c = connect();
-
-    if (c[0] == 1)
-        return;
-    eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
-    int mySyncId = c[2];
-    int myPlayerId = c[1];*/
 }
 
 rtp::Game::~Game()
@@ -54,7 +46,7 @@ void rtp::Game::_addMusic(eng::Registry &reg, std::string filepath)
     reg.addComponent<eng::Music>(music, eng::Music(filepath, true));
 }
 
-eng::Entity rtp::Game::_addPlayer(eng::Registry &reg, int playerId, int syncId)
+eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
 {
     eng::Entity player = reg.spawnEntity();
 

@@ -15,6 +15,7 @@
 #include <boost/array.hpp>
 #include "ClientSystems.hpp"
 #include <iostream>
+#include "../NetworkStructs.hpp"
 #include <cmath>
 
 namespace rtp
@@ -65,6 +66,8 @@ namespace rtp
             /// @brief Create a bottom chatBox line
             /// @param reg The registry on which to apply the system
             void addChatBox(eng::Registry &reg);
+
+            std::vector<int> connect(int port);
         protected:
         private:
             /// @brief A method that gets a synced entity id

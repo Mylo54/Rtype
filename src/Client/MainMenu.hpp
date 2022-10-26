@@ -18,12 +18,11 @@
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
-#include "Game.hpp"
 
 namespace rtp {
     class MainMenu {
         public:
-            MainMenu(eng::RegistryManager &manager);
+            MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co);
             ~MainMenu();
 
         protected:
@@ -36,6 +35,7 @@ namespace rtp {
 
         private:
             eng::RegistryManager &_manager;
+            std::function<int(eng::RegistryManager &)> _singlePlayerBtnFct;
     };
 }
 

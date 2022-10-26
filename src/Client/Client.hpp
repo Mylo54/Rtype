@@ -40,7 +40,8 @@ namespace rtp {
             /// [0]: 0 for success, 1 for failure
             /// [1]: the playerId
             /// [2]: the syncId
-            std::vector<int> connect();
+            int connect(eng::RegistryManager &manager);
+            
 
             /// @brief Disconnect the client from the server
             void disconnect();
@@ -51,6 +52,7 @@ namespace rtp {
             /// @param syncId The sync component id
             /// @return The entity containing the player
             eng::Entity _addPlayer(eng::Registry &reg, int playerId, int syncId);
+            int patate;
 
 
         protected:
