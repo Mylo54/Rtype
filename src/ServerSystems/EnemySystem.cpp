@@ -69,3 +69,13 @@ void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
             }
 }
+
+void rtp::ServerSystems::enemyCollisions(eng::Registry &r)
+{
+    
+}
+
+void rtp::ServerSystems::enemyCollision(eng::Registry &r)
+{
+
+}

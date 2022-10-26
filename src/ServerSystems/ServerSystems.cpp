@@ -84,3 +84,9 @@ void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)
         }
     }
 }
+
+void rtp::ServerSystems::collisions(eng::Registry &r)
+{
+    bonusCollisions(r);
+    enemyCollisions(r);
+}

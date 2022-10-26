@@ -34,16 +34,6 @@ namespace rtp {
             std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
-
-            /// @brief Add a client endpoint
-            /// @param address The IPv4 address of the receiver
-            /// @param port The port of the receiver
-            void addEndpoint(std::string address, int port);
-
-            /// @brief Remove a client endpoint
-            /// @param address The IPv4 address of the receiver
-            /// @param port The port of the receiver
-            void removeEndPoint(std::string address, int port);
             
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -72,7 +62,7 @@ namespace rtp {
             /// @brief A generic funciton that send a boost::array to all stored endpoints
             /// @param data_tbs The data to be sent to all clients
             void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
-            
+
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
@@ -108,6 +98,15 @@ namespace rtp {
             /// @param x The horizontal origin position of the bonus
             /// @param y The vertical origin position of the bonus
             void spawnBonus(eng::Registry &r, float x, float y);
+
+            /// @brief A system managing collisions
+            /// @param r The Registry on which to apply the system
+            void collisions(eng::Registry &r);
+
+            void bonusCollisions(eng::Registry &r);
+            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, rtp::Position &playerPos);
+            void enemyCollisions(eng::Registry &r);
+            void enemyCollision(eng::Registry &r);
         protected:
         private:
             /// @brief A method that gets a synced entity id

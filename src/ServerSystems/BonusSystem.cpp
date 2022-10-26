@@ -32,3 +32,27 @@ void rtp::ServerSystems::spawnBonus(eng::Registry &r, float x, float y)
         _bonusTimer = _bonusRate;
     }
 }
+
+void rtp::ServerSystems::bonusCollisions(eng::Registry &r)
+{
+    auto &positions = r.getComponents<Position>();
+    auto &players = r.getComponents<PlayerStats>();
+
+    for (int i = 0; i < players.size() && i < positions.size(); i++) {
+        if (players[i].has_value() && positions[i].has_value())
+            auto &stats = players[i].value();
+            auto &pos = positions[i].value();
+            bonusCollision(r, players[i].value(), positions[i].value());
+    }
+}
+
+void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Position &playerPos)
+{
+    auto &bonuses = r.getComponents<Bonus>();
+    auto &positions = r.getComponents<Position>();
+
+    for (int i = 0; i < bonuses.size() && i < positions.size(); i++)
+        if (bonuses[i].has_value() && positions[i].has_value())
+            if (positions[i].value().x > playerStats.) {
+            }
+}
