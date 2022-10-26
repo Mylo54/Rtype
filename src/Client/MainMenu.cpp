@@ -7,21 +7,20 @@
 
 #include "MainMenu.hpp"
 
+void btnFuncStart(eng::RegistryManager &manager)
+{
+    rtp::Game game(manager);
+}
+
 rtp::MainMenu::MainMenu(eng::RegistryManager &manager) : _manager(manager)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
-    _addButton(_manager.getTop());
+    _addButtons(_manager.getTop());
 }
 
 void rtp::MainMenu::_setupRegistry(eng::Registry &reg)
 {
-    //reg.registerComponents(eng::SparseArray<rtp::Position>());
-    //reg.registerComponents(eng::SparseArray<rtp::Button>());
-    //reg.registerComponents(eng::SparseArray<rtp::Drawable>());
-    //reg.registerComponents(eng::SparseArray<rtp::Writable>());
-
-
     reg.registerComponents(eng::SparseArray<eng::Velocity>());
     reg.registerComponents(eng::SparseArray<eng::Position>());
     reg.registerComponents(eng::SparseArray<eng::Drawable>());
@@ -43,30 +42,62 @@ rtp::MainMenu::~MainMenu()
 {
 }
 
-void rtp::MainMenu::_btnFuncExit(void)
+void rtp::MainMenu::_addButtons(eng::Registry &r)
 {
-    std::cout << "Hello World!" << std::endl;
+    _addButtonStartLocal(r);
+    _addButtonMultiplayer(r);
+    _addButtonSettings(r);
+    _addButtonExit(r);
 }
 
-void rtp::MainMenu::_btnFuncStart(void)
+void rtp::MainMenu::_addButtonStartLocal(eng::Registry &r)
 {
-    std::cout << "Hello World!" << std::endl;
+    eng::Entity btn = r.spawnEntity();
+    int scale = 2;
+
+    r.addComponent<eng::Position>(btn, eng::Position(100, 100, 0));
+    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Singleplayer", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+
+    r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
 }
 
-void btnFuncStart(eng::RegistryManager &manager)
-{
-    rtp::Game game(manager);
-}
-
-void rtp::MainMenu::_addButton(eng::Registry &r)
+void rtp::MainMenu::_addButtonMultiplayer(eng::Registry &r)
 {
     eng::Entity btn = r.spawnEntity();
     int scale = 4;
 
-    r.addComponent<eng::Position>(btn, eng::Position(100, 100, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * scale, 32 * scale));
-    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Start", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btn, eng::Position(100, 250, 0));
+    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Multiplayer", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
-    r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 4);
+    r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
+}
+
+void rtp::MainMenu::_addButtonExit(eng::Registry &r)
+{
+    eng::Entity btn = r.spawnEntity();
+    int scale = 4;
+
+    r.addComponent<eng::Position>(btn, eng::Position(100, 400, 0));
+    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
+    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Quit Games", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+
+    r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
+}
+
+void rtp::MainMenu::_addButtonSettings(eng::Registry &r)
+{
+    eng::Entity btn = r.spawnEntity();
+    int scale = 4;
+
+    r.addComponent<eng::Position>(btn, eng::Position(370, 400, 0));
+    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
+    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+
+    r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
 }

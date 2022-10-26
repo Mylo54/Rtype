@@ -27,10 +27,13 @@ namespace rtp {
             ~MainMenu();
 
         protected:
-            void _btnFuncStart(void);
-            void _btnFuncExit(void);
-            void _addButton(eng::Registry &reg);
             void _setupRegistry(eng::Registry &reg);
+            void _addButtons(eng::Registry &reg);
+            void _addButtonStartLocal(eng::Registry &reg);
+            void _addButtonExit(eng::Registry &reg);
+            void _addButtonMultiplayer(eng::Registry &reg);
+            void _addButtonSettings(eng::Registry &reg);
+
         private:
             eng::RegistryManager &_manager;
     };
