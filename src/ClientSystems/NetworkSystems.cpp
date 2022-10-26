@@ -8,14 +8,24 @@
 #include "NetworkSystems.hpp"
 
 rtp::NetworkSystems::NetworkSystems(std::string address, int port,
-boost::asio::ip::udp::socket &socket, int mySyncId, sf::Time &delta):
-_socket(socket), _mySyncId(mySyncId), _delta(delta)
+boost::asio::ip::udp::socket &socket, sf::Time &delta):
+_socket(socket), _delta(delta)
 {
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
 }
 
 rtp::NetworkSystems::~NetworkSystems()
 {
+}
+
+void rtp::NetworkSystems::setSyncId(int id)
+{
+    _mySyncId = id;
+}
+
+void rtp::NetworkSystems::setDelta(sf::Time &delta)
+{
+    _delta = delta;
 }
 
 void rtp::NetworkSystems::sendData(eng::Registry &r)

@@ -26,14 +26,14 @@ namespace rtp
                 CHAT,
                 EVENT
             };
+
             /// @brief NetworkSystems object constructor
             /// @param address adress of the server
             /// @param port port of the server
             /// @param socket udp socket of the client
             /// @param mySyncId synchronisation id of the player
             NetworkSystems(std::string address, int port,
-            boost::asio::ip::udp::socket &socket, int mySyncId,
-            sf::Time &delta);
+            boost::asio::ip::udp::socket &socket, sf::Time &delta);
             ~NetworkSystems();
 
             /// @brief A system which sends data to the server
@@ -68,6 +68,10 @@ namespace rtp
             void addChatBox(eng::Registry &reg);
 
             std::vector<int> connect(int port);
+
+            void setSyncId(int id);
+
+            void setDelta(sf::Time &delta);
         protected:
         private:
             /// @brief A method that gets a synced entity id

@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port})
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -132,6 +132,7 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
     _mySyncId = res[2];
     _myPlayerId = res[1];
+    _net.setSyncId(_mySyncId);
     return (0);
 }
 
@@ -142,26 +143,24 @@ void test()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
-    rtp::NetworkSystems net("127.0.0.1", 3303, _socket, 0, gfx.getDelta());
-    rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket);
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co);
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
     //ss << "You are Player " << _myPlayerId;
-    gfx.setMaxFrameRate(60);
-    net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+    _gfx.setMaxFrameRate(60);
+    _net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
 
-    while (gfx.windowOpen()) {
-        gfx.eventCatchWindow();
+    while (_gfx.windowOpen()) {
+        _gfx.eventCatchWindow();
         
         // Receive Inputs
-        gfx.controlSystem(_manager.getTop());
-        //net.receiveData(_manager.getTop());
+        _gfx.controlSystem(_manager.getTop());
+        //_net.receiveData(_manager.getTop());
 
         // Send new events
-        //net.sendData(_manager.getTop());
+        //_net.sendData(_manager.getTop());
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
@@ -170,8 +169,8 @@ void rtp::Client::systemsLoop()
         systems.shootSystem(_manager.getTop());
         systems.positionSystem(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
-        gfx.animateSystem(_manager.getTop());
-        gfx.buttonStateSystem(_manager.getTop());
+        _gfx.animateSystem(_manager.getTop());
+        _gfx.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
         systems.playerBullets(r);
         systems.killDeadEnemies(r);
@@ -180,11 +179,11 @@ void rtp::Client::systemsLoop()
         // Display & play sounds/music
         systems.playMusicSystem(_manager.getTop());
         systems.playSoundSystem(_manager.getTop());
-        gfx.clearSystem();
-        gfx.backgroundSystem(_manager.getTop());
-        gfx.drawSystem(_manager.getTop());
-        gfx.writeSystem(_manager.getTop());
-        gfx.displaySystem();
+        _gfx.clearSystem();
+        _gfx.backgroundSystem(_manager.getTop());
+        _gfx.drawSystem(_manager.getTop());
+        _gfx.writeSystem(_manager.getTop());
+        _gfx.displaySystem();
     }
     //net.disconnectSystems(r);
 }
