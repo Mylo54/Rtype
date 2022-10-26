@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -v")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
+#set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}")
 set(RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 Project (R-TYPE)
@@ -70,13 +70,14 @@ target_link_libraries(
   Client-Rtype
   PRIVATE
   ${CONAN_LIBS}
-)
-
-target_link_libraries(
-  Client-Rtype
-  PUBLIC
   EngineCoreSuper
 )
+
+# target_link_libraries(
+#   Client-Rtype
+#   PUBLIC
+#   EngineCoreSuper
+# )
 
 #####    SERVER
 
@@ -94,12 +95,12 @@ target_link_directories(
 
 target_link_libraries(
   Server-Rtype
-  PRIVATE
   ${CONAN_LIBS}
-)
-
-target_link_libraries(
-  Server-Rtype
-  PUBLIC
   EngineCoreSuper
 )
+
+# target_link_libraries(
+#   Server-Rtype
+#   PUBLIC
+  
+# )
