@@ -68,8 +68,14 @@ target_link_directories(
 
 target_link_libraries(
   Client-Rtype
-  EngineCoreSuper
+  PRIVATE
   ${CONAN_LIBS}
+)
+
+target_link_libraries(
+  Client-Rtype
+  PUBLIC
+  EngineCoreSuper
 )
 
 #####    SERVER
@@ -88,6 +94,12 @@ target_link_directories(
 
 target_link_libraries(
   Server-Rtype
-  EngineCoreSuper
+  PRIVATE
   ${CONAN_LIBS}
+)
+
+target_link_libraries(
+  Server-Rtype
+  PUBLIC
+  EngineCoreSuper
 )
