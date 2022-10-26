@@ -20,6 +20,7 @@
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
 #include "MainMenu.hpp"
+#include "PauseMenu.hpp"
 
 namespace rtp {
     class Client {
