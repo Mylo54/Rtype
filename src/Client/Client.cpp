@@ -7,8 +7,13 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
 {
+    // _manager.addRegistry("R1");
+    // _setupRegistry(_manager.getTop());
+    // _addBackgrounds(_manager.getTop());
+    // _addScore(_manager.getTop());
+    // _addMusic(_manager.getTop(), "assets/music.ogg");
     //Game game(_manager);
     //MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
@@ -70,6 +75,7 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
 int rtp::Client::connect(eng::RegistryManager &manager)
 {
     rtp::Game game(_manager);
+
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
@@ -86,7 +92,8 @@ int rtp::Client::connect(eng::RegistryManager &manager)
 
     boost::asio::ip::tcp::resolver resolver(_ioContext);
 
-    std::string serverName = "localhost";
+    //std::string serverName = "localhost";
+
 
     boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);

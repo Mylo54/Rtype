@@ -61,7 +61,6 @@ namespace rtp {
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket{_ioContext};
 
-            boost::asio::io_service _ioService;
             boost::asio::ip::tcp::socket _socketTCP;
             boost::system::error_code _error;
             rtp::NetworkSystems _net;

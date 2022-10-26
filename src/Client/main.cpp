@@ -23,7 +23,14 @@ eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
 int main(int argc, char **argv)
 {
     srand(time(NULL));
+
+    if (argc != 2) {
+        std::cout << "not enough arguments (awaiting ip)" << std::endl;
+        return (84);
+    }
+    std::string serverAddr(argv[1]);
     boost::asio::ip::port_type port = (rand() % 1000) + 3000;
+    std::cout << "DEBUG001 : query serverAddr : {" << serverAddr << "}" << std::endl;
     rtp::Client client(port);
 
     client.run();

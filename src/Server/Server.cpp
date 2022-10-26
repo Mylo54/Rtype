@@ -7,13 +7,13 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)), _socketTCP(_ioContext)
+rtp::Server::Server(boost::asio::ip::port_type port, boost::asio::ip::address addr) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{addr, port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(addr, 3303)), _socketTCP(_ioContext)
 {
     this->_clientPort = 0;
     _port = port;
+    std::cout << "server port is : " << port << std::endl;
     _isEnd = false;
     _start = false;
-    //_socket.local_endpoint().port(_port);
 }
 
 rtp::Server::~Server()
