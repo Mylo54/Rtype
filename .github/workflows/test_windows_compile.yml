@@ -11,7 +11,10 @@ jobs:
       - name: Create default profile
         run: conan profile new default --detect
       - name: build
-        run: ./comp_windows.sh
+        run: |
+          git submodule update --init --recursive
+          mkdir -p build
+          cd build && conan install .. --build=missing && cmake .. -G "Visual Studio 17"  -A x64 && cmake --build .
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
