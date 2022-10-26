@@ -11,7 +11,9 @@ jobs:
       - name: Create default profile
         run: conan profile new default --detect
       - name: build
-        run: ./comp_linux.sh
+        run: |
+          mkdir build
+          cd build && conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True && cmake .. -G "Unix Makefiles"  && cmake --build . 
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
