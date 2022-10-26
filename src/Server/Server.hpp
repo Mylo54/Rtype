@@ -37,7 +37,7 @@ namespace rtp {
         public:
             /// @brief Server object constructor
             /// @param port port of the server
-            Server(boost::asio::ip::port_type port, boost::asio::ip::address addr);
+            Server(boost::asio::ip::port_type port);
             ~Server();
             /// @brief run the server
             void run();
