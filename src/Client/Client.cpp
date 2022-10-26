@@ -13,7 +13,6 @@ rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_i
     //MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
-    patate = 0;
 }
 
 rtp::Client::~Client()
@@ -22,13 +21,6 @@ rtp::Client::~Client()
 
 void rtp::Client::run()
 {
-    /*std::vector<int> c = connect();
-
-    if (c[0] == 1)
-        return;
-    //eng::Entity player = _addPlayer(_manager.getTop(), c[1], c[2]);
-    _mySyncId = c[2];
-    _myPlayerId = c[1];*/
     systemsLoop();
     //disconnect();
 }
@@ -41,24 +33,6 @@ void rtp::Client::disconnect()
     //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), boost::asio::ip::port_type(_port)});
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;
-}
-
-
-eng::Entity rtp::Client::_addPlayer(eng::Registry &reg, int playerId, int syncId)
-{
-    eng::Entity player = reg.spawnEntity();
-
-    reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
-    reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
-    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
-    reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
-    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-
-    std::cout << "You are player " << playerId << std::endl;
-    return player;
 }
 
 boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::string address)
@@ -99,7 +73,6 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
-    patate = 5;
 
     //ICI adress
 
@@ -169,14 +142,11 @@ void test()
 
 void rtp::Client::systemsLoop()
 {
-    std::cout << "patate before = " << this->patate << std::endl;
     rtp::GraphicsSystems gfx(std::vector<int>({1920, 1080, 32}), "RTYPE");
     rtp::NetworkSystems net("127.0.0.1", 3303, _socket, 0, gfx.getDelta());
     rtp::ClientSystems systems(gfx.getWindow(), gfx.getClock(), gfx.getDelta(), "127.0.0.1", 3303, _socket);
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co);
-
-    std::cout << "patate after = " << this->patate << std::endl;
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
     //ss << "You are Player " << _myPlayerId;

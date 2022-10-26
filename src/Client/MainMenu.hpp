@@ -32,6 +32,7 @@ namespace rtp {
             void _addButtonExit(eng::Registry &reg);
             void _addButtonMultiplayer(eng::Registry &reg);
             void _addButtonSettings(eng::Registry &reg);
+            void _addBackgrounds(eng::Registry &reg);
 
         private:
             eng::RegistryManager &_manager;

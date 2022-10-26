@@ -45,16 +45,7 @@ namespace rtp {
 
             /// @brief Disconnect the client from the server
             void disconnect();
-
-            /// @brief Adds a controllable player to a registry
-            /// @param reg The Registry on which to adds the player 
-            /// @param playerId The player id (1, 2, 3 or 4)
-            /// @param syncId The sync component id
-            /// @return The entity containing the player
-            eng::Entity _addPlayer(eng::Registry &reg, int playerId, int syncId);
-            int patate;
-
-
+            
         protected:
         private:
             /// @brief Fill the structure sent to the server countaining the client adress

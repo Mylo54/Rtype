@@ -19,7 +19,20 @@ rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::Re
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
+    _addBackgrounds(_manager.getTop());
+}
 
+void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
+{
+    eng::Entity bg = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
+    reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+    eng::Entity bg2 = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg2, eng::Position(-50, -50, 0));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/middleground.png"));
+    eng::Entity bg3 = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg3, eng::Position(-50, -50, 0));
+    reg.addComponent<rtp::Background>(bg3, rtp::Background("assets/background.png"));
 }
 
 void rtp::MainMenu::_setupRegistry(eng::Registry &reg)
