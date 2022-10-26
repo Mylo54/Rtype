@@ -29,7 +29,7 @@
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
 #include "../ServerSystems/ServerSystems.hpp"
-#include "../Engine/RegistryManager.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 
 namespace rtp {
     /// @brief A class holding a server

@@ -21,8 +21,8 @@ rtp::ServerSystems::~ServerSystems()
 
 void rtp::ServerSystems::positionSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &velocities = r.getComponents<Velocity>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &velocities = r.getComponents<eng::Velocity>();
 
     for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
         auto &pos = positions[i];
@@ -50,8 +50,8 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
         float posY = rand() % 1080;
         int scale = 3;
 
-        r.addComponent<rtp::Position>(enm, rtp::Position(1919, posY, 0));
-        r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
+        r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
+        r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
         r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
         r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
@@ -62,8 +62,8 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
 // Max speed should be defined elsewhere...
 void rtp::ServerSystems::limitPlayer(eng::Registry &r)
 {
-    auto &pos = r.getComponents<Position>();
-    auto &ves = r.getComponents<Velocity>();
+    auto &pos = r.getComponents<eng::Position>();
+    auto &ves = r.getComponents<eng::Velocity>();
     auto &pls = r.getComponents<PlayerStats>();
     float maxSpeed = 15;
 
@@ -88,7 +88,7 @@ void rtp::ServerSystems::limitPlayer(eng::Registry &r)
 
 void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 {
-    auto &velocities = r.getComponents<Velocity>();
+    auto &velocities = r.getComponents<eng::Velocity>();
     auto &controllables = r.getComponents<Controllable>();
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
@@ -113,7 +113,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
     auto &playerStats = r.getComponents<PlayerStats>();
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
@@ -125,8 +125,8 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
             
             ctrl.value().shoot = false;
             ctrl.value().hasShot = true;
-            r.addComponent(bullet, rtp::Velocity(15, 0));
-            r.addComponent(bullet, rtp::Position(pos.x + 65, pos.y + 25, pos.z));
+            r.addComponent(bullet, eng::Velocity(15, 0));
+            r.addComponent(bullet, eng::Position(pos.x + 65, pos.y + 25, pos.z));
             r.addComponent(bullet, rtp::Bullet(2));
         }
     }
@@ -136,7 +136,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 void rtp::ServerSystems::playerBullets(eng::Registry &r)
 {
     auto &blts = r.getComponents<Bullet>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < blts.size() && i < poss.size(); i++) {
         if (blts[i].has_value() && poss[i].has_value()) {
@@ -148,9 +148,9 @@ void rtp::ServerSystems::playerBullets(eng::Registry &r)
 void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
     auto &rcts = r.getComponents<RectCollider>();
-    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
     for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
@@ -190,8 +190,8 @@ void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentNa
 
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
-    auto &ps = r.getComponents<Position>();
-    auto &vs = r.getComponents<Velocity>();
+    auto &ps = r.getComponents<eng::Position>();
+    auto &vs = r.getComponents<eng::Velocity>();
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
     auto &sc = r.getComponents<Synced>();
@@ -297,7 +297,7 @@ void rtp::ServerSystems::updDeltaTime()
 
 void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)
 {
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < poss.size(); i++) {
         if (poss[i].has_value()) {
