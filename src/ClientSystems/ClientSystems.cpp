@@ -9,7 +9,8 @@
 
 rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
 sf::Time &delta, std::string adress, int port,
-boost::asio::ip::udp::socket &socket) : _w(w), _c(c), _delta(delta)
+boost::asio::ip::udp::socket &socket, bool &focus):
+_w(w), _c(c), _delta(delta), _isWindowFocused(focus)
 {
     _isButtonRelease = false;
 }
@@ -79,6 +80,89 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
         }
     }
 }
+
+void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
+{
+    auto &bgs = r.getComponents<Background>();
+    auto &poss = r.getComponents<eng::Position>();
+
+    for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
+        auto &pos = poss[i];
+        auto &bg = bgs[i];
+
+        if (pos.has_value() && bg.has_value()) {
+            if (pos.value().x <= -1920)
+                pos.value().x = 1920;
+            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
+            _w.draw(bg.value().sprite);
+        }
+    }
+}
+
+void rtp::ClientSystems::controlSystem(eng::Registry &r)
+{
+    if (_isWindowFocused == false) {
+        return;
+    }
+    auto &controllables = r.getComponents<Controllable>();
+
+    for (int i = 0; i < controllables.size(); i++) {
+        auto &ctrl = controllables[i];
+
+        if (ctrl.has_value()) {
+            // up and down
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                ctrl.value().yAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                ctrl.value().yAxis = 1;
+            else
+                ctrl.value().yAxis = 0;
+            
+            // left and right
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                ctrl.value().xAxis = -1;
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                ctrl.value().xAxis = 1;
+            else
+                ctrl.value().xAxis = 0;
+            
+            // shoot
+            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        }
+    }
+}
+
+void rtp::ClientSystems::buttonStateSystem(eng::Registry &r)
+{
+    auto &buttons = r.getComponents<Button>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &sprite = r.getComponents<eng::Drawable>();
+    auto mousePos = sf::Mouse::getPosition(_w);
+
+    for (int i = 0; i < buttons.size(); i++) {
+        if (buttons[i].has_value()) {
+            auto &btn = buttons[i].value();
+            auto &spr = sprite[i].value();
+            auto &pos = positions[i].value();
+            sf::IntRect rect = spr.sprite.getTextureRect();
+
+            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
+            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                rect.left = (spr.sheetDirection == 1) ? rect.width : 0;
+                rect.top = (spr.sheetDirection == 3) ? rect.height : 0;
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    rect.left += (spr.sheetDirection == 1) ? rect.width : 0;
+                    rect.top += (spr.sheetDirection == 3) ? rect.height : 0;
+                }
+            } else {
+                rect.left = (spr.sheetDirection == 1) ? 0 : rect.width;
+                rect.top = (spr.sheetDirection == 3) ? 0 : rect.height;
+            }
+            spr.sprite.setTextureRect(rect);
+        }
+    }
+}
+
 
 void rtp::ClientSystems::shootSystem(eng::Registry &r)
 {

@@ -31,8 +31,10 @@ namespace rtp
             /// @param adress adress of the server
             /// @param port port of the server
             /// @param socket udp socket of the server
+            /// @param focus the focus state of the window
             ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta,
-            std::string adress, int port,boost::asio::ip::udp::socket &socket);
+            std::string adress, int port,boost::asio::ip::udp::socket &socket,
+            bool &focus);
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
@@ -50,6 +52,14 @@ namespace rtp
             /// @brief A system who handles inputs for shooting
             /// @param r The registry on which to apply the system
             void controlFireSystem(eng::Registry &r);
+
+            /// @brief A system who draws the background layers
+            /// @param r The Registry on which to apply the system
+            void backgroundSystem(eng::Registry &r);
+
+            /// @brief A system who handles inputs and stores actions
+            /// @param r The Registry on which to apply the system
+            void controlSystem(eng::Registry &r);
 
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
@@ -111,6 +121,10 @@ namespace rtp
             /// @brief Kill bullets that are offscreen
             /// @param r The registry on which to apply the system
             void killBullets(eng::Registry &r);
+
+            /// @brief A system who set the state of a button according
+            /// @param r The Registry on which to apply the system
+            void buttonStateSystem(eng::Registry &r);
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets
@@ -128,6 +142,7 @@ namespace rtp
             sf::Clock &_c;
             /// @brief The delta time of the server
             sf::Time &_delta;
+            bool &_isWindowFocused;
             bool _isButtonRelease;
     };
 } // namespace rtp

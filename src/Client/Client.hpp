@@ -69,7 +69,7 @@ namespace rtp {
             boost::asio::ip::tcp::socket _socketTCP;
             boost::system::error_code _error;
             rtp::NetworkSystems _net;
-            rtp::GraphicsSystems _gfx;
+            eng::GraphicSystems _gfx;
 
 
             std::thread _receiveData;
