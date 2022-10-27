@@ -7,7 +7,8 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
+rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -133,12 +134,28 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     _mySyncId = res[2];
     _myPlayerId = res[1];
     _net.setSyncId(_mySyncId);
+
+    _receiveData = std::thread(&rtp::Client::dataReception, this);
+    _sendData = std::thread(&rtp::Client::dataSend, this);
     return (0);
 }
 
 void test()
 {
     std::cout << "test" << std::endl;
+}
+
+
+void rtp::Client::dataReception()
+{
+    while (_gfx.windowOpen())
+        _net.receiveData(_manager.getTop());
+}
+
+void rtp::Client::dataSend()
+{
+    while (_gfx.windowOpen())
+        _net.sendData(_manager.getTop());
 }
 
 void rtp::Client::systemsLoop()
@@ -148,19 +165,16 @@ void rtp::Client::systemsLoop()
     rtp::MainMenu mm(_manager, co);
     eng::Registry &r = _manager.getTop();
     std::stringstream ss;
-    //ss << "You are Player " << _myPlayerId;
     _gfx.setMaxFrameRate(60);
     _net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+
+
 
     while (_gfx.windowOpen()) {
         _gfx.eventCatchWindow();
         
         // Receive Inputs
         _gfx.controlSystem(_manager.getTop());
-        //_net.receiveData(_manager.getTop());
-
-        // Send new events
-        //_net.sendData(_manager.getTop());
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
@@ -185,5 +199,7 @@ void rtp::Client::systemsLoop()
         _gfx.writeSystem(_manager.getTop());
         _gfx.displaySystem();
     }
+    _receiveData.join();
+    _sendData.join();
     //net.disconnectSystems(r);
 }
