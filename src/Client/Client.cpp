@@ -185,8 +185,10 @@ void rtp::Client::systemsLoop()
         _gfx.animateSystem(_manager.getTop());
         systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
+
         systems.playerBullets(_manager.getTop());
         systems.killDeadEnemies(_manager.getTop());
+        systems.killOutOfBounds(_manager.getTop());
         systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music

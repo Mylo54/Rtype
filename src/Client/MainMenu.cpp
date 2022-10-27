@@ -14,16 +14,28 @@ int btnFuncStart(eng::RegistryManager &manager)
     return 0;
 }
 
-rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co) : _manager(manager), _singlePlayerBtnFct(co)
+
+rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx) : _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     _addBackgrounds(_manager.getTop());
-    eng::Entity bg = _manager.getTop().spawnEntity();
-    _manager.getTop().addComponent<eng::Position>(bg, eng::Position(75, 800, 0));
-    _manager.getTop().addComponent<eng::Drawable>(bg, eng::Drawable("assets/terre.png"));
-    _manager.getTop().getComponents<eng::Drawable>()[bg.getId()].value().sprite.setScale(2, 2);
+    _addEarth(_manager.getTop());
+    
+}
+
+void rtp::MainMenu::_addEarth(eng::Registry &reg)
+{
+    eng::Entity bg = reg.spawnEntity();
+    reg.addComponent<eng::Velocity>(bg, eng::Velocity(0, 0, 35));
+
+    reg.addComponent<eng::Position>(bg, eng::Position(1920 / 2, 1300, 0));
+    reg.addComponent<eng::Drawable>(bg, eng::Drawable("assets/terre.png"));
+    reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.setScale(2, 2);
+    int x = reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.getTexture()->getSize().x / 2;
+    int y = reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.getTexture()->getSize().y / 2;
+    reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.setOrigin(x, y);
 }
 
 void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
@@ -108,8 +120,9 @@ void rtp::MainMenu::_addButtonExit(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
+    std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
@@ -132,4 +145,10 @@ void rtp::MainMenu::_addButtonSettings(eng::Registry &r)
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
     r.addComponent<eng::Position>(btntesxt, eng::Position(990, 700, 0));
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
+}
+
+int rtp::MainMenu::_exitBtn(eng::RegistryManager &reg)
+{
+    this->_gfx.closeWindow();
+    return (0);
 }

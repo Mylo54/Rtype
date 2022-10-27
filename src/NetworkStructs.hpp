@@ -45,7 +45,8 @@ namespace rtp
         POSITION,
         VELOCITY,
         ENEMY_STATS,
-        PLAYER_STATS
+        PLAYER_STATS,
+        BONUS
     };
 
     typedef struct payload {
