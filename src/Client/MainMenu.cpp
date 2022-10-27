@@ -20,6 +20,10 @@ rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::Re
     _setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     _addBackgrounds(_manager.getTop());
+    eng::Entity bg = _manager.getTop().spawnEntity();
+    _manager.getTop().addComponent<eng::Position>(bg, eng::Position(75, 800, 0));
+    _manager.getTop().addComponent<eng::Drawable>(bg, eng::Drawable("assets/terre.png"));
+    _manager.getTop().getComponents<eng::Drawable>()[bg.getId()].value().sprite.setScale(2, 2);
 }
 
 void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
@@ -69,51 +73,63 @@ void rtp::MainMenu::_addButtons(eng::Registry &r)
 void rtp::MainMenu::_addButtonStartLocal(eng::Registry &r)
 {
     eng::Entity btn = r.spawnEntity();
+    eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
-    r.addComponent<eng::Position>(btn, eng::Position(100, 100, 0));
+    r.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Singleplayer", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
+    r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Singleplayer", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btntesxt, eng::Position(720, 500, 0));
+
 }
 
 void rtp::MainMenu::_addButtonMultiplayer(eng::Registry &r)
 {
     eng::Entity btn = r.spawnEntity();
+    eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
-    r.addComponent<eng::Position>(btn, eng::Position(100, 250, 0));
+    r.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Multiplayer", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
+    r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Multiplayer", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btntesxt, eng::Position(720, 600, 0));
+
 }
 
 void rtp::MainMenu::_addButtonExit(eng::Registry &r)
 {
     eng::Entity btn = r.spawnEntity();
+    eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
-    r.addComponent<eng::Position>(btn, eng::Position(100, 400, 0));
+    r.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
-    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Quit Games", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
+    r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Quit Games", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btntesxt, eng::Position(720, 700, 0));
+
+    
 }
 
 void rtp::MainMenu::_addButtonSettings(eng::Registry &r)
 {
     eng::Entity btn = r.spawnEntity();
+    eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
-    r.addComponent<eng::Position>(btn, eng::Position(370, 400, 0));
+    r.addComponent<eng::Position>(btn, eng::Position(970, 700, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
-    r.addComponent<eng::Writable>(btn, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
+    r.addComponent<eng::Position>(btntesxt, eng::Position(990, 700, 0));
+    r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
 }
