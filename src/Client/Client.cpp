@@ -169,7 +169,6 @@ void rtp::Client::systemsLoop()
     _net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
 
 
-
     while (_gfx.windowOpen()) {
         _gfx.eventCatchWindow();
         

@@ -63,7 +63,6 @@ void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
         if (ennemies[i].has_value() && positions[i].has_value())
             if (ennemies[i].value().health <= 0) {
                 if (rand() % 5 == 0) {
-                    std::cout << "Bonus loot" << std::endl;
                     spawnBonus(r, positions[i].value().x, positions[i].value().y);
                 }
                 r.killEntity(eng::Entity(i));

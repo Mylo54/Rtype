@@ -37,6 +37,7 @@ void rtp::Game::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.registerComponents(eng::SparseArray<rtp::Bonus>());
 }
 
 void rtp::Game::_addMusic(eng::Registry &reg, std::string filepath)
