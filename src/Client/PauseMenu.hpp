@@ -19,11 +19,12 @@
 #include "../ClientSystems/NetworkSystems.hpp"
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
+#include "MainMenu.hpp"
 
 namespace rtp {
     class PauseMenu {
         public:
-            PauseMenu(eng::RegistryManager &manager);
+            PauseMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx);
             ~PauseMenu();
 
         protected:
@@ -33,9 +34,12 @@ namespace rtp {
             void _addSettingsButton(eng::Registry &r);
             void _addMainMenuButton(eng::Registry &r);
             void _addExitButton(eng::Registry &r);
+            void _addBackgrounds(eng::Registry &reg);
+            int _exitBtn(eng::RegistryManager &reg);
         private:
             eng::RegistryManager &_manager;
-            std::function<int(eng::RegistryManager &)> _singlePlayerBtnFct;
+            std::function<int(eng::RegistryManager &)> _gameBtnFct;
+            eng::GraphicSystems &_gfx;
     };
 }
 
