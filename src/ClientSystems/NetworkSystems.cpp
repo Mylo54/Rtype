@@ -182,9 +182,9 @@ void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
     float scale = 1;
     if (type == 0) {
         scale = 1;
-        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/bonus.png", 1, sf::IntRect(0, 0, 50, 50), 0.010));
+        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/bonus.png", 1, sf::IntRect(0, 0, 50, 50), 0.010));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(16 * scale, 16 * scale));
-        r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
+        r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
 }
 
