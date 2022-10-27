@@ -20,6 +20,10 @@ rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::Re
     _setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     _addBackgrounds(_manager.getTop());
+    eng::Entity bg = _manager.getTop().spawnEntity();
+    _manager.getTop().addComponent<eng::Position>(bg, eng::Position(75, 800, 0));
+    _manager.getTop().addComponent<eng::Drawable>(bg, eng::Drawable("assets/terre.png"));
+    _manager.getTop().getComponents<eng::Drawable>()[bg.getId()].value().sprite.setScale(2, 2);
 }
 
 void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
