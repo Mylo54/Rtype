@@ -8,7 +8,9 @@
 #include "Client.hpp"
 
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
+_gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
+_net("127.0.0.1", 3303, _socket, _gfx.getDelta())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -145,33 +147,32 @@ void test()
     std::cout << "test" << std::endl;
 }
 
-
 void rtp::Client::dataReception()
 {
-    while (_gfx.windowOpen())
+    while (_gfx.isWindowOpen())
         _net.receiveData(_manager.getTop());
 }
 
 void rtp::Client::dataSend()
 {
-    while (_gfx.windowOpen())
+    while (_gfx.isWindowOpen())
         _net.sendData(_manager.getTop());
 }
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co);
     std::stringstream ss;
-    _gfx.setMaxFrameRate(60);
+    _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
 
-    while (_gfx.windowOpen()) {
+    while (_gfx.isWindowOpen()) {
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        _gfx.controlSystem(_manager.getTop());
+        systems.controlSystem(_manager.getTop());
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
@@ -181,7 +182,7 @@ void rtp::Client::systemsLoop()
         systems.positionSystem(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());
-        _gfx.buttonStateSystem(_manager.getTop());
+        systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
         systems.playerBullets(_manager.getTop());
         systems.killDeadEnemies(_manager.getTop());
@@ -190,11 +191,11 @@ void rtp::Client::systemsLoop()
         // Display & play sounds/music
         systems.playMusicSystem(_manager.getTop());
         systems.playSoundSystem(_manager.getTop());
-        _gfx.clearSystem();
-        _gfx.backgroundSystem(_manager.getTop());
+        _gfx.clear();
+        systems.backgroundSystem(_manager.getTop());
         _gfx.drawSystem(_manager.getTop());
         _gfx.writeSystem(_manager.getTop());
-        _gfx.displaySystem();
+        _gfx.display();
     }
     if (_receiveData.joinable())
         _receiveData.join();
