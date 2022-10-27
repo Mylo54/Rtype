@@ -11,7 +11,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "../NetworkStructs.hpp"
-#include "../Engine/Registry.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Components/Components.hpp"
 #include <mutex>
 #include <vector>

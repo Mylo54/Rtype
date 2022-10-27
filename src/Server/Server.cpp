@@ -111,8 +111,8 @@ void rtp::Server::_addEnemy(eng::Registry &r)
 {
     eng::Entity enm = r.spawnEntity();
 
-    r.addComponent<rtp::Position>(enm, rtp::Position(1920, rand() % 1080, 0));
-    r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
+    r.addComponent<eng::Position>(enm, eng::Position(1920, rand() % 1080, 0));
+    r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
     r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
     r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
     r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
@@ -206,8 +206,8 @@ void rtp::Server::systemsLoop()
 
 void rtp::Server::_setupRegistry(eng::Registry &reg)
 {
-    reg.registerComponents(eng::SparseArray<rtp::Position>());
-    reg.registerComponents(eng::SparseArray<rtp::Velocity>());
+    reg.registerComponents(eng::SparseArray<eng::Position>());
+    reg.registerComponents(eng::SparseArray<eng::Velocity>());
     reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
@@ -223,8 +223,8 @@ void rtp::Server::_addPlayer(eng::Registry &r)
 {
     eng::Entity player = r.spawnEntity();
 
-    r.addComponent<rtp::Position>(player, rtp::Position(200, 540, 0));
-    r.addComponent<rtp::Velocity>(player, rtp::Velocity(0, 0));
+    r.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
+    r.addComponent<eng::Velocity>(player, eng::Velocity(0, 0));
     r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(_nPlayer));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
     r.addComponent<rtp::Synced>(player, rtp::Synced(player.getId()));

@@ -20,8 +20,8 @@ rtp::GraphicsSystems::~GraphicsSystems()
 
 void rtp::GraphicsSystems::drawSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &sprites = r.getComponents<Drawable>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &sprites = r.getComponents<eng::Drawable>();
 
     // Draw & update sheets
     for (int i = 0; i < positions.size() && i < sprites.size(); i++) {
@@ -38,7 +38,7 @@ void rtp::GraphicsSystems::drawSystem(eng::Registry &r)
 void rtp::GraphicsSystems::backgroundSystem(eng::Registry &r)
 {
     auto &bgs = r.getComponents<Background>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
         auto &pos = poss[i];
@@ -55,8 +55,8 @@ void rtp::GraphicsSystems::backgroundSystem(eng::Registry &r)
 
 void rtp::GraphicsSystems::writeSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &writables = r.getComponents<Writable>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &writables = r.getComponents<eng::Writable>();
 
     for (int i = 0; i < positions.size() && i < writables.size(); i++) {
         auto &pos = positions[i];
@@ -89,8 +89,8 @@ void rtp::GraphicsSystems::eventCatchWindow()
 void rtp::GraphicsSystems::buttonStateSystem(eng::Registry &r)
 {
     auto &buttons = r.getComponents<Button>();
-    auto &positions = r.getComponents<Position>();
-    auto &sprite = r.getComponents<Drawable>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &sprite = r.getComponents<eng::Drawable>();
     auto mousePos = sf::Mouse::getPosition(_w);
 
     for (int i = 0; i < buttons.size(); i++) {
@@ -199,7 +199,7 @@ sf::Time &rtp::GraphicsSystems::getDelta()
 */
 void rtp::GraphicsSystems::animateSystem(eng::Registry &r)
 {
-    auto &sprites = r.getComponents<Drawable>();
+    auto &sprites = r.getComponents<eng::Drawable>();
 
     for (int i = 0; i < sprites.size(); i++) {
         auto &spr = sprites[i];

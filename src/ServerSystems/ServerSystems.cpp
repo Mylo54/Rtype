@@ -21,8 +21,8 @@ rtp::ServerSystems::~ServerSystems()
 
 void rtp::ServerSystems::positionSystem(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
-    auto &velocities = r.getComponents<Velocity>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &velocities = r.getComponents<eng::Velocity>();
 
     for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
         auto &pos = positions[i];
@@ -37,7 +37,7 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
 
 void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 {
-    auto &velocities = r.getComponents<Velocity>();
+    auto &velocities = r.getComponents<eng::Velocity>();
     auto &controllables = r.getComponents<Controllable>();
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
@@ -71,7 +71,7 @@ int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
 
 void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)
 {
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < poss.size(); i++) {
         if (poss[i].has_value()) {

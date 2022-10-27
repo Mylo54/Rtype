@@ -8,14 +8,24 @@
 #include "NetworkSystems.hpp"
 
 rtp::NetworkSystems::NetworkSystems(std::string address, int port,
-boost::asio::ip::udp::socket &socket, int mySyncId, sf::Time &delta):
-_socket(socket), _mySyncId(mySyncId), _delta(delta)
+boost::asio::ip::udp::socket &socket, sf::Time &delta):
+_socket(socket), _delta(delta)
 {
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
 }
 
 rtp::NetworkSystems::~NetworkSystems()
 {
+}
+
+void rtp::NetworkSystems::setSyncId(int id)
+{
+    _mySyncId = id;
+}
+
+void rtp::NetworkSystems::setDelta(sf::Time &delta)
+{
+    _delta = delta;
 }
 
 void rtp::NetworkSystems::sendData(eng::Registry &r)
@@ -69,27 +79,27 @@ float midlerp(float a, float b)
     return a + 0.5 * (b - a);
 }
 
-void interpolatePos(eng::Registry &r, int e, rtp::Position nP)
+void interpolatePos(eng::Registry &r, int e, eng::Position nP)
 {
     try {
-        auto p = r.getComponents<rtp::Position>()[e].value();
+        auto p = r.getComponents<eng::Position>()[e].value();
 
-        r.emplaceComponent<rtp::Position>(eng::Entity(e),
-        rtp::Position(midlerp(p.x, nP.x), midlerp(p.y, nP.y), midlerp(p.z, nP.z)));
+        r.emplaceComponent<eng::Position>(eng::Entity(e),
+        eng::Position(midlerp(p.x, nP.x), midlerp(p.y, nP.y), midlerp(p.z, nP.z)));
     } catch (std::bad_optional_access &error) {
-        r.addComponent<rtp::Position>(eng::Entity(e), rtp::Position(nP.x, nP.y, nP.z));
+        r.addComponent<eng::Position>(eng::Entity(e), eng::Position(nP.x, nP.y, nP.z));
     }
 }
 
-void interpolateVel(eng::Registry &r, int e, rtp::Velocity nP)
+void interpolateVel(eng::Registry &r, int e, eng::Velocity nP)
 {
     try {
-        auto p = r.getComponents<rtp::Velocity>()[e].value();
+        auto p = r.getComponents<eng::Velocity>()[e].value();
 
-        r.emplaceComponent<rtp::Velocity>(eng::Entity(e),
-        rtp::Velocity(midlerp(p.x, nP.x), midlerp(p.y, nP.y)));
+        r.emplaceComponent<eng::Velocity>(eng::Entity(e),
+        eng::Velocity(midlerp(p.x, nP.x), midlerp(p.y, nP.y)));
     } catch (std::bad_optional_access &error) {
-        r.addComponent<rtp::Velocity>(eng::Entity(e), rtp::Velocity(nP.x, nP.y));
+        r.addComponent<eng::Velocity>(eng::Entity(e), eng::Velocity(nP.x, nP.y));
     }
 }
 
@@ -119,9 +129,9 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
         }
         if (_dataBuffer[0].COMPONENT_NAME == POSITION)
             //r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
-            interpolatePos(r, e, Position(data.valueA, data.valueB, data.valueC));
+            interpolatePos(r, e, eng::Position(data.valueA, data.valueB, data.valueC));
         if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
-            r.emplaceComponent<Velocity>(eng::Entity(e), Velocity(data.valueA, data.valueB));
+            r.emplaceComponent<eng::Velocity>(eng::Entity(e), eng::Velocity(data.valueA, data.valueB));
         if (data.COMPONENT_NAME == ENEMY_STATS) {
             r.emplaceComponent<EnemyStats>(eng::Entity(e), EnemyStats(data.valueB, data.valueA));
             if (toBuild)
@@ -160,9 +170,9 @@ void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
     float scale = 1;
     if (type == 0) {
         scale = 3;
-        r.emplaceComponent<Drawable>(eng::Entity(e), Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
-        r.getComponents<Drawable>()[e].value().sprite.setScale(scale, scale);
+        r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
 }
 
@@ -190,7 +200,7 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
         rect.top = 98;
     if (playerId == 4)
         rect.top = 147;
-    r.addComponent<rtp::Drawable>(eng::Entity(e), rtp::Drawable("assets/players.png", 1, rect, 0.10));
+    r.addComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/players.png", 1, rect, 0.10));
 
     std::stringstream ss;
     ss << "Player " << playerId << " joined the game!";
@@ -214,7 +224,7 @@ void rtp::NetworkSystems::disconnectSystems(eng::Registry &r)
     }
 }
 
-void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::optional<rtp::Writable> &wrt,  rtp::NetworkSystems::ChatBoxStyle style)
+void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::optional<eng::Writable> &wrt,  rtp::NetworkSystems::ChatBoxStyle style)
 {
     if (wrt.has_value()) {
         wrt.value()._txt.setStyle(sf::Text::Bold);
@@ -224,7 +234,7 @@ void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::op
 
 void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::string name,  rtp::NetworkSystems::ChatBoxStyle style)
 {
-    auto &writables = r.getComponents<Writable>();
+    auto &writables = r.getComponents<eng::Writable>();
 
     for (int i = 0; i < writables.size(); i++) {
         auto &wrt = writables[i];
@@ -244,8 +254,8 @@ void rtp::NetworkSystems::setText(eng::Registry &r, std::string message, std::st
 
 void rtp::NetworkSystems::writeInChatBox(eng::Registry &r, std::string message, rtp::NetworkSystems::ChatBoxStyle style)
 {
-    auto &writables = r.getComponents<Writable>();
-    auto &positions = r.getComponents<Position>();
+    auto &writables = r.getComponents<eng::Writable>();
+    auto &positions = r.getComponents<eng::Position>();
 
     // Move all chat line up and change their name
     for (int i = 5; i > 0; i--) {
@@ -277,6 +287,71 @@ void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
 {
     eng::Entity chatBox = reg.spawnEntity();
 
-    reg.addComponent<rtp::Writable>(chatBox, rtp::Writable("ChatBox1"));
-    reg.addComponent<rtp::Position>(chatBox, rtp::Position(0, 980, 0));
+    reg.addComponent<eng::Writable>(chatBox, eng::Writable("ChatBox1"));
+    reg.addComponent<eng::Position>(chatBox, eng::Position(0, 980, 0));
+}
+
+std::vector<int> rtp::NetworkSystems::connect(int port)
+{
+    boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
+    boost::array<connectPayload_t, 1> dataRec;
+    std::vector<int> res;
+    boost::asio::io_context ioContext;
+
+    //ICI adress
+
+    dataTbs[0].addr1 = 0;
+    dataTbs[0].addr2 = 0;
+    dataTbs[0].addr3 = 0;
+    dataTbs[0].addr4 = 0;
+    dataTbs[0].port = port;
+
+    //connection
+
+    boost::asio::ip::tcp::resolver resolver(ioContext);
+
+    std::string serverName = "localhost";
+
+    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::iterator end;
+
+    boost::asio::ip::tcp::socket socketTCP{ioContext};
+    boost::system::error_code error;
+
+    try {
+
+        boost::system::error_code error = boost::asio::error::host_not_found;
+        socketTCP.connect(*(resolver.resolve(query)), error);
+        if (error) {
+            std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
+        } else {
+            std::cout << "[Client][Connect]: connect success" << std::endl;
+
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        res.push_back(1);
+        return (res);
+    }
+
+    boost::asio::write(socketTCP, boost::asio::buffer(dataTbs), error);
+
+    if (error)
+        std::cout << "[Client][Connect]: send failed: " << error.message() << std::endl;
+
+    // getting response from server
+    boost::asio::read(socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+    res.push_back(0);
+    res.push_back(dataRec[0].playerId);
+    res.push_back(dataRec[0].syncId);
+    if (error && error != boost::asio::error::eof) {
+        std::cout << "[Client][Connect]: receive failed: " << error.message() << std::endl;
+    } else {
+        std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+    }
+    _mySyncId = res[2];
+    return (res);
 }

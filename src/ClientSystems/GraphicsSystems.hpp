@@ -9,7 +9,7 @@
 #define GRAPHICSSYSTEMS_HPP_
 
 #include "../Components/Components.hpp"
-#include "../Engine/Registry.hpp"
+#include <EngineCoreSuper/EngineCoreSuper.hpp>
 
 namespace rtp
 {
