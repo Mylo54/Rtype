@@ -22,6 +22,9 @@
 namespace rtp {
     class Game {
         public:
+
+            /// @brief Gamr object constructor
+            /// @param manager reference to registry manager
             Game(eng::RegistryManager &manager);
             ~Game();
 
@@ -34,7 +37,7 @@ namespace rtp {
             
         protected:
             /// @brief Setup the registry with every sparse array needed
-            /// @param r The Registry to setup
+            /// @param reg The Registry to setup
             void _setupRegistry(eng::Registry &reg);
 
             /// @brief Adds a music to the registry

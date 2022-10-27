@@ -20,6 +20,7 @@
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
 #include "MainMenu.hpp"
+#include "PauseMenu.hpp"
 
 namespace rtp {
     class Client {
@@ -45,6 +46,9 @@ namespace rtp {
 
             /// @brief Disconnect the client from the server
             void disconnect();
+
+            void dataReception();
+            void dataSend();
             
         protected:
         private:
@@ -66,6 +70,10 @@ namespace rtp {
             boost::system::error_code _error;
             rtp::NetworkSystems _net;
             rtp::GraphicsSystems _gfx;
+
+
+            std::thread _receiveData;
+            std::thread _sendData;
     };
 }
 
