@@ -24,8 +24,8 @@ void rtp::ServerSystems::spawnBonus(eng::Registry &r, float x, float y)
         float velY = (rand() % 5) - 2;
         int scale = 3;
 
-        r.addComponent<rtp::Position>(bns, rtp::Position(x, y, 0));
-        r.addComponent<rtp::Velocity>(bns, rtp::Velocity(velX, velY));
+        r.addComponent<eng::Position>(bns, eng::Position(x, y, 0));
+        r.addComponent<eng::Velocity>(bns, eng::Velocity(velX, velY));
         r.addComponent<rtp::Bonus>(bns, rtp::Bonus(0));
         r.addComponent<rtp::RectCollider>(bns, rtp::RectCollider(16 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(bns, rtp::Synced(bns.getId()));
@@ -35,7 +35,7 @@ void rtp::ServerSystems::spawnBonus(eng::Registry &r, float x, float y)
 
 void rtp::ServerSystems::bonusCollisions(eng::Registry &r)
 {
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
     auto &players = r.getComponents<PlayerStats>();
 
     for (int i = 0; i < players.size() && i < positions.size(); i++) {
@@ -46,13 +46,14 @@ void rtp::ServerSystems::bonusCollisions(eng::Registry &r)
     }
 }
 
-void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Position &playerPos)
+void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &playerStats, eng::Position &playerPos)
 {
     auto &bonuses = r.getComponents<Bonus>();
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
 
     for (int i = 0; i < bonuses.size() && i < positions.size(); i++)
         if (bonuses[i].has_value() && positions[i].has_value())
-            if (positions[i].value().x > playerStats.) {
-            }
+            // if (positions[i].value().x > playerStats.) {
+            // }
+        {}
 }

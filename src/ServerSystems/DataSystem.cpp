@@ -19,8 +19,8 @@ void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentNa
 
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
-    auto &ps = r.getComponents<Position>();
-    auto &vs = r.getComponents<Velocity>();
+    auto &ps = r.getComponents<eng::Position>();
+    auto &vs = r.getComponents<eng::Velocity>();
     auto &playerStats = r.getComponents<PlayerStats>();
     auto &enemyStats = r.getComponents<EnemyStats>();
     auto &bonus = r.getComponents<Bonus>();

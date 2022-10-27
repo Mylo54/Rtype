@@ -22,8 +22,8 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
         float posY = rand() % 1080;
         int scale = 3;
 
-        r.addComponent<rtp::Position>(enm, rtp::Position(1919, posY, 0));
-        r.addComponent<rtp::Velocity>(enm, rtp::Velocity(-5, 0));
+        r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
+        r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
         r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
         r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
@@ -34,9 +34,9 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
 void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
     auto &rcts = r.getComponents<RectCollider>();
-    auto &p = r.getComponents<Position>()[blt.getId()].value();
+    auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
     for (int i = 0; i < enms.size() && i < poss.size() && i < rcts.size(); i++) {
@@ -57,7 +57,7 @@ void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
 {
     auto &ennemies = r.getComponents<EnemyStats>();
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
 
     for (int i = 0; i < ennemies.size() && i < positions.size(); i++)
         if (ennemies[i].has_value() && positions[i].has_value())

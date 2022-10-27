@@ -104,7 +104,7 @@ namespace rtp {
             void collisions(eng::Registry &r);
 
             void bonusCollisions(eng::Registry &r);
-            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, rtp::Position &playerPos);
+            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, eng::Position &playerPos);
             void enemyCollisions(eng::Registry &r);
             void enemyCollision(eng::Registry &r);
         protected:

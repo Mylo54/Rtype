@@ -387,8 +387,8 @@ void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
 
 void rtp::ClientSystems::killOutOfBounds(eng::Registry &r)
 {
-    auto &poss = r.getComponents<Position>();
-    auto &drawables = r.getComponents<Drawable>();
+    auto &poss = r.getComponents<eng::Position>();
+    auto &drawables = r.getComponents<eng::Drawable>();
 
     for (int i = 0; i < poss.size() && i < drawables.size(); i++) {
         if (poss[i].has_value() && drawables[i].has_value()) {

@@ -17,11 +17,8 @@
 #include "PlayerStats.hpp"
 #include "Synced.hpp"
 #include "Button.hpp"
-<<<<<<< HEAD
 #include "Music.hpp"
 #include "Bonus.hpp"
-=======
->>>>>>> 4d519959be865f597a6899715c86df84752681bb
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>

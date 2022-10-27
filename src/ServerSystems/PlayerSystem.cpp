@@ -10,8 +10,8 @@
 // Max speed should be defined elsewhere...
 void rtp::ServerSystems::limitPlayer(eng::Registry &r)
 {
-    auto &pos = r.getComponents<Position>();
-    auto &ves = r.getComponents<Velocity>();
+    auto &pos = r.getComponents<eng::Position>();
+    auto &ves = r.getComponents<eng::Velocity>();
     auto &pls = r.getComponents<PlayerStats>();
     float maxSpeed = 15;
 
@@ -38,7 +38,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
     auto &playerStats = r.getComponents<PlayerStats>();
-    auto &positions = r.getComponents<Position>();
+    auto &positions = r.getComponents<eng::Position>();
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
@@ -50,8 +50,8 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
             
             ctrl.value().shoot = false;
             ctrl.value().hasShot = true;
-            r.addComponent(bullet, rtp::Velocity(15, 0));
-            r.addComponent(bullet, rtp::Position(pos.x + 65, pos.y + 25, pos.z));
+            r.addComponent(bullet, eng::Velocity(15, 0));
+            r.addComponent(bullet, eng::Position(pos.x + 65, pos.y + 25, pos.z));
             r.addComponent(bullet, rtp::Bullet(2));
         }
     }
@@ -61,7 +61,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
 void rtp::ServerSystems::playerBullets(eng::Registry &r)
 {
     auto &blts = r.getComponents<Bullet>();
-    auto &poss = r.getComponents<Position>();
+    auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < blts.size() && i < poss.size(); i++) {
         if (blts[i].has_value() && poss[i].has_value()) {
