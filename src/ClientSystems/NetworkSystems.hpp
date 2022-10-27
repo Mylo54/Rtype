@@ -84,6 +84,11 @@ namespace rtp
             /// @param e The id of the entity
             void _completeEnemy(eng::Registry &r, int e);
 
+            /// @brief Completes a Bonus entity received by the server
+            /// @param r The registry containing the entity
+            /// @param e The id of the entity
+            void _completeBonus(eng::Registry &r, int e);
+
             /// @brief Completes a player entity received by the server
             /// @param r The registry containing the entity
             /// @param e The id of the entity

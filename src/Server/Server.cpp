@@ -155,6 +155,7 @@ void rtp::Server::systemsLoop()
     rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
     systems.setEnemyRate(5);
+    systems.setBonusRate(17);
 
     _setupRegistry(r);
     _cout.lock();
@@ -189,6 +190,7 @@ void rtp::Server::systemsLoop()
         systems.killDeadEnemies(r);
         systems.killOutOfBounds(r);
         systems.spawnEnemies(r);
+        // systems.spawnBonus(r);
 
         // Send the new data
         systems.sendData(r);
@@ -213,6 +215,7 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::Bullet>());
+    reg.registerComponents(eng::SparseArray<rtp::Bonus>());
 }
 
 // Player Id will be stored inside playerstats later...
