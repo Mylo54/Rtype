@@ -199,7 +199,9 @@ void rtp::Client::systemsLoop()
         _gfx.writeSystem(_manager.getTop());
         _gfx.displaySystem();
     }
-    _receiveData.join();
-    _sendData.join();
+    if (_receiveData.joinable())
+        _receiveData.join();
+    if (_sendData.joinable())
+        _sendData.join();
     //net.disconnectSystems(r);
 }
