@@ -10,6 +10,8 @@ jobs:
         uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
         run: conan profile new default --detect
+      - name: pull EngineCoreSuper submodule
+        run:  git submodule update --init --recursive
       - name: build
         run: |
           mkdir build
