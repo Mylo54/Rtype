@@ -163,11 +163,9 @@ void rtp::Client::systemsLoop()
     rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket);
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co);
-    eng::Registry &r = _manager.getTop();
     std::stringstream ss;
     _gfx.setMaxFrameRate(60);
-    _net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
-
+    _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
 
     while (_gfx.windowOpen()) {
         _gfx.eventCatchWindow();
@@ -185,10 +183,11 @@ void rtp::Client::systemsLoop()
         _gfx.animateSystem(_manager.getTop());
         _gfx.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
-        systems.playerBullets(r);
-        systems.killDeadEnemies(r);
-        systems.killOutOfBounds(r);
-        systems.killBullets(r);
+
+        systems.playerBullets(_manager.getTop());
+        systems.killDeadEnemies(_manager.getTop());
+        systems.killOutOfBounds(_manager.getTop());
+        systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music
         systems.playMusicSystem(_manager.getTop());
@@ -199,7 +198,9 @@ void rtp::Client::systemsLoop()
         _gfx.writeSystem(_manager.getTop());
         _gfx.displaySystem();
     }
-    _receiveData.join();
-    _sendData.join();
+    if (_receiveData.joinable())
+        _receiveData.join();
+    if (_sendData.joinable())
+        _sendData.join();
     //net.disconnectSystems(r);
 }
