@@ -180,7 +180,7 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 float z = pos.value().z;
                 sht.value().shoot = false;
                 eng::Entity bullet = r.spawnEntity();
-                r.addComponent(bullet, eng::Velocity(15, 0));
+                r.addComponent(bullet, eng::Velocity(300, 0));
                 r.addComponent(bullet, eng::Position(x, y, z));
                 r.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
                 r.addComponent(bullet, eng::Sound("assets/fire.wav", true));
