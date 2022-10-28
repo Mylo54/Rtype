@@ -24,7 +24,7 @@
 namespace rtp {
     class PauseMenu {
         public:
-            PauseMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx);
+            PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx);
             ~PauseMenu();
 
         protected:

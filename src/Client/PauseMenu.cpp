@@ -7,12 +7,18 @@
 
 #include "PauseMenu.hpp"
 
-rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx) : _manager(manager), _gameBtnFct(co), _gfx(gfx)
+rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx) : _manager(manager), _gfx(gfx)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
     _addButton(_manager.getTop());
     _addBackgrounds(_manager.getTop());
+}
+
+int _resumeBtn(eng::RegistryManager &reg)
+{
+    reg.popRegistry();
+    return (0);
 }
 
 void rtp::PauseMenu::_addBackgrounds(eng::Registry &reg)
@@ -62,7 +68,7 @@ void rtp::PauseMenu::_addResumeButton(eng::Registry &r)
     int scale = 4;
 
     r.addComponent<eng::Position>(btn, eng::Position(832, 442, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(_gameBtnFct, 0, 0, 128 * 2, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(_resumeBtn, 0, 0, 128 * 2, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
@@ -81,8 +87,8 @@ void rtp::PauseMenu::_addSettingsButton(eng::Registry &r)
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
-    r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "SETTINGS", "assets/MetroidPrimeHunters.ttf"));
-    r.addComponent<eng::Position>(btntext, eng::Position(890, 494, 0));
+    r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "OPTIONS", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btntext, eng::Position(897, 494, 0));
 }
 
 void rtp::PauseMenu::_addMainMenuButton(eng::Registry &r)
@@ -112,8 +118,8 @@ void rtp::PauseMenu::_addExitButton(eng::Registry &r)
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
-    r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "EXIT", "assets/MetroidPrimeHunters.ttf"));
-    r.addComponent<eng::Position>(btntext, eng::Position(930, 592, 0));
+    r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "QUIT GAME", "assets/MetroidPrimeHunters.ttf"));
+    r.addComponent<eng::Position>(btntext, eng::Position(882, 592, 0));
 }
 
 int rtp::PauseMenu::_exitBtn(eng::RegistryManager &reg)

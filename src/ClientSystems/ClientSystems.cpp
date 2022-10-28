@@ -99,7 +99,7 @@ void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::controlSystem(eng::Registry &r)
+void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &manager, eng::GraphicSystems &gfx)
 {
     if (_isWindowFocused == false) {
         return;
@@ -128,6 +128,10 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+
+            // pause menu
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                rtp::PauseMenu pm(manager, gfx);
         }
     }
 }
