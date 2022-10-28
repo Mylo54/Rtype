@@ -90,3 +90,12 @@ void rtp::ServerSystems::collisions(eng::Registry &r)
     bonusCollisions(r);
     enemyCollisions(r);
 }
+
+bool rtp::ServerSystems::isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2)
+{
+    if (pos1.x > (pos2.x + rect2.width)) return false;
+    if ((pos1.x + rect1.width) < pos2.x) return false;
+    if (pos1.y > (pos2.y + rect2.height)) return false;
+    if ((pos1.y + rect1.height) < pos2.y) return false;
+    return true;
+}

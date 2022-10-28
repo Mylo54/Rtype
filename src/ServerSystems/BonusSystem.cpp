@@ -33,23 +33,39 @@ void rtp::ServerSystems::bonusCollisions(eng::Registry &r)
 {
     auto &positions = r.getComponents<eng::Position>();
     auto &players = r.getComponents<PlayerStats>();
+    auto &colliders = r.getComponents<RectCollider>();
 
-    for (int i = 0; i < players.size() && i < positions.size(); i++) {
-        if (players[i].has_value() && positions[i].has_value())
-            auto &stats = players[i].value();
-            auto &pos = positions[i].value();
-            bonusCollision(r, players[i].value(), positions[i].value());
+    for (int i = 0; i < players.size() && i < positions.size() && i < colliders.size(); i++) {
+        if (players[i].has_value() && positions[i].has_value() && colliders[i].has_value()) {
+            bonusCollision(r, players[i].value(), positions[i].value(), colliders[i].value());
+        }
     }
 }
 
-void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &playerStats, eng::Position &playerPos)
+void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &playerStats, eng::Position &playerPos, rtp::RectCollider & playerRect)
 {
     auto &bonuses = r.getComponents<Bonus>();
     auto &positions = r.getComponents<eng::Position>();
+    auto &colliders = r.getComponents<rtp::RectCollider>();
 
-    for (int i = 0; i < bonuses.size() && i < positions.size(); i++)
-        if (bonuses[i].has_value() && positions[i].has_value())
-            // if (positions[i].value().x > playerStats.) {
-            // }
-        {}
+    for (int i = 0; i < bonuses.size() && i < positions.size(); i++) {
+        if (bonuses[i].has_value() && positions[i].has_value()) {
+            auto &bonus = bonuses[i].value();
+            auto &bonusPos = positions[i].value();
+            auto &bonusRect = colliders[i].value();
+            if (isColliding(bonusPos, bonusRect, playerPos, playerRect))
+                collectBonus(r, playerStats, bonus, i);
+        }
+    }
+}
+
+void rtp::ServerSystems::collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID)
+{
+    std::cout << "Collecting bonus of type " << bonus.type << std::endl;
+    // Changes on player stats
+    if (bonus.type == 0)
+        playerStats.damage += 1;
+    // Destroy bonus
+    r.killEntity(bonusID);
+    std::cout << "Player damages : " << playerStats.damage << std::endl;
 }

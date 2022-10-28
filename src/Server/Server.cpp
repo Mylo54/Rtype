@@ -190,6 +190,7 @@ void rtp::Server::systemsLoop()
         systems.killDeadEnemies(r);
         systems.killOutOfBounds(r);
         systems.spawnEnemies(r);
+        systems.collisions(r);
         // systems.spawnBonus(r);
 
         // Send the new data
@@ -228,6 +229,7 @@ void rtp::Server::_addPlayer(eng::Registry &r)
     r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(_nPlayer));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
     r.addComponent<rtp::Synced>(player, rtp::Synced(player.getId()));
+    r.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
     _lastPlayerSyncId = player.getId();
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Player " << _nPlayer << "has joinded the game!" << std::endl;

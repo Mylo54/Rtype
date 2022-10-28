@@ -104,9 +104,17 @@ namespace rtp {
             void collisions(eng::Registry &r);
 
             void bonusCollisions(eng::Registry &r);
-            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, eng::Position &playerPos);
+            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, eng::Position &playerPos, rtp::RectCollider & playerRect);
             void enemyCollisions(eng::Registry &r);
             void enemyCollision(eng::Registry &r);
+            /// @brief A system checking if 2 entities are colliding
+            /// @param pos1 Position of the first entity
+            /// @param rect1 RectCollider of the first entity
+            /// @param pos2 Position of the second entity
+            /// @param rect2 RectCollider of the second entity
+            /// @return true if colliding, else otherwise
+            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
+            void collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID);
         protected:
         private:
             /// @brief A method that gets a synced entity id

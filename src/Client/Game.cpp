@@ -59,6 +59,7 @@ eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    reg.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
 
     std::cout << "You are player " << playerId << std::endl;
     return player;
