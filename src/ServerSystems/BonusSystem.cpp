@@ -61,11 +61,9 @@ void rtp::ServerSystems::bonusCollision(eng::Registry &r, rtp::PlayerStats &play
 
 void rtp::ServerSystems::collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID)
 {
-    std::cout << "Collecting bonus of type " << bonus.type << std::endl;
     // Changes on player stats
     if (bonus.type == 0)
         playerStats.damage += 1;
     // Destroy bonus
     r.killEntity(bonusID);
-    std::cout << "Player damages : " << playerStats.damage << std::endl;
 }
