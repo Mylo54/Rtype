@@ -10,15 +10,10 @@
 rtp::Client::Client(int &port, std::string portStr, std::string &serverAddr):
 _port(boost::asio::ip::port_type(port)),
 _socketTCP(_ioContext),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(6606)}),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(6608)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
 _net(serverAddr, boost::asio::ip::port_type(port), _socket, _gfx.getDelta())
 {
-    // _manager.addRegistry("R1");
-    // _setupRegistry(_manager.getTop());
-    // _addBackgrounds(_manager.getTop());
-    // _addScore(_manager.getTop());
-    // _addMusic(_manager.getTop(), "assets/music.ogg");
     //Game game(_manager);
     //MainMenu mm(_manager);
     std::cout << "Entering inside client constructor : " << std::endl;
@@ -173,7 +168,7 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), _serverAddr, _port, _socket, _gfx.isWindowFocused());
+    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), _serverAddr, _port, _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, co, _gfx);
