@@ -27,7 +27,7 @@ namespace rtp {
         public:
             /// @brief Client object constructor
             /// @param port Port of connection to the server
-            Client(boost::asio::ip::port_type port);
+            Client(boost::asio::ip::port_type &port, std::string &serverAddr);
             ~Client();
 
             /// @brief Run the client
@@ -71,6 +71,8 @@ namespace rtp {
             rtp::NetworkSystems _net;
             eng::GraphicSystems _gfx;
 
+            std::string _serverAddr;
+            std::string _portStr;
 
             std::thread _receiveData;
             std::thread _sendData;

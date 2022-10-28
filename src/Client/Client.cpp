@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(int &port, std::string &serverAddr):
+rtp::Client::Client(boost::asio::ip::port_type &port, std::string &serverAddr):
 _port(port),
 _socketTCP(_ioContext),
 _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
@@ -18,6 +18,7 @@ _net("127.0.0.1", 3303, _socket, _gfx.getDelta())
     //MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
+    _serverAddr = serverAddr;
 }
 
 rtp::Client::~Client()
