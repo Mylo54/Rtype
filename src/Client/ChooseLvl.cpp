@@ -45,6 +45,20 @@ void rtp::ChooseLvl::_addButtons(eng::Registry &r)
     _addButtonLvl3(r);
     _addButtonLvl4(r);
     _addButtonLvlFinal(r);
+    _addBackgrounds(r);
+}
+
+void rtp::ChooseLvl::_addBackgrounds(eng::Registry &reg)
+{
+    eng::Entity bg = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
+    reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+    eng::Entity bg2 = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg2, eng::Position(-50, -50, 0));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/middleground.png"));
+    eng::Entity bg3 = reg.spawnEntity();
+    reg.addComponent<eng::Position>(bg3, eng::Position(-50, -50, 0));
+    reg.addComponent<rtp::Background>(bg3, rtp::Background("assets/background.png"));
 }
 
 void rtp::ChooseLvl::_addButtonLvl1(eng::Registry &r)
