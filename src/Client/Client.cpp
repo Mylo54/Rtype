@@ -174,7 +174,7 @@ void rtp::Client::systemsLoop()
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        systems.controlSystem(_manager.getTop());
+        systems.controlSystem(_manager.getTop(), _manager, _gfx);
 
         // Update data
         systems.controlFireSystem(_manager.getTop());

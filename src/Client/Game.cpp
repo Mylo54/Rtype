@@ -84,7 +84,7 @@ void rtp::Game::_addScore(eng::Registry &reg)
 {
     eng::Entity score = reg.spawnEntity();
 
-    reg.addComponent<eng::Position>(score, eng::Position(1000, 0, 0));
+    reg.addComponent<eng::Position>(score, eng::Position(850, 0, 0));
     reg.addComponent<eng::Writable>(score, eng::Writable("score", "SCORE:000 000", "assets/MetroidPrimeHunters.ttf"));
 }
 

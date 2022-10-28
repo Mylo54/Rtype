@@ -11,6 +11,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
+#include "../Client/PauseMenu.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 
@@ -59,7 +60,7 @@ namespace rtp
 
             /// @brief A system who handles inputs and stores actions
             /// @param r The Registry on which to apply the system
-            void controlSystem(eng::Registry &r);
+            void controlSystem(eng::Registry &r, eng::RegistryManager &manager, eng::GraphicSystems &gfx);
 
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
