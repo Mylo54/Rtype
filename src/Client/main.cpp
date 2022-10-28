@@ -24,14 +24,19 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
 
-    if (argc != 2) {
-        std::cout << "not enough arguments (awaiting ip)" << std::endl;
+    if (argc != 3) {
+        std::cout << "not enough arguments (awaiting ip and port)" << std::endl;
         return (84);
     }
     std::string serverAddr(argv[1]);
-    boost::asio::ip::port_type port = (rand() % 1000) + 3000;
-    std::cout << "DEBUG001 : query serverAddr : {" << serverAddr << "}" << std::endl;
-    rtp::Client client(port, serverAddr);
+    //boost::asio::ip::port_type port = 3305;
+    int port = atoi(argv[2]);
+    std::cout << "DEBUG001 : serverAddr : {" << serverAddr << "} port : " << port << std::endl;
+    std::stringstream out;
+    out << port;
+    std::string portStr = out.str();
+
+    rtp::Client client(port, portStr, serverAddr);
 
     client.run();
     /*

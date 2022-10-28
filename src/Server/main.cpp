@@ -54,7 +54,7 @@ int main(int ac, char **av)
 
 
 
-        boost::asio::ip::port_type port(3303);
+        boost::asio::ip::port_type port(3305);
         rtp::Server srv(port);
         srv.run();
     }

@@ -11,7 +11,9 @@ rtp::NetworkSystems::NetworkSystems(std::string address, int port,
 boost::asio::ip::udp::socket &socket, sf::Time &delta):
 _socket(socket), _delta(delta)
 {
+    std::cout << "CREATING ENDPOINT in client NetworkSystems constructor" << std::endl;
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
+    std::cout << "! FINISHED CREATING ENDPOINT in client NetworkSystems constructor" << std::endl;
 }
 
 rtp::NetworkSystems::~NetworkSystems()
@@ -295,7 +297,7 @@ std::vector<int> rtp::NetworkSystems::connect(int port)
 
     std::string serverName = "localhost";
 
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3305");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
 

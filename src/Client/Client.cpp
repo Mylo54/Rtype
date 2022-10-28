@@ -7,7 +7,7 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type port, std::string &serverAddr): _port(port), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), port}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net(serverAddr, 3303, _socket, _gfx.getDelta())
+rtp::Client::Client(int &port, std::string portStr, std::string &serverAddr): _port(boost::asio::ip::port_type(port)), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(6606)}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net(serverAddr, boost::asio::ip::port_type(port), _socket, _gfx.getDelta())
 {
     // _manager.addRegistry("R1");
     // _setupRegistry(_manager.getTop());
@@ -16,9 +16,11 @@ rtp::Client::Client(boost::asio::ip::port_type port, std::string &serverAddr): _
     // _addMusic(_manager.getTop(), "assets/music.ogg");
     //Game game(_manager);
     //MainMenu mm(_manager);
-    std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
-    std::cout << _socket.local_endpoint().port() << ">" << std::endl;
+    std::cout << "Entering inside client constructor : " << std::endl;
+    std::cout << "My address: <" << _socket.local_endpoint().address() << ":" << _socket.local_endpoint().port() << ">" << std::endl;
+    std::cout << "Server i am trying to connect to address: <" << serverAddr << ":" << port << ">" << std::endl;
     _serverAddr = serverAddr;
+    _portStr = portStr;
 }
 
 rtp::Client::~Client()
@@ -96,7 +98,7 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     //std::string serverName = "localhost";
 
 
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+    boost::asio::ip::tcp::resolver::query query(_serverAddr, _portStr);
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
 
@@ -151,7 +153,7 @@ void test()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), _serverAddr, _port, _socket);
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co);
     eng::Registry &r = _manager.getTop();
