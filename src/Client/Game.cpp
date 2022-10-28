@@ -37,6 +37,7 @@ void rtp::Game::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.registerComponents(eng::SparseArray<rtp::Bonus>());
 }
 
 void rtp::Game::_addMusic(eng::Registry &reg, std::string filepath)
@@ -58,6 +59,7 @@ eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    reg.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
 
     std::cout << "You are player " << playerId << std::endl;
     return player;
@@ -69,7 +71,7 @@ eng::Entity rtp::Game::_addEnemy(eng::Registry &reg)
     float scale = (rand() % 10) + 1;
 
     reg.addComponent<eng::Position>(enemy, eng::Position(1920 + (rand() % 2000), rand() % 1080, 0));
-    reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-5, 0));
+    reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-100, 0));
     reg.addComponent<eng::Drawable>(enemy, eng::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
     reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
@@ -92,13 +94,13 @@ void rtp::Game::_addBackgrounds(eng::Registry &reg)
         eng::Entity bg = reg.spawnEntity();
         reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
         if (i < 2) {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-20, 0));
+            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-400, 0));
             reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
         } else if (i < 4) {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-10, 0));
+            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
             reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
         } else {
-            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-5, 0));
+            reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
             reg.addComponent<rtp::Background>(bg, rtp::Background("assets/background.png"));
         }
     }

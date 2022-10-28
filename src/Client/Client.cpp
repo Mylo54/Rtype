@@ -163,10 +163,12 @@ void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
-    rtp::MainMenu mm(_manager, co);
+    rtp::MainMenu mm(_manager, co, _gfx);
+    //rtp::PauseMenu pm(_manager, co, _gfx);
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+    eng::PhysicSystems ps(_gfx.getDelta());
 
     while (_gfx.isWindowOpen()) {
         _gfx.eventCatchWindow();
@@ -179,13 +181,15 @@ void rtp::Client::systemsLoop()
         systems.controlChatSystem(_manager.getTop());
         systems.controlMovementSystem(_manager.getTop());
         systems.shootSystem(_manager.getTop());
-        systems.positionSystem(_manager.getTop());
+        ps.applyVelocities(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());
         systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
+
         systems.playerBullets(_manager.getTop());
         systems.killDeadEnemies(_manager.getTop());
+        systems.killOutOfBounds(_manager.getTop());
         systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music
@@ -197,9 +201,14 @@ void rtp::Client::systemsLoop()
         _gfx.writeSystem(_manager.getTop());
         _gfx.display();
     }
-    if (_receiveData.joinable())
+    if (_receiveData.joinable()) {
+        boost::array<networkPayload, 1> endmsg = {QUIT};
+        _socket.send_to(boost::asio::buffer(endmsg),
+        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address("127.0.0.1"), _port));
         _receiveData.join();
-    if (_sendData.joinable())
+    }
+    if (_sendData.joinable()) {
         _sendData.join();
+    }
     //net.disconnectSystems(r);
 }

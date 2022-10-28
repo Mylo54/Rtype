@@ -180,7 +180,7 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 float z = pos.value().z;
                 sht.value().shoot = false;
                 eng::Entity bullet = r.spawnEntity();
-                r.addComponent(bullet, eng::Velocity(15, 0));
+                r.addComponent(bullet, eng::Velocity(300, 0));
                 r.addComponent(bullet, eng::Position(x, y, z));
                 r.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
                 r.addComponent(bullet, eng::Sound("assets/fire.wav", true));
@@ -464,6 +464,25 @@ void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
             if (snd.value().toPlay) {
                 snd.value().toPlay = false;
                 snd.value().music->play();
+            }
+        }
+    }
+}
+
+void rtp::ClientSystems::killOutOfBounds(eng::Registry &r)
+{
+    auto &poss = r.getComponents<eng::Position>();
+    auto &drawables = r.getComponents<eng::Drawable>();
+
+    for (int i = 0; i < poss.size() && i < drawables.size(); i++) {
+        if (poss[i].has_value() && drawables[i].has_value()) {
+            auto pos = poss[i].value();
+            auto drw = drawables[i].value();
+            if (!drw.protect) {
+                if (pos.x > 1920 || pos.x < (-1 * drw.sizeX))
+                    r.killEntity(eng::Entity(i));
+                else if (pos.y > 1080 || pos.y < (-1 * drw.sizeY))
+                    r.killEntity(eng::Entity(i));
             }
         }
     }

@@ -125,6 +125,10 @@ namespace rtp
             /// @brief A system who set the state of a button according
             /// @param r The Registry on which to apply the system
             void buttonStateSystem(eng::Registry &r);
+
+            /// @brief Kill entities that are offscreen
+            /// @param r The registry on which to apply the system
+            void killOutOfBounds(eng::Registry &r);
         protected:
         private:
             /// @brief A short system which damage an enemy and destroys bullets

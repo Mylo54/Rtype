@@ -34,16 +34,6 @@ namespace rtp {
             std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
-
-            /// @brief Add a client endpoint
-            /// @param address The IPv4 address of the receiver
-            /// @param port The port of the receiver
-            void addEndpoint(std::string address, int port);
-
-            /// @brief Remove a client endpoint
-            /// @param address The IPv4 address of the receiver
-            /// @param port The port of the receiver
-            void removeEndPoint(std::string address, int port);
             
             /// @brief A system who applies velocities on positions
             /// @param r The Registry on which to apply the system 
@@ -72,7 +62,7 @@ namespace rtp {
             /// @brief A generic funciton that send a boost::array to all stored endpoints
             /// @param data_tbs The data to be sent to all clients
             void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
-            
+
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
@@ -97,7 +87,34 @@ namespace rtp {
             /// (Set the spawnRate with setEnemyRate(float))
             /// @param r The Registry on which to apply the system
             void spawnEnemies(eng::Registry &r);
-        protected:
+
+            /// @brief Set the bonus spawn rate
+            /// @param seconds Each 'seconds' time we spawn a new bonus
+            void setBonusRate(float seconds);
+
+            /// @brief A system which spawns bonuses periodicaly
+            /// (Set the spawnRate with setBonusRate(float))
+            /// @param r The Registry on which to apply the system
+            /// @param x The horizontal origin position of the bonus
+            /// @param y The vertical origin position of the bonus
+            void spawnBonus(eng::Registry &r, float x, float y);
+
+            /// @brief A system managing collisions
+            /// @param r The Registry on which to apply the system
+            void collisions(eng::Registry &r);
+
+            void bonusCollisions(eng::Registry &r);
+            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, eng::Position &playerPos, rtp::RectCollider & playerRect);
+            void enemyCollisions(eng::Registry &r);
+            void enemyCollision(eng::Registry &r);
+            /// @brief A system checking if 2 entities are colliding
+            /// @param pos1 Position of the first entity
+            /// @param rect1 RectCollider of the first entity
+            /// @param pos2 Position of the second entity
+            /// @param rect2 RectCollider of the second entity
+            /// @return true if colliding, else otherwise
+            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
+            void collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID);
         protected:
         private:
             /// @brief A method that gets a synced entity id
@@ -132,6 +149,12 @@ namespace rtp {
 
             /// @brief The timer until the next enemy spawns
             float _enemyTimer;
+
+            /// @brief The time to wait between each bonus spawn
+            float _bonusRate;
+
+            /// @brief The timer until the next bonus spawns
+            float _bonusTimer;
 
             /// @brief data sending socket
             boost::asio::ip::udp::socket &_socket;
