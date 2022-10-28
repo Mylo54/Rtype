@@ -102,11 +102,17 @@ namespace rtp {
             /// @brief A system managing collisions
             /// @param r The Registry on which to apply the system
             void collisions(eng::Registry &r);
-
-            void bonusCollisions(eng::Registry &r);
-            void bonusCollision(eng::Registry &r, rtp::PlayerStats &plStats, eng::Position &playerPos, rtp::RectCollider & playerRect);
-            void enemyCollisions(eng::Registry &r);
-            void enemyCollision(eng::Registry &r);
+            /// @brief A system managing collisions between bonuses and a specific client
+            /// @param r The Registry on which to apply the system
+            /// @param entity The entity on which to check collision with bonus
+            void bonusCollision(eng::Registry &r, int entity);
+            /// @brief A system managing collisions between bonuses and a specific client
+            /// @param r The Registry on which to apply the system
+            /// @param entity The entity on which to check collision with enemy
+            void enemyCollision(eng::Registry &r, int entity);
+            /// @brief A system managing collisions between clients
+            /// @param r The Registry on which to apply the system
+            void playerCollision(eng::Registry &r);
             /// @brief A system checking if 2 entities are colliding
             /// @param pos1 Position of the first entity
             /// @param rect1 RectCollider of the first entity
@@ -114,7 +120,11 @@ namespace rtp {
             /// @param rect2 RectCollider of the second entity
             /// @return true if colliding, else otherwise
             bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
-            void collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID);
+            /// @brief A system managing the collecting of bonus by a player
+            /// @param r The Registry on which to apply the system
+            /// @param player The player entity ID
+            /// @param bonus The bonus entity ID
+            void collectBonus(eng::Registry &r, int player, int bonus);
         protected:
         private:
             /// @brief A method that gets a synced entity id
