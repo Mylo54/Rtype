@@ -33,9 +33,12 @@ void rtp::MainMenu::_addEarth(eng::Registry &reg)
     reg.addComponent<eng::Position>(bg, eng::Position(1920 / 2, 1300, 0));
     reg.addComponent<eng::Drawable>(bg, eng::Drawable("assets/terre.png"));
     reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.setScale(2, 2);
-    int x = reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.getTexture()->getSize().x / 2;
-    int y = reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.getTexture()->getSize().y / 2;
-    reg.getComponents<eng::Drawable>()[bg.getId()].value().sprite.setOrigin(x, y);
+    auto &draw = reg.getComponents<eng::Drawable>();
+    int x = draw[bg.getId()].value().sprite.getTexture()->getSize().x / 2;
+    int y = draw[bg.getId()].value().sprite.getTexture()->getSize().y / 2;
+    draw[bg.getId()].value().sprite.setOrigin(x, y);
+    draw[bg.getId()].value().protect = true;
+
 }
 
 void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
