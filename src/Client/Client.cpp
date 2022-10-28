@@ -7,7 +7,12 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(int &port, std::string portStr, std::string &serverAddr): _port(boost::asio::ip::port_type(port)), _socketTCP(_ioContext), _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(6606)}), _gfx(std::vector<int>({1920, 1080, 32}), "RTYPE"), _net(serverAddr, boost::asio::ip::port_type(port), _socket, _gfx.getDelta())
+rtp::Client::Client(int &port, std::string portStr, std::string &serverAddr):
+_port(boost::asio::ip::port_type(port)),
+_socketTCP(_ioContext),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(6606)}),
+_gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
+_net(serverAddr, boost::asio::ip::port_type(port), _socket, _gfx.getDelta())
 {
     // _manager.addRegistry("R1");
     // _setupRegistry(_manager.getTop());
@@ -143,6 +148,9 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     _mySyncId = res[2];
     _myPlayerId = res[1];
     _net.setSyncId(_mySyncId);
+
+    _receiveData = std::thread(&rtp::Client::dataReception, this);
+    _sendData = std::thread(&rtp::Client::dataSend, this);
     return (0);
 }
 
@@ -151,49 +159,68 @@ void test()
     std::cout << "test" << std::endl;
 }
 
+void rtp::Client::dataReception()
+{
+    while (_gfx.isWindowOpen())
+        _net.receiveData(_manager.getTop());
+}
+
+void rtp::Client::dataSend()
+{
+    while (_gfx.isWindowOpen())
+        _net.sendData(_manager.getTop());
+}
+
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), _serverAddr, _port, _socket);
+    rtp::ClientSystems systems(_gfx.getWindow(), _gfx.getClock(), _gfx.getDelta(), _serverAddr, _port, _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
-    rtp::MainMenu mm(_manager, co);
-    eng::Registry &r = _manager.getTop();
+    rtp::MainMenu mm(_manager, co, _gfx);
+    //rtp::PauseMenu pm(_manager, co, _gfx);
     std::stringstream ss;
-    //ss << "You are Player " << _myPlayerId;
-    _gfx.setMaxFrameRate(60);
-    _net.writeInChatBox(r, ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+    _gfx.setFrameRateLimit(60);
+    _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
+    eng::PhysicSystems ps(_gfx.getDelta());
 
-    while (_gfx.windowOpen()) {
+    while (_gfx.isWindowOpen()) {
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        _gfx.controlSystem(_manager.getTop());
-        //_net.receiveData(_manager.getTop());
-
-        // Send new events
-        //_net.sendData(_manager.getTop());
+        systems.controlSystem(_manager.getTop());
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
         systems.controlChatSystem(_manager.getTop());
         systems.controlMovementSystem(_manager.getTop());
         systems.shootSystem(_manager.getTop());
-        systems.positionSystem(_manager.getTop());
+        ps.applyVelocities(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());
-        _gfx.buttonStateSystem(_manager.getTop());
+        systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
-        systems.playerBullets(r);
-        systems.killDeadEnemies(r);
-        systems.killBullets(r);
+
+        systems.playerBullets(_manager.getTop());
+        systems.killDeadEnemies(_manager.getTop());
+        systems.killOutOfBounds(_manager.getTop());
+        systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music
         systems.playMusicSystem(_manager.getTop());
         systems.playSoundSystem(_manager.getTop());
-        _gfx.clearSystem();
-        _gfx.backgroundSystem(_manager.getTop());
+        _gfx.clear();
+        systems.backgroundSystem(_manager.getTop());
         _gfx.drawSystem(_manager.getTop());
         _gfx.writeSystem(_manager.getTop());
-        _gfx.displaySystem();
+        _gfx.display();
+    }
+    if (_receiveData.joinable()) {
+        boost::array<networkPayload, 1> endmsg = {QUIT};
+        _socket.send_to(boost::asio::buffer(endmsg),
+        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address("127.0.0.1"), _port));
+        _receiveData.join();
+    }
+    if (_sendData.joinable()) {
+        _sendData.join();
     }
     //net.disconnectSystems(r);
 }

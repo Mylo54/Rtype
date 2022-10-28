@@ -33,10 +33,6 @@ namespace rtp
             /// @param r The Registry on which to apply the system
             void displaySystem(eng::Registry &r);
 
-            /// @brief A system who draws the background layers
-            /// @param r The Registry on which to apply the system
-            void backgroundSystem(eng::Registry &r);
-
             /// @brief A system who animate every animatable entity
             /// @param r The Registry on which to apply the system
             void animateSystem(eng::Registry &r);
@@ -44,10 +40,6 @@ namespace rtp
             /// @brief A system that lets you know if the window is open
             /// @return true if open, false if closed
             bool windowOpen();
-
-            /// @brief A system who handles inputs and stores actions
-            /// @param r The Registry on which to apply the system
-            void controlSystem(eng::Registry &r);
 
             /// @brief A system who handle specific window event like closing or focus
             void eventCatchWindow();
@@ -74,10 +66,6 @@ namespace rtp
             /// @brief A system who displays the screen
             /// @param r The Registry on which to apply the system
             void displaySystem();
-
-            /// @brief A system who set the state of a button according
-            /// @param r The Registry on which to apply the system
-            void buttonStateSystem(eng::Registry &r);
 
             /// @brief Update the delta time
             void updDeltaTime();
