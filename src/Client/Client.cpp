@@ -201,9 +201,14 @@ void rtp::Client::systemsLoop()
         _gfx.writeSystem(_manager.getTop());
         _gfx.display();
     }
-    if (_receiveData.joinable())
+    if (_receiveData.joinable()) {
+        boost::array<networkPayload, 1> endmsg = {QUIT};
+        _socket.send_to(boost::asio::buffer(endmsg),
+        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address("127.0.0.1"), _port));
         _receiveData.join();
-    if (_sendData.joinable())
+    }
+    if (_sendData.joinable()) {
         _sendData.join();
+    }
     //net.disconnectSystems(r);
 }

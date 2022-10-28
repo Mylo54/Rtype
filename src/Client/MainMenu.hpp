@@ -18,6 +18,7 @@
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
+#include "ChooseLvl.hpp"
 
 namespace rtp {
     class MainMenu {
@@ -64,6 +65,7 @@ namespace rtp {
             void _addEarth(eng::Registry &reg);
 
             int _exitBtn(eng::RegistryManager &reg);
+            int _chooseLvlBtn(eng::RegistryManager &reg);
 
         private:
             eng::RegistryManager &_manager;
