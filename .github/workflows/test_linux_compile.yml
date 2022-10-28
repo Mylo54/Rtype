@@ -15,7 +15,9 @@ jobs:
       - name: set compiler to libstdc++11
         run: conan profile update settings.compiler.libcxx=libstdc++11 default
       - name: pull EngineCoreSuper submodule
-        run:  git submodule update --init --recursive
+        run: |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
       - name: build
         run: |
           mkdir -p build
