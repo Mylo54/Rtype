@@ -478,10 +478,12 @@ void rtp::ClientSystems::killOutOfBounds(eng::Registry &r)
         if (poss[i].has_value() && drawables[i].has_value()) {
             auto pos = poss[i].value();
             auto drw = drawables[i].value();
-            if (pos.x > 1920 || pos.x < (-1 * drw.sizeX))
-                r.killEntity(eng::Entity(i));
-            else if (pos.y > 1080 || pos.y < (-1 * drw.sizeY))
-                r.killEntity(eng::Entity(i));
+            if (!drw.protect) {
+                if (pos.x > 1920 || pos.x < (-1 * drw.sizeX))
+                    r.killEntity(eng::Entity(i));
+                else if (pos.y > 1080 || pos.y < (-1 * drw.sizeY))
+                    r.killEntity(eng::Entity(i));
+            }
         }
     }
 }
