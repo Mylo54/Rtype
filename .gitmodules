@@ -1,3 +1,4 @@
 [submodule "external/EngineCoreSuper"]
 	path = external/EngineCoreSuper
 	url = https://github.com/Visclodev/EngineCoreSuper.git
+	branch = main
