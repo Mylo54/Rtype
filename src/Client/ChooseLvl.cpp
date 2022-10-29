@@ -67,6 +67,7 @@ void rtp::ChooseLvl::_addButtonLvl1(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
+    std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl1, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
@@ -83,6 +84,7 @@ void rtp::ChooseLvl::_addButtonLvl2(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
+    std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl2, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
@@ -99,6 +101,7 @@ void rtp::ChooseLvl::_addButtonLvl3(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
+    std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl3, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
@@ -115,6 +118,7 @@ void rtp::ChooseLvl::_addButtonLvl4(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
+    std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl4, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 800, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
@@ -131,6 +135,7 @@ void rtp::ChooseLvl::_addButtonLvlFinal(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 2;
 
+    std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvlB, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 900, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
@@ -139,4 +144,37 @@ void rtp::ChooseLvl::_addButtonLvlFinal(eng::Registry &r)
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level Final", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Position>(btntesxt, eng::Position(720, 900, 0));
 
+}
+
+int rtp::ChooseLvl::_btnFctlvl1(eng::RegistryManager &reg)
+{
+    std::cout << "Choose Lvl" << std::endl;
+    _singlePlayerBtnFct(_manager);
+    return (0);
+}
+
+int rtp::ChooseLvl::_btnFctlvl2(eng::RegistryManager &reg)
+{
+    std::cout << "Choose Lvl" << std::endl;
+    _singlePlayerBtnFct(_manager);
+    return (0);
+}
+int rtp::ChooseLvl::_btnFctlvl3(eng::RegistryManager &reg)
+{
+    std::cout << "Choose Lvl" << std::endl;
+    _singlePlayerBtnFct(_manager);
+    return (0);
+}
+int rtp::ChooseLvl::_btnFctlvl4(eng::RegistryManager &reg)
+{
+    std::cout << "Choose Lvl" << std::endl;
+    _singlePlayerBtnFct(_manager);
+    return (0);
+}
+
+int rtp::ChooseLvl::_btnFctlvlB(eng::RegistryManager &reg)
+{
+    std::cout << "Choose Lvl" << std::endl;
+    _singlePlayerBtnFct(_manager);
+    return (0);
 }

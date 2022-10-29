@@ -32,6 +32,12 @@ namespace rtp {
             void _addButtonLvlFinal(eng::Registry &r);
             void _setupRegistry(eng::Registry &reg);
             void _addBackgrounds(eng::Registry &reg);
+
+            int _btnFctlvl1(eng::RegistryManager &reg);
+            int _btnFctlvl2(eng::RegistryManager &reg);
+            int _btnFctlvl3(eng::RegistryManager &reg);
+            int _btnFctlvl4(eng::RegistryManager &reg);
+            int _btnFctlvlB(eng::RegistryManager &reg);
         private:
             eng::RegistryManager &_manager;
             std::function<int(eng::RegistryManager &)> _singlePlayerBtnFct;

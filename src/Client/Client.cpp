@@ -72,10 +72,13 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
 
 int rtp::Client::connect(eng::RegistryManager &manager)
 {
+    std::cout << "Connecting" << std::endl;
     rtp::Game game(_manager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
+    std::cout << "adrress" << std::endl;
+
 
     //ICI adress
 

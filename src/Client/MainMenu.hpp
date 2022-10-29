@@ -66,6 +66,7 @@ namespace rtp {
 
             int _exitBtn(eng::RegistryManager &reg);
             int _chooseLvlBtn(eng::RegistryManager &reg);
+            int _MultiBtn(eng::RegistryManager &reg);
 
         private:
             eng::RegistryManager &_manager;

@@ -107,8 +107,9 @@ void rtp::MainMenu::_addButtonMultiplayer(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
+    std::function<int(eng::RegistryManager &)> multi = std::bind(&MainMenu::_MultiBtn, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
@@ -159,5 +160,11 @@ int rtp::MainMenu::_exitBtn(eng::RegistryManager &reg)
 int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
 {
     rtp::ChooseLvl cl(_manager, this->_singlePlayerBtnFct);
+    return (0);
+}
+
+int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
+{
+    _singlePlayerBtnFct(reg);
     return (0);
 }
