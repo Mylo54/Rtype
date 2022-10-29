@@ -64,8 +64,16 @@ namespace rtp {
             /// @param reg The Registry on which to add the sprite
             void _addEarth(eng::Registry &reg);
 
+            /// @brief fct for button exit
+            /// @param reg The RegistryManager
             int _exitBtn(eng::RegistryManager &reg);
+
+            /// @brief fct for button choose lvl
+            /// @param reg The RegistryManager
             int _chooseLvlBtn(eng::RegistryManager &reg);
+
+            /// @brief fct for button multiplayer
+            /// @param reg The RegistryManager
             int _MultiBtn(eng::RegistryManager &reg);
 
         private:
