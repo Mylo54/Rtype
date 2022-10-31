@@ -14,7 +14,7 @@ int btnFuncStart(eng::RegistryManager &manager)
     return 0;
 }
 
-rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> &co, eng::GraphicSystems &gfx) : _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx)
+rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co, eng::GraphicSystems &gfx) : _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -166,6 +166,6 @@ int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
 
 int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
 {
-    _singlePlayerBtnFct(_manager);
+    _singlePlayerBtnFct(_manager, true, 1);
     return (0);
 }

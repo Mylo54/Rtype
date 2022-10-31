@@ -41,7 +41,7 @@ namespace rtp {
             /// [0]: 0 for success, 1 for failure
             /// [1]: the playerId
             /// [2]: the syncId
-            int connect(eng::RegistryManager &manager);
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl);
             
 
             /// @brief Disconnect the client from the server

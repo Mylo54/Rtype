@@ -7,7 +7,7 @@
 
 #include "ChooseLvl.hpp"
 
-rtp::ChooseLvl::ChooseLvl(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> &co) : _manager(manager), _singlePlayerBtnFct(co)
+rtp::ChooseLvl::ChooseLvl(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co) : _manager(manager), _singlePlayerBtnFct(co)
 {
     _manager.addRegistry("lvl");
     _setupRegistry(_manager.getTop());
@@ -148,32 +148,32 @@ void rtp::ChooseLvl::_addButtonLvlFinal(eng::Registry &r)
 int rtp::ChooseLvl::_btnFctlvl1(eng::RegistryManager &reg)
 {
     std::cout << "Choose Lvl" << std::endl;
-    _singlePlayerBtnFct(_manager);
+    _singlePlayerBtnFct(_manager, false, 1);
     return (0);
 }
 
 int rtp::ChooseLvl::_btnFctlvl2(eng::RegistryManager &reg)
 {
     std::cout << "Choose Lvl" << std::endl;
-    _singlePlayerBtnFct(reg);
+    _singlePlayerBtnFct(reg, false, 2);
     return (0);
 }
 int rtp::ChooseLvl::_btnFctlvl3(eng::RegistryManager &reg)
 {
     std::cout << "Choose Lvl" << std::endl;
-    _singlePlayerBtnFct(_manager);
+    _singlePlayerBtnFct(_manager, false, 3);
     return (0);
 }
 int rtp::ChooseLvl::_btnFctlvl4(eng::RegistryManager &reg)
 {
     std::cout << "Choose Lvl" << std::endl;
-    _singlePlayerBtnFct(_manager);
+    _singlePlayerBtnFct(_manager, false, 4);
     return (0);
 }
 
 int rtp::ChooseLvl::_btnFctlvlB(eng::RegistryManager &reg)
 {
     std::cout << "Choose Lvl" << std::endl;
-    _singlePlayerBtnFct(_manager);
+    _singlePlayerBtnFct(_manager, false, 5);
     return (0);
 }

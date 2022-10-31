@@ -70,9 +70,9 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
     return dataTbs;
 }
 
-int rtp::Client::connect(eng::RegistryManager &manager)
+int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl)
 {
-    std::cout << "Connecting" << std::endl;
+    std::cout << "Connecting "  << multiplayer << " lvl = " << lvl << std::endl;
     rtp::Game game(_manager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
@@ -165,7 +165,7 @@ void rtp::Client::dataSend()
 void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
-    std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
+    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, _manager,  std::placeholders::_2, std::placeholders::_3);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, co, _gfx);
     std::stringstream ss;
