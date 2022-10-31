@@ -46,7 +46,13 @@ namespace rtp
         VELOCITY,
         ENEMY_STATS,
         PLAYER_STATS,
-        BONUS
+        BONUS,
+        SYNCED
+    };
+
+    enum SERVER_GAME_PACKET {
+        ENTITY,
+        BORDER
     };
 
     typedef struct payload {
