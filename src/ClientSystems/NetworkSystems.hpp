@@ -42,10 +42,6 @@ namespace rtp
 
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
-            void oldReceiveData(eng::Registry &r);
-
-            /// @brief A system which receive and write data in the registry
-            /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
 
             void disconnectSystems(eng::Registry &r);
