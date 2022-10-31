@@ -59,6 +59,10 @@ namespace rtp {
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
 
+            /// @brief A system which sends data to ALL clients
+            /// @param r The Registry on which to apply the system
+            void oldSendData(eng::Registry &r);
+
             /// @brief A generic funciton that send a boost::array to all stored endpoints
             /// @param data_tbs The data to be sent to all clients
             void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
@@ -68,6 +72,7 @@ namespace rtp {
             void receiveData(eng::Registry &r);
 
             void updDeltaTime();
+
             /// @brief Limit the framerate if needed
             void limitTime();
 
@@ -113,7 +118,7 @@ namespace rtp {
             /// @param pos2 Position of the second entity
             /// @param rect2 RectCollider of the second entity
             /// @return true if colliding, else otherwise
-            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
+            bool isColliding(eng::Position &pos1, rtp::RectCollider &rect1, eng::Position &pos2, rtp::RectCollider &rect2);
             void collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID);
         protected:
         private:
@@ -122,9 +127,11 @@ namespace rtp {
             /// @return The entity id
             int _getSyncedEntity(eng::Registry &r, int syncId);
 
-            /// @brief A method for sending a package to every endpoint
-            /// @todo find how to contain the data that we need to send to the client
-            void _sendSubsystem();
+            /// @brief A generic function that send a vector to all endpoints
+            /// @param vector The vector to send to all endpoints
+            void _sendDataToAll(std::vector<int> &vector);
+
+            void _addToPayload(std::vector<int> &payload, std::vector<int> toAdd);
 
             /// @brief edit the serverpayload struct passed as argument
             /// @param pl the serverpayload struct
