@@ -164,10 +164,10 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
-    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, _manager,  std::placeholders::_2, std::placeholders::_3);
+    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket);
+    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
     rtp::MainMenu mm(_manager, co, _gfx);
-    //rtp::PauseMenu pm(_manager, co, _gfx);
+    //rtp::PauseMenu pm(_manager, _gfx);
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
@@ -177,7 +177,7 @@ void rtp::Client::systemsLoop()
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        systems.controlSystem(_manager.getTop(), _manager, _gfx);
+        systems.controlSystem(_manager.getTop(), _manager);
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
