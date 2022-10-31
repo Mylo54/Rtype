@@ -149,6 +149,7 @@ namespace rtp
             sf::Time &_delta;
             bool &_isWindowFocused;
             bool _isButtonRelease;
+            bool _isEscapeRelease;
     };
 } // namespace rtp
 

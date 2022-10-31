@@ -9,23 +9,35 @@
 
 rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx) : _manager(manager), _gfx(gfx)
 {
-    _manager.addRegistry("R1");
+    _manager.addRegistry("PauseMenu");
     _setupRegistry(_manager.getTop());
-    _addButton(_manager.getTop());
+    std::cout << 2 << std::endl;
+    //_addButton(_manager.getTop());///
+    std::cout << "[DEbug] before addBackground call" << std::endl;
     _addBackgrounds(_manager.getTop());
+    std::cout << "[DEbug] after addBackground call" << std::endl;
 }
 
 int _resumeBtn(eng::RegistryManager &reg)
 {
+    std::cout << 3.33 << std::endl;
     reg.popRegistry();
+    std::cout << 3.66 << std::endl;
     return (0);
 }
 
 void rtp::PauseMenu::_addBackgrounds(eng::Registry &reg)
 {
     eng::Entity bg = reg.spawnEntity();
+
+    std::cout << "[DEbug] spawn" << std::endl;
+
     reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
+    std::cout << "[DEbug] position" << std::endl;
+    
     reg.addComponent<rtp::Background>(bg, rtp::Background("assets/PM_bckgrd.png"));
+    std::cout << "[DEbug] bck" << std::endl;
+
 }
 
 void rtp::PauseMenu::_setupRegistry(eng::Registry &reg)
@@ -55,10 +67,15 @@ int startBtn(eng::RegistryManager &manager)
 
 void rtp::PauseMenu::_addButton(eng::Registry &r)
 {
+    std::cout << 2.1 << std::endl;
     _addResumeButton(r);
-    _addSettingsButton(r);
-    _addMainMenuButton(r);
-    _addExitButton(r);
+    std::cout << 2.2 << std::endl;
+    //_addSettingsButton(r);
+    std::cout << 2.3 << std::endl;
+    //_addMainMenuButton(r);
+    std::cout << 2.4 << std::endl;
+    //_addExitButton(r);
+    std::cout << 2.5 << std::endl;
 }
 
 void rtp::PauseMenu::_addResumeButton(eng::Registry &r)
@@ -67,13 +84,21 @@ void rtp::PauseMenu::_addResumeButton(eng::Registry &r)
     eng::Entity btntext = r.spawnEntity();
     int scale = 4;
 
+    std::cout << 3 << std::endl;
     r.addComponent<eng::Position>(btn, eng::Position(832, 442, 0));
+    std::cout << 3.1 << std::endl;
+    std::cout << "Position:" << r.getComponents<eng::Position>()[btn.getId()].value().x << std::endl;
     r.addComponent<rtp::Button>(btn, rtp::Button(_resumeBtn, 0, 0, 128 * 2, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
-
+    std::cout << 3.2 << std::endl;
+    r.emplaceComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));///
+    // r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 0, {0,0,0,0}));
+    std::cout << 3.3 << std::endl;
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
+    std::cout << 3.4 << std::endl;
     r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "RESUME", "assets/MetroidPrimeHunters.ttf"));
+    std::cout << 3.5 << std::endl;
     r.addComponent<eng::Position>(btntext, eng::Position(897, 445, 0));
+    std::cout << 3.6 << std::endl;
 }
 
 void rtp::PauseMenu::_addSettingsButton(eng::Registry &r)
@@ -81,12 +106,16 @@ void rtp::PauseMenu::_addSettingsButton(eng::Registry &r)
     eng::Entity btn = r.spawnEntity();
     eng::Entity btntext = r.spawnEntity();
     int scale = 4;
-
+    std::cout << 6.3 << std::endl;
     r.addComponent<eng::Position>(btn, eng::Position(832, 491, 0));
+    std::cout << 6.31 << std::endl;
     r.addComponent<rtp::Button>(btn, rtp::Button(startBtn, 0, 0, 128 * 2, 32 * 1.5));
+    std::cout << 6.32 << std::endl;
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    std::cout << 6.33 << std::endl;
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
+    std::cout << 6.34 << std::endl;
     r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "OPTIONS", "assets/MetroidPrimeHunters.ttf"));
     r.addComponent<eng::Position>(btntext, eng::Position(897, 494, 0));
 }
@@ -130,4 +159,5 @@ int rtp::PauseMenu::_exitBtn(eng::RegistryManager &reg)
 
 rtp::PauseMenu::~PauseMenu()
 {
+    std::cout << "[DEBUG] destructeur pause" << std::endl;
 }

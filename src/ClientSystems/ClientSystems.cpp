@@ -13,6 +13,7 @@ boost::asio::ip::udp::socket &socket, bool &focus):
 _w(w), _c(c), _delta(delta), _isWindowFocused(focus)
 {
     _isButtonRelease = false;
+    _isEscapeRelease = false;
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -105,6 +106,7 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
         return;
     }
     auto &controllables = r.getComponents<Controllable>();
+    bool press = true;
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
@@ -130,8 +132,15 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 
             // pause menu
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                rtp::PauseMenu pm(manager, gfx);
+            if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) && _isEscapeRelease == true) {
+                _isEscapeRelease = false;
+                std::cout << "[DEBUG] key escape pressed" << std::endl;
+                //rtp::PauseMenu *pm = new PauseMenu(manager, gfx);
+                std::cout << "[DEBUG] crea pause menu" << std::endl;
+                //controllables = r.getComponents<Controllable>();
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                _isEscapeRelease = true;
+            }
         }
     }
 }
