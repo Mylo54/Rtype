@@ -158,62 +158,60 @@ static void setupBuffer(std::vector<int> &buffer, size_t size)
         buffer.push_back(0);
 }
 
-// TODO: optimize this
+// TODO: fix this
 void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
-    size_t available_size = 0;
+    size_t availableSize = 0;
+    int bodySize = 0;
     std::vector<int> buffer;
     int current = 0;
     bool toBuild = false;
     
-    while (true) {
-        _socket.wait(boost::asio::socket_base::wait_type::wait_read);
-        available_size = _socket.available();
-        buffer.clear();
-        setupBuffer(buffer, available_size);
-        _socket.receive(boost::asio::buffer(buffer));
-        if (buffer[0] == rtp::SERVER_GAME_PACKET::BORDER)
-            return;
-        if (buffer[0] == rtp::SERVER_GAME_PACKET::ENTITY) {
-            current = _getSyncedEntity(r, buffer[3]);
+    // Get Packet
+    _socket.wait(boost::asio::socket_base::wait_type::wait_read);
+    availableSize = _socket.available();
+    buffer.clear();
+    setupBuffer(buffer, availableSize);
+    _socket.receive(boost::asio::buffer(buffer));
+    
+    // Analyse Packet
+    auto it = buffer.begin();
+    // Throw invalid packet
+    if (*it != 1405)
+        return;
+    it++;
+    bodySize = *it;
+    it++;
+    for (int i = 0; i < bodySize; i++, it++) {
+        if (*it == 2002) {
+            it++;
+            current = _getSyncedEntity(r, *(++it));
             toBuild = (current == -1);
             if (toBuild) {
                 current = r.spawnEntity().getId();
-                r.emplaceComponent<Synced>(eng::Entity(current), Synced(buffer[3]));
+                r.emplaceComponent<Synced>(eng::Entity(current), Synced(*it));
             }
-            for (int i = 4; i < buffer[1]; i++) {
-                if (buffer[i] == POSITION) {
-                    interpolatePos(r, current, eng::Position(buffer[i + 1], buffer[i + 2], buffer[i + 3]));
-                    i += 5;
-                    if (i < buffer[1]) break;
-                }
-                if (buffer[i] == VELOCITY) {
-                    r.emplaceComponent<eng::Velocity>(eng::Entity(current), eng::Velocity(buffer[i + 1], buffer[i + 2]));
-                    i += 4;
-                    if (i < buffer[1]) break;
-                }
-                if (buffer[i] == PLAYER_STATS) {
-                    r.emplaceComponent<PlayerStats>(eng::Entity(current), PlayerStats(buffer[i + 4], buffer[i + 2], buffer[i + 1]));
-                    if (toBuild)
-                        _completePlayer(r, current);
-                    i += 5;
-                    if (i < buffer[1]) break;
-                }
-                if (buffer[i] == ENEMY_STATS) {
-                    r.emplaceComponent<EnemyStats>(eng::Entity(current), EnemyStats(buffer[i + 1], buffer[i + 2]));
-                    if (toBuild)
-                        _completeEnemy(r, current);
-                    i += 3;
-                    if (i < buffer[1]) break;
-                }
-                if (buffer[i] == BONUS) {
-                    r.emplaceComponent<Bonus>(eng::Entity(current), Bonus(buffer[i + 1]));
-                    if (toBuild)
-                        _completeBonus(r, current);
-                    i += 1;
-                    if (i < buffer[1]) break;
-                }
-            }
+        }
+        if (*it == POSITION) {
+            std::cout << "Position" << std::endl;
+            interpolatePos(r, current, eng::Position(*(++it), *(++it), *(++it)));it++;
+        }
+        if (*it == VELOCITY)
+            interpolateVel(r, current, eng::Velocity(*(++it), *(++it), *(++it)));
+        if (*it == ENEMY_STATS) {
+            r.emplaceComponent(current, EnemyStats(*(++it), *(++it)));
+            if (toBuild)
+                _completeEnemy(r, current);
+        }
+        if (*it == PLAYER_STATS) {
+            r.emplaceComponent(current, PlayerStats(*(++it), *(++it), *(++it)));it++;
+            if (toBuild)
+                _completePlayer(r, current);
+        }
+        if (*it == BONUS) {
+            r.emplaceComponent(current, Bonus(*(++it)));
+            if (toBuild)
+                _completeBonus(r, current);
         }
     }
 }

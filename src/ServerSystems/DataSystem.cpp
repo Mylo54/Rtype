@@ -85,57 +85,37 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     auto &enemyStats = r.getComponents<EnemyStats>();
     auto &bonuses = r.getComponents<Bonus>();
 
-    for(int i = 0; i < sc.size(); i++) {
-        if (sc[i].has_value() && i < playerStats.size() && playerStats[i].has_value()
-        && i < ps.size() && ps[i].has_value() && i < vs.size() && vs[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &player = playerStats[i].value();
-
-            payload.push_back(rtp::SERVER_GAME_PACKET::ENTITY);
-            payload.push_back(0);
-
-            _addToPayload(payload, {SYNCED, sc[i].value().id});
-            _addToPayload(payload, {POSITION, (int)p.x, (int)p.y, (int)p.z, (int)p.rotation});
-            _addToPayload(payload, {VELOCITY, (int)v.x, (int)v.y, (int)v.angular});
-            _addToPayload(payload, {PLAYER_STATS, player.lives, player.score, player.damage, player.playerId});
-            _sendDataToAll(payload);
-            payload.clear();
-        }
-        if (sc[i].has_value()&& i < enemyStats.size() && enemyStats[i].has_value()
-        && i < ps.size() && ps[i].has_value() && i < vs.size() && vs[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &enm = enemyStats[i].value();
-
-            payload.push_back(rtp::SERVER_GAME_PACKET::ENTITY);
-            payload.push_back(0);
-
-            _addToPayload(payload, {SYNCED, sc[i].value().id});
-            _addToPayload(payload, {POSITION, (int)p.x, (int)p.y, (int)p.z, (int)p.rotation});
-            _addToPayload(payload, {VELOCITY, (int)v.x, (int)v.y, (int)v.angular});
-            _addToPayload(payload, {ENEMY_STATS, enm.enemyType, enm.health});
-            _sendDataToAll(payload);
-            payload.clear();
-        }
-        if (sc[i].has_value() && i < bonuses.size() && bonuses[i].has_value()
-        && i < ps.size() && ps[i].has_value() && i < vs.size() && vs[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &bon = bonuses[i].value();
-
-            payload.push_back(rtp::SERVER_GAME_PACKET::ENTITY);
-            payload.push_back(0);
-            _addToPayload(payload, {SYNCED, sc[i].value().id});
-            _addToPayload(payload, {POSITION, (int)p.x, (int)p.y, (int)p.z, (int)p.rotation});
-            _addToPayload(payload, {VELOCITY, (int)v.x, (int)v.y, (int)v.angular});
-            _addToPayload(payload, {BONUS, bon.type});
-            _sendDataToAll(payload);
-            payload.clear();
+    // Header
+    payload.push_back(1405);
+    // Body size
+    payload.push_back(0);
+    for (int i = 0; i < sc.size(); i++) {
+        // Entity header
+        if (sc[i].has_value()) {
+            payload.push_back(2002);
+            payload.push_back(sc[i].value().id);
+            if (i < ps.size() && ps[i].has_value()) {
+                auto &p = ps[i].value();
+                _addToPayload(payload, {POSITION, (int)p.x, (int)p.y, (int)p.z, (int)p.rotation});
+            }
+            if (i < vs.size() && vs[i].has_value()) {
+                auto &v = vs[i].value();
+                _addToPayload(payload, {VELOCITY, (int)v.x, (int)v.y, (int)v.angular});
+            }
+            if (i < playerStats.size() && playerStats[i].has_value()) {
+                auto &p = playerStats[i].value();
+                _addToPayload(payload, {PLAYER_STATS, p.playerId, p.damage, p.lives, p.score});
+            }
+            if (i < enemyStats.size() && enemyStats[i].has_value()) {
+                auto &e = enemyStats[i].value();
+                _addToPayload(payload, {ENEMY_STATS, e.health, e.enemyType});
+            }
+            if (i < bonuses.size() && bonuses[i].has_value()) {
+                auto &b = bonuses[i].value();
+                _addToPayload(payload, {BONUS, b.type});
+            }
         }
     }
-    payload.push_back(rtp::SERVER_GAME_PACKET::BORDER);
-    payload.push_back(0);
     _sendDataToAll(payload);
 }
 
