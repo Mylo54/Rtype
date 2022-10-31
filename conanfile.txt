@@ -2,6 +2,7 @@
 sfml/2.5.1
 asio/1.24.0
 boost/1.80.0
+zlib/1.2.12
 
 [options]
 *:shared = True
