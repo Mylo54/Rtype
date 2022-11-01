@@ -77,6 +77,8 @@ namespace rtp
         int addr3; // 1
         int addr4; // 14 par exemple
         int port;
+        bool multiplayer;
+        int level;
     } demandConnectPayload_t;
 
     typedef struct connectPayload_s {

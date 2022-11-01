@@ -86,7 +86,8 @@ namespace rtp {
             /// @brief A system which spawns enemies periodicaly
             /// (Set the spawnRate with setEnemyRate(float))
             /// @param r The Registry on which to apply the system
-            void spawnEnemies(eng::Registry &r);
+            /// @param level The level
+            void spawnEnemies(eng::Registry &r, int level);
 
             /// @brief Set the bonus spawn rate
             /// @param seconds Each 'seconds' time we spawn a new bonus

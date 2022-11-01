@@ -12,7 +12,7 @@ void rtp::ServerSystems::setEnemyRate(float seconds)
     _enemyRate = seconds;
 }
 
-void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
+void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
 {
     _enemyTimer -= _getDeltaAsSeconds();
 
@@ -24,7 +24,7 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
 
         r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
         r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
-        r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
+        r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * level, 0));
         r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
         _enemyTimer = _enemyRate;

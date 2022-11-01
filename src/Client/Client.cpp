@@ -87,6 +87,8 @@ int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lv
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
     dataTbs[0].port = _port;
+    dataTbs[0].multiplayer = multiplayer;
+    dataTbs[0].level = lvl;
 
     //connection
 
