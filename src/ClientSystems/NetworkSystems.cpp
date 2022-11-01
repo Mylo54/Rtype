@@ -312,6 +312,9 @@ std::vector<int> rtp::NetworkSystems::connect(int port)
 
     std::string serverName = "localhost";
 
+    std::cout << "CONNECT FROM rtp::Networkystems called" << std::endl;
+
+
     boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;

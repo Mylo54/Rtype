@@ -32,8 +32,7 @@ namespace rtp
             /// @param port port of the server
             /// @param socket udp socket of the server
             /// @param focus the focus state of the window
-            ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta,
-            std::string adress, int port,boost::asio::ip::udp::socket &socket,
+            ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta, boost::asio::ip::udp::socket &socket,
             bool &focus);
             ~ClientSystems();
 

@@ -61,7 +61,7 @@ namespace rtp {
 
             /// @brief A generic funciton that send a boost::array to all stored endpoints
             /// @param data_tbs The data to be sent to all clients
-            void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
+            void sendSyncedDataToAll(boost::array<server_payload_t, 1> &dataTbs);
 
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
@@ -148,7 +148,7 @@ namespace rtp {
             float _enemyRate;
 
             /// @brief The timer until the next enemy spawns
-            float _enemyTimer;
+            float _enemyTimer = 0;
 
             /// @brief The time to wait between each bonus spawn
             float _bonusRate;

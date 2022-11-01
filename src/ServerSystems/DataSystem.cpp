@@ -75,10 +75,14 @@ void rtp::ServerSystems::sendData(eng::Registry &r)
     sendSyncedDataToAll(dataTbs);
 }
 
-void rtp::ServerSystems::sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs)
+void rtp::ServerSystems::sendSyncedDataToAll(boost::array<server_payload_t, 1> &dataTbs)
 {
-    for (int i = 0; i < _endpoints.size(); i++)
+    std::cout << "sendSyncedDataToAll syncid : {" << dataTbs[0].syncId<< "}" << std::endl;
+    for (int i = 0; i < _endpoints.size(); i++) {
         _socket.send_to(boost::asio::buffer(dataTbs), _endpoints[i]);
+        std::cout << "endpoint[" << i << "] : " << _endpoints[i] << std::endl;
+    }
+    std::cout << "endSyncedDataToAll ENDED" << std::endl;
 }
 
 void rtp::ServerSystems::receiveData(eng::Registry &r)

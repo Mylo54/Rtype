@@ -7,18 +7,19 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type &port, std::string &serverAddr):
+rtp::Client::Client(boost::asio::ip::port_type &port, std::string &portStr, std::string &serverAddr):
 _port(port),
 _socketTCP(_ioContext),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), boost::asio::ip::port_type(3301)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net("127.0.0.1", 3303, _socket, _gfx.getDelta())
+_net(serverAddr, port, _socket, _gfx.getDelta())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
     std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
     _serverAddr = serverAddr;
+    _portStr = portStr;
 }
 
 rtp::Client::~Client()
@@ -94,7 +95,9 @@ int rtp::Client::connect(eng::RegistryManager &manager)
 
     std::string serverName = "localhost";
 
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+    std::cout << "CONNECT FROM RTp::CLIENT called" << std::endl;
+
+    boost::asio::ip::tcp::resolver::query query(_serverAddr, _portStr);
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
 
@@ -164,7 +167,7 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
+    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, co, _gfx);
@@ -207,7 +210,7 @@ void rtp::Client::systemsLoop()
     if (_receiveData.joinable()) {
         boost::array<networkPayload, 1> endmsg = {QUIT};
         _socket.send_to(boost::asio::buffer(endmsg),
-        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address("127.0.0.1"), _port));
+        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(_serverAddr), _port));
         _receiveData.join();
     }
     if (_sendData.joinable()) {

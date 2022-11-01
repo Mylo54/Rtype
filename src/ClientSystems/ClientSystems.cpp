@@ -8,7 +8,7 @@
 #include "ClientSystems.hpp"
 
 rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
-sf::Time &delta, std::string adress, int port,
+sf::Time &delta,
 boost::asio::ip::udp::socket &socket, bool &focus):
 _w(w), _c(c), _delta(delta), _isWindowFocused(focus)
 {

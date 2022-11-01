@@ -27,12 +27,14 @@ int main(int argc, char **argv)
         std::cout << "not enough arguments (awaiting ip and port)" << std::endl;
         return (84);
     }
-    //boost::asio::ip::port_type port = 3305;
     std::string serverAddr(argv[1]);
     boost::asio::ip::port_type port = atoi(argv[2]);
     std::cout << "DEBUG001 : serverAddr : {" << serverAddr << "} port : " << port << std::endl;
-
-    rtp::Client client(port, serverAddr);
+    
+    std::stringstream ss;
+    ss << atoi(argv[2]);
+    std::string portStr = ss.str();
+    rtp::Client client(port, portStr, serverAddr);
 
     client.run();
     /*
