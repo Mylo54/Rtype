@@ -281,7 +281,7 @@ void rtp::NetworkSystems::writeInChatBox(eng::Registry &r, std::string message, 
     addChatBox(r);
     // Write in ChatBox1
     setText(r, message, "ChatBox1", style);
-}bonus
+}
 
 void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
 {
