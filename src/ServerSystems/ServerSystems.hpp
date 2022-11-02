@@ -59,10 +59,6 @@ namespace rtp {
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
 
-            /// @brief A system which sends data to ALL clients
-            /// @param r The Registry on which to apply the system
-            void oldSendData(eng::Registry &r);
-
             /// @brief A generic funciton that send a boost::array to all stored endpoints
             /// @param data_tbs The data to be sent to all clients
             void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
