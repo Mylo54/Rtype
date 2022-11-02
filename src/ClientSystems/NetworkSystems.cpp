@@ -62,18 +62,6 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
     }
 }
 
-// interpolate two vectors with O=0
-float interpolate(float a, float b)
-{
-    float res = 0;
-
-    res = fabs(a - b);
-    res += fmin(a, b);
-    if (a <= 0 && b <= 0)
-        res = -res;
-    return res;
-}
-
 float midlerp(float a, float b)
 {
     return a + 0.5 * (b - a);
@@ -103,55 +91,6 @@ void interpolateVel(eng::Registry &r, int e, eng::Velocity nP)
     }
 }
 
-void rtp::NetworkSystems::oldReceiveData(eng::Registry &r)
-{
-    int e = 0;
-    bool toBuild = false;
-    bool start = false;
-
-    while (true) {
-        while (!start) {
-            _socket.receive(boost::asio::buffer(_dataBuffer));
-            if (_dataBuffer[0].COMPONENT_NAME == END_PACKET) {
-                start = true;
-            }
-        }
-        _socket.receive(boost::asio::buffer(_dataBuffer));
-        if (_dataBuffer[0].COMPONENT_NAME == END_PACKET)
-            return;
-        auto &data = _dataBuffer[0];
-        e = _getSyncedEntity(r, data.syncId);
-        toBuild = false;
-        if (e == -1) {
-            toBuild = true;
-            e = r.spawnEntity().getId();
-            r.addComponent<Synced>(eng::Entity(e), Synced(data.syncId));
-        }
-        if (_dataBuffer[0].COMPONENT_NAME == POSITION)
-            //r.emplaceComponent<Position>(eng::Entity(e), Position(data.valueA, data.valueB, data.valueC));
-            interpolatePos(r, e, eng::Position(data.valueA, data.valueB, data.valueC));
-        if (_dataBuffer[0].COMPONENT_NAME == VELOCITY)
-            r.emplaceComponent<eng::Velocity>(eng::Entity(e), eng::Velocity(data.valueA, data.valueB));
-        if (data.COMPONENT_NAME == ENEMY_STATS) {
-            r.emplaceComponent<EnemyStats>(eng::Entity(e), EnemyStats(data.valueB, data.valueA));
-            if (toBuild)
-                _completeEnemy(r, e);
-        }
-        if (data.COMPONENT_NAME == BONUS) {
-            r.emplaceComponent<Bonus>(eng::Entity(e), Bonus(data.valueA));
-            if (toBuild)
-                _completeBonus(r, e);
-        }
-        if (data.COMPONENT_NAME == PLAYER_STATS) {
-            r.emplaceComponent<PlayerStats>(eng::Entity(e), PlayerStats(data.valueA, data.valueB, data.valueC));
-            if (toBuild)
-                _completePlayer(r, e);
-            if (data.syncId != _mySyncId)
-                r.getComponents<Shooter>()[e].value().shoot = data.shot;
-        }
-    }
-}
-
 static void setupBuffer(std::vector<int> &buffer, size_t size)
 {
     for (int i = 0; i < size / 4; i++)
@@ -164,31 +103,48 @@ static void dumpPayload(std::vector<int> &payload)
     std::cout << "Validation num:" << payload[0] << std::endl;
     std::cout << "BodySize:" << payload[1] << std::endl;
     std::cout << "=====BODY CONTENT=====" << std::endl;
-    for (int i = 2; i < payload[1]; i++)
+    for (int i = 2; i <= payload[1]; i++) {
         std::cout << payload[i] << std::endl;
+    }
     std::cout << "=======BODY END=======" << std::endl;
+}
+
+static void emplacePosition(eng::Registry &r, int e, std::vector<int> &b, int &i)
+{
+    if (i >= b[1] || b[i] != rtp::COMPONENTS_SYNCED::POSITION)
+        return;
+    i++;
+    interpolatePos(r, e, eng::Position(b[i], b[i+1], b[i+2]));
+    std::cout << "emplace Position:" << b[i] << ", " << b[i+1] << std::endl;
+    i += 4;
+}
+
+static void emplaceVelocity(eng::Registry &r, int e, std::vector<int> &b, int &i)
+{
+    if (i >= b[1] || b[i] != rtp::COMPONENTS_SYNCED::VELOCITY)
+        return;
+    i++;
+    interpolateVel(r, e, eng::Velocity(b[i], b[i+1], b[i+2]));
+    i += 3;
 }
 
 // TODO: fix this
 void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
-    size_t availableSize = 0;
     std::vector<int> buffer;
     int current = 0;
     bool toBuild = false;
     
     // Get Packet
     _socket.wait(boost::asio::socket_base::wait_type::wait_read);
-    availableSize = _socket.available();
-    buffer.clear();
-    setupBuffer(buffer, availableSize);
+    setupBuffer(buffer, _socket.available());
     _socket.receive(boost::asio::buffer(buffer));
     
-    // Throw invalid packet
+    // Throw invalid packets
     if (buffer[0] != 1405)
         return;
-    //dumpPayload(buffer);
-    for (int i = 2; i < buffer[1]; i++) {
+    dumpPayload(buffer);
+    for (int i = 2; i < buffer[1];) {
         if (i < buffer[1] && buffer[i] == 2002) {
             i++;
             current = _getSyncedEntity(r, buffer[i]);
@@ -196,17 +152,11 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             if (toBuild) {
                 current = r.spawnEntity().getId();
                 r.emplaceComponent<Synced>(eng::Entity(current), Synced(buffer[i]));
-                i++;
             }
+            i++;
         }
-        if (i < buffer[1] && buffer[i] == POSITION) {
-            interpolatePos(r, current, eng::Position(buffer[i+1], buffer[i+2], buffer[i+3]));
-            i += 5;
-        }
-        if (i < buffer[1] && buffer[i] == VELOCITY) {
-            interpolateVel(r, current, eng::Velocity(buffer[i+1], buffer[i+2], buffer[i+3]));
-            i += 4;
-        }
+        emplacePosition(r, current, buffer, i);
+        emplaceVelocity(r, current, buffer, i);
         if (i < buffer[1] && buffer[i] == ENEMY_STATS) {
             r.emplaceComponent(current, EnemyStats(buffer[i+1], buffer[i+2]));
             if (toBuild)
@@ -226,6 +176,7 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             i += 2;
         }
     }
+    return;
 }
 
 int rtp::NetworkSystems::_getSyncedEntity(eng::Registry &r, int syncId)
@@ -266,15 +217,9 @@ void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
 void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
 {
     int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
-    sf::IntRect rect = {0, 0, 60, 49};
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
-    if (playerId == 2)
-        rect.top = 49;
-    if (playerId == 3)
-        rect.top = 98;
-    if (playerId == 4)
-        rect.top = 147;
     r.addComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/players.png", 1, rect, 0.10));
 
     std::stringstream ss;
