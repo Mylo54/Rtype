@@ -17,64 +17,6 @@ void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentNa
     pl.valueC = (values.size() > 2) ? values[2] : 0;
 }
 
-void rtp::ServerSystems::oldSendData(eng::Registry &r)
-{
-    auto &ps = r.getComponents<eng::Position>();
-    auto &vs = r.getComponents<eng::Velocity>();
-    auto &playerStats = r.getComponents<PlayerStats>();
-    auto &enemyStats = r.getComponents<EnemyStats>();
-    auto &bonus = r.getComponents<rtp::Bonus>();
-    auto &sc = r.getComponents<Synced>();
-    auto &ctrls = r.getComponents<Controllable>();
-    boost::array<server_payload_t, 1> dataTbs;
-
-    for (int i = 0; i < sc.size(); i++) {
-        if (sc[i].has_value() && i < playerStats.size() && playerStats[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &id_sync = sc[i].value();
-            auto &player = playerStats[i].value();
-            auto &ctrl = ctrls[i].value();
-
-            _editDataTbs(dataTbs[0], PLAYER_STATS, {(float)player.playerId, (float)player.damage, (float)player.lives}, id_sync.id, ctrl.hasShot);
-            ctrl.hasShot = false;
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-        }
-        if (sc[i].has_value() && i < enemyStats.size() && enemyStats[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &enm = enemyStats[i].value();
-            auto &id_sync = sc[i].value();
-
-            _editDataTbs(dataTbs[0], ENEMY_STATS, {(float)enm.enemyType, (float)enm.health}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-        }
-        if (sc[i].has_value() && i < bonus.size() && bonus[i].has_value()) {
-            auto &p = ps[i].value();
-            auto &v = vs[i].value();
-            auto &bns = bonus[i].value();
-            auto &id_sync = sc[i].value();
-
-            _editDataTbs(dataTbs[0], BONUS, {(float)bns.type}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], POSITION, {p.x, p.y, p.z}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-            _editDataTbs(dataTbs[0], VELOCITY, {v.x, v.y}, id_sync.id);
-            sendSyncedDataToAll(dataTbs);
-        }
-    }
-    dataTbs[0].COMPONENT_NAME = END_PACKET;
-    sendSyncedDataToAll(dataTbs);
-}
-
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
     std::vector<int> payload;
