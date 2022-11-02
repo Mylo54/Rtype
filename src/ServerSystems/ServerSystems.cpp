@@ -8,7 +8,7 @@
 #include "ServerSystems.hpp"
 
 rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
-    std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
+    std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
     std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
     _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
 {

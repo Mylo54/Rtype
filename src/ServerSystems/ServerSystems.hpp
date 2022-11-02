@@ -31,7 +31,7 @@ namespace rtp {
             /// @param listDataRec 
             /// @param endpoints 
             ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
+            std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
             
@@ -58,10 +58,6 @@ namespace rtp {
             /// @brief A system which sends data to ALL clients
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
-
-            /// @brief A generic funciton that send a boost::array to all stored endpoints
-            /// @param data_tbs The data to be sent to all clients
-            void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
 
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
@@ -122,17 +118,14 @@ namespace rtp {
             /// @return The entity id
             int _getSyncedEntity(eng::Registry &r, int syncId);
 
-            /// @brief A method for sending a package to every endpoint
-            /// @todo find how to contain the data that we need to send to the client
-            void _sendSubsystem();
+            /// @brief A generic function that send a vector to all endpoints
+            /// @param vector The vector to send to all endpoints
+            void _sendDataToAll(std::vector<int> &vector);
 
-            /// @brief edit the serverpayload struct passed as argument
-            /// @param pl the serverpayload struct
-            /// @param componentName the component type enum
-            /// @param values the values in order (valueA, valueB, valueC) no more than 3
-            /// @param syncId the synchronization ID
-            /// @param shot if shot event (false by default)
-            void _editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot);
+            /// @brief adds ints to the payload in parameters
+            /// @param payload ref to the payload vector
+            /// @param toAdd the ints to add to the payload
+            void _addToPayload(std::vector<int> &payload, std::vector<int> toAdd);
 
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system
@@ -163,7 +156,7 @@ namespace rtp {
             /// @brief atomic variable of acces to listDataRec
             std::mutex &_mutex;
             /// @brief List of all received payload
-            std::vector<inputPayload_t> &_listDataRec;
+            std::vector<std::vector<int>> &_listDataRec;
 
             /// @brief The delta time since last frame in microseconds
             long _delta = 0;

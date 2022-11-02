@@ -74,6 +74,30 @@ namespace rtp
             void setDelta(sf::Time &delta);
         protected:
         private:
+            /// @brief Emplace a network received enemy
+            /// @param r the registry on which to emplace an enemy
+            /// @param e Entity id
+            /// @param b buffer storing enemy data
+            /// @param i buffer index
+            /// @param toBuild wether or not to build the enemy
+            void _emplaceEnemy(eng::Registry &r, int e, std::vector<int> &b, int &i, bool toBuild);
+
+            /// @brief Emplace a network received player
+            /// @param r the registry on which to emplace an player
+            /// @param e Entity id
+            /// @param b buffer storing player data
+            /// @param i buffer index
+            /// @param toBuild wether or not to build the player
+            void _emplacePlayer(eng::Registry &r, int e, std::vector<int> &b, int &i, bool toBuild);
+
+            /// @brief Emplace a network received bonus
+            /// @param r the registry on which to emplace an bonus
+            /// @param e Entity id
+            /// @param b buffer storing bonus data
+            /// @param i buffer index
+            /// @param toBuild wether or not to build the bonus
+            void _emplaceBonus(eng::Registry &r, int e, std::vector<int> &b, int &i, bool toBuild);
+
             /// @brief A method that gets a synced entity id
             /// @param syncId The synced component id
             /// @return The entity id

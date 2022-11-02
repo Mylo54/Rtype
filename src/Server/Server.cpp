@@ -20,16 +20,23 @@ rtp::Server::~Server()
 {
 }
 
+static void setupBuffer(std::vector<int> &buffer, size_t size)
+{
+    for (int i = 0; i < size / 4; i++)
+        buffer.push_back(0);
+}
+
 void rtp::Server::dataReception()
 {
+    std::vector<int> buffer;
+
     while (!_isEnd) {
-        size_t len = this->_socket.receive(boost::asio::buffer(this->_dataRec));
-        if (this->_dataRec[0].ACTION_NAME == LEAVE_GAME) {
-            //_removeEndPoint(this->_socket.remote_endpoint().address().to_string(), this->_socket.remote_endpoint().port());
-            std::cout << "Removed " << this->_dataRec[0].ACTION_NAME << "in port : " <<  this->_dataRec[0].syncId << std::endl;
-        }
+        buffer.clear();
+        _socket.wait(boost::asio::socket_base::wait_type::wait_read);
+        setupBuffer(buffer, _socket.available());
+        _socket.receive(boost::asio::buffer(buffer));
         std::unique_lock<std::mutex> lk(this->_mutex);
-        this->_listDataRec.push_back(inputPayload_t({this->_dataRec[0].ACTION_NAME, this->_dataRec[0].syncId}));
+        this->_listDataRec.push_back(buffer);
         lk.unlock();
     }
 }
