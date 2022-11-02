@@ -64,7 +64,6 @@ namespace rtp {
             void receiveData(eng::Registry &r);
 
             void updDeltaTime();
-
             /// @brief Limit the framerate if needed
             void limitTime();
 
@@ -110,7 +109,7 @@ namespace rtp {
             /// @param pos2 Position of the second entity
             /// @param rect2 RectCollider of the second entity
             /// @return true if colliding, else otherwise
-            bool isColliding(eng::Position &pos1, rtp::RectCollider &rect1, eng::Position &pos2, rtp::RectCollider &rect2);
+            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
             void collectBonus(eng::Registry &r, rtp::PlayerStats &playerStats, rtp::Bonus &bonus, int bonusID);
         protected:
         private:

@@ -94,6 +94,7 @@ static void emplaceVelocity(eng::Registry &r, int e, std::vector<int> &b, int &i
 
 void rtp::NetworkSystems::_emplaceEnemy(eng::Registry &r, int e,
 std::vector<int> &b, int &i, bool toBuild)
+
 {
     if (i >= b[1] || b[i] != ENEMY_STATS)
         return;
@@ -280,7 +281,7 @@ void rtp::NetworkSystems::writeInChatBox(eng::Registry &r, std::string message, 
     addChatBox(r);
     // Write in ChatBox1
     setText(r, message, "ChatBox1", style);
-}
+}bonus
 
 void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
 {
