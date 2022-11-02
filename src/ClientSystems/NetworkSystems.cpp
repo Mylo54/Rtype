@@ -32,34 +32,23 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
     auto &synceds = r.getComponents<Synced>();
-    boost::array<inputPayload_t, 1UL> data;
+    std::vector<int> payload;
 
+    payload.push_back(1450);
+    payload.push_back(0);
     for (int i = 0; i < controllables.size() && i < synceds.size(); i++) {
-        auto ctrl = controllables[i];
-        auto sync = synceds[i];
+        if (controllables[i].has_value() && synceds[i].has_value()) {
+            auto &ctrl = controllables[i].value();
 
-        if (ctrl.has_value() && sync.has_value()) {
-            data[0].syncId = sync.value().id;
-            if (ctrl.value().shoot) {
-                data[0].ACTION_NAME = SHOT;
-                _socket.send_to(boost::asio::buffer(data), _endpoint);
-            }
-            if (ctrl.value().xAxis > 0)
-                data[0].ACTION_NAME = RIGHT;
-            else if (ctrl.value().xAxis < 0)
-                data[0].ACTION_NAME = LEFT;
-            else
-                data[0].ACTION_NAME = XSTILL;
-            _socket.send_to(boost::asio::buffer(data), _endpoint);
-            if (ctrl.value().yAxis > 0)
-                data[0].ACTION_NAME = DOWN;
-            else if (ctrl.value().yAxis < 0)
-                data[0].ACTION_NAME = UP;
-            else
-                data[0].ACTION_NAME = YSTILL;
-            _socket.send_to(boost::asio::buffer(data), _endpoint);
+            payload.push_back(2002);
+            payload.push_back(synceds[i].value().id);
+            payload.push_back(ctrl.xAxis);
+            payload.push_back(ctrl.yAxis);
+            payload.push_back(ctrl.shoot);
+            payload[1] += 5;
         }
     }
+    _socket.send_to(boost::asio::buffer(payload), _endpoint);
 }
 
 float midlerp(float a, float b)
@@ -97,25 +86,12 @@ static void setupBuffer(std::vector<int> &buffer, size_t size)
         buffer.push_back(0);
 }
 
-static void dumpPayload(std::vector<int> &payload)
-{
-    std::cout << "====PAYLOAD HEADER====" << std::endl;
-    std::cout << "Validation num:" << payload[0] << std::endl;
-    std::cout << "BodySize:" << payload[1] << std::endl;
-    std::cout << "=====BODY CONTENT=====" << std::endl;
-    for (int i = 2; i <= payload[1]; i++) {
-        std::cout << payload[i] << std::endl;
-    }
-    std::cout << "=======BODY END=======" << std::endl;
-}
-
 static void emplacePosition(eng::Registry &r, int e, std::vector<int> &b, int &i)
 {
     if (i >= b[1] || b[i] != rtp::COMPONENTS_SYNCED::POSITION)
         return;
     i++;
     interpolatePos(r, e, eng::Position(b[i], b[i+1], b[i+2]));
-    std::cout << "emplace Position:" << b[i] << ", " << b[i+1] << std::endl;
     i += 4;
 }
 
@@ -143,7 +119,6 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
     // Throw invalid packets
     if (buffer[0] != 1405)
         return;
-    dumpPayload(buffer);
     for (int i = 2; i < buffer[1];) {
         if (i < buffer[1] && buffer[i] == 2002) {
             i++;

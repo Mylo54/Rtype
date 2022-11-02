@@ -31,7 +31,7 @@ namespace rtp {
             /// @param listDataRec 
             /// @param endpoints 
             ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<rtp::inputPayload_t> &listDataRec,
+            std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
             std::vector<boost::asio::ip::udp::endpoint> &endpoints);
             ~ServerSystems();
             
@@ -170,7 +170,7 @@ namespace rtp {
             /// @brief atomic variable of acces to listDataRec
             std::mutex &_mutex;
             /// @brief List of all received payload
-            std::vector<inputPayload_t> &_listDataRec;
+            std::vector<std::vector<int>> &_listDataRec;
 
             /// @brief The delta time since last frame in microseconds
             long _delta = 0;

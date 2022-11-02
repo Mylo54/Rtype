@@ -84,25 +84,21 @@ void rtp::ServerSystems::sendSyncedDataToAll(boost::array<server_payload_t, 1> d
 void rtp::ServerSystems::receiveData(eng::Registry &r)
 {
     int e = 0;
+
     _mutex.lock();
-    while (_listDataRec.size() > 0) {
-        e = _getSyncedEntity(r, _listDataRec.back().syncId);
-        if (e != -1) {
-            if (_listDataRec.back().ACTION_NAME == SHOT)
-                r.getComponents<Controllable>()[e].value().shoot = true;
-            if (_listDataRec.back().ACTION_NAME == XSTILL)
-                r.getComponents<Controllable>()[e].value().xAxis = 0;
-            if (_listDataRec.back().ACTION_NAME == LEFT)
-                r.getComponents<Controllable>()[e].value().xAxis = -1;
-            if (_listDataRec.back().ACTION_NAME == RIGHT)
-                r.getComponents<Controllable>()[e].value().xAxis = +1;
-            if (_listDataRec.back().ACTION_NAME == YSTILL)
-                r.getComponents<Controllable>()[e].value().yAxis = 0;
-            if (_listDataRec.back().ACTION_NAME == UP)
-                r.getComponents<Controllable>()[e].value().yAxis = -1;
-            if (_listDataRec.back().ACTION_NAME == DOWN)
-                r.getComponents<Controllable>()[e].value().yAxis = +1;
+    while (!_listDataRec.empty()) {
+        // Dump invalid packets
+        if (_listDataRec.back()[0] != 1450) {
+            _listDataRec.pop_back();
+            continue;
         }
+
+        // Emplace valid ones
+        e = _getSyncedEntity(r, _listDataRec.back()[3]);
+        auto &ctrl = r.getComponents<Controllable>()[e].value();
+        ctrl.xAxis = _listDataRec.back()[4];
+        ctrl.yAxis = _listDataRec.back()[5];
+        ctrl.shoot = (_listDataRec.back()[6] == 1);
         _listDataRec.pop_back();
     }
     _mutex.unlock();
