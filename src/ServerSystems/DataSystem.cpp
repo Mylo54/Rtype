@@ -7,16 +7,6 @@
 
 #include "ServerSystems.hpp"
 
-void rtp::ServerSystems::_editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot = false)
-{
-    pl.COMPONENT_NAME = componentName;
-    pl.shot = shot;
-    pl.syncId = syncId;
-    pl.valueA = (values.size() > 0) ? values[0] : 0;
-    pl.valueB = (values.size() > 1) ? values[1] : 0;
-    pl.valueC = (values.size() > 2) ? values[2] : 0;
-}
-
 void rtp::ServerSystems::sendData(eng::Registry &r)
 {
     std::vector<int> payload;
@@ -73,12 +63,6 @@ void rtp::ServerSystems::_sendDataToAll(std::vector<int> &vector)
 {
     for (int i = 0; i < _endpoints.size(); i++)
         _socket.send_to(boost::asio::buffer(vector), _endpoints[i]);
-}
-
-void rtp::ServerSystems::sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs)
-{
-    for (int i = 0; i < _endpoints.size(); i++)
-        _socket.send_to(boost::asio::buffer(dataTbs), _endpoints[i]);
 }
 
 void rtp::ServerSystems::receiveData(eng::Registry &r)

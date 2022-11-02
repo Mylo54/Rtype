@@ -51,33 +51,9 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
     _socket.send_to(boost::asio::buffer(payload), _endpoint);
 }
 
-float midlerp(float a, float b)
+static float midlerp(float a, float b)
 {
     return a + 0.5 * (b - a);
-}
-
-void interpolatePos(eng::Registry &r, int e, eng::Position nP)
-{
-    try {
-        auto p = r.getComponents<eng::Position>()[e].value();
-
-        r.emplaceComponent<eng::Position>(eng::Entity(e),
-        eng::Position(midlerp(p.x, nP.x), midlerp(p.y, nP.y), midlerp(p.z, nP.z)));
-    } catch (std::bad_optional_access &error) {
-        r.addComponent<eng::Position>(eng::Entity(e), eng::Position(nP.x, nP.y, nP.z));
-    }
-}
-
-void interpolateVel(eng::Registry &r, int e, eng::Velocity nP)
-{
-    try {
-        auto p = r.getComponents<eng::Velocity>()[e].value();
-
-        r.emplaceComponent<eng::Velocity>(eng::Entity(e),
-        eng::Velocity(midlerp(p.x, nP.x), midlerp(p.y, nP.y)));
-    } catch (std::bad_optional_access &error) {
-        r.addComponent<eng::Velocity>(eng::Entity(e), eng::Velocity(nP.x, nP.y));
-    }
 }
 
 static void setupBuffer(std::vector<int> &buffer, size_t size)
@@ -90,21 +66,65 @@ static void emplacePosition(eng::Registry &r, int e, std::vector<int> &b, int &i
 {
     if (i >= b[1] || b[i] != rtp::COMPONENTS_SYNCED::POSITION)
         return;
-    i++;
-    interpolatePos(r, e, eng::Position(b[i], b[i+1], b[i+2]));
-    i += 4;
+    try {
+        auto p = r.getComponents<eng::Position>()[e].value();
+
+        r.emplaceComponent<eng::Position>(eng::Entity(e),
+        eng::Position(midlerp(p.x, b[i+1]), midlerp(p.y, b[i+2]), midlerp(p.z, b[i+3])));
+    } catch (std::bad_optional_access &error) {
+        r.addComponent<eng::Position>(eng::Entity(e), eng::Position(b[i+1], b[i+2], b[i+3]));
+    }
+    i += 5;
 }
 
 static void emplaceVelocity(eng::Registry &r, int e, std::vector<int> &b, int &i)
 {
     if (i >= b[1] || b[i] != rtp::COMPONENTS_SYNCED::VELOCITY)
         return;
-    i++;
-    interpolateVel(r, e, eng::Velocity(b[i], b[i+1], b[i+2]));
+    try {
+        auto p = r.getComponents<eng::Velocity>()[e].value();
+
+        r.emplaceComponent<eng::Velocity>(eng::Entity(e),
+        eng::Velocity(midlerp(p.x, b[i+1]), midlerp(p.y, b[i+2])));
+    } catch (std::bad_optional_access &error) {
+        r.addComponent<eng::Velocity>(eng::Entity(e), eng::Velocity(b[i+1], b[i+2]));
+    }
+    i += 4;
+}
+
+void rtp::NetworkSystems::_emplaceEnemy(eng::Registry &r, int e,
+std::vector<int> &b, int &i, bool toBuild)
+{
+    if (i >= b[1] || b[i] != ENEMY_STATS)
+        return;
+    r.emplaceComponent<EnemyStats>(e, EnemyStats(b[i+1], b[i+2]));
+    if (toBuild)
+        _completeEnemy(r, e);
     i += 3;
 }
 
-// TODO: fix this
+void rtp::NetworkSystems::_emplacePlayer(eng::Registry &r, int e,
+std::vector<int> &b, int &i, bool toBuild)
+{
+    if (i >= b[1] || b[i] != PLAYER_STATS)
+        return;
+    r.emplaceComponent<PlayerStats>(e, PlayerStats(b[i+1], b[i+2], b[i+3]));
+    if (toBuild)
+        _completePlayer(r, e);
+    i += 5;
+}
+
+void rtp::NetworkSystems::_emplaceBonus(eng::Registry &r, int e,
+std::vector<int> &b, int &i, bool toBuild)
+{
+    if (i >= b[1] || b[i] != BONUS)
+        return;
+    r.emplaceComponent<Bonus>(e, Bonus(b[i+1]));
+    if (toBuild)
+        _completeBonus(r, e);
+    i += 2;
+}
+
 void rtp::NetworkSystems::receiveData(eng::Registry &r)
 {
     std::vector<int> buffer;
@@ -121,35 +141,19 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
         return;
     for (int i = 2; i < buffer[1];) {
         if (i < buffer[1] && buffer[i] == 2002) {
-            i++;
-            current = _getSyncedEntity(r, buffer[i]);
+            current = _getSyncedEntity(r, buffer[i+1]);
             toBuild = (current == -1);
             if (toBuild) {
                 current = r.spawnEntity().getId();
-                r.emplaceComponent<Synced>(eng::Entity(current), Synced(buffer[i]));
+                r.emplaceComponent<Synced>(eng::Entity(current), Synced(buffer[i+1]));
             }
-            i++;
+            i+=2;
         }
         emplacePosition(r, current, buffer, i);
         emplaceVelocity(r, current, buffer, i);
-        if (i < buffer[1] && buffer[i] == ENEMY_STATS) {
-            r.emplaceComponent(current, EnemyStats(buffer[i+1], buffer[i+2]));
-            if (toBuild)
-                _completeEnemy(r, current);
-            i += 3;
-        }
-        if (i < buffer[1] && buffer[i] == PLAYER_STATS) {
-            r.emplaceComponent(current, PlayerStats(buffer[i+1], buffer[i+2], buffer[i+3]));
-            if (toBuild)
-                _completePlayer(r, current);
-            i += 5;
-        }
-        if (i < buffer[1] && buffer[i] == BONUS) {
-            r.emplaceComponent(current, Bonus(buffer[i+1]));
-            if (toBuild)
-                _completeBonus(r, current);
-            i += 2;
-        }
+        _emplaceEnemy(r, current, buffer, i, toBuild);
+        _emplacePlayer(r, current, buffer, i, toBuild);
+        _emplaceBonus(r, current, buffer, i, toBuild);
     }
     return;
 }

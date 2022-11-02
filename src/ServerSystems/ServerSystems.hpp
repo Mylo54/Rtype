@@ -59,10 +59,6 @@ namespace rtp {
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
 
-            /// @brief A generic funciton that send a boost::array to all stored endpoints
-            /// @param data_tbs The data to be sent to all clients
-            void sendSyncedDataToAll(boost::array<server_payload_t, 1> dataTbs);
-
             /// @brief A system which receive and write data in the registry
             /// @param r The Registry on which to apply the system
             void receiveData(eng::Registry &r);
@@ -127,15 +123,10 @@ namespace rtp {
             /// @param vector The vector to send to all endpoints
             void _sendDataToAll(std::vector<int> &vector);
 
+            /// @brief adds ints to the payload in parameters
+            /// @param payload ref to the payload vector
+            /// @param toAdd the ints to add to the payload
             void _addToPayload(std::vector<int> &payload, std::vector<int> toAdd);
-
-            /// @brief edit the serverpayload struct passed as argument
-            /// @param pl the serverpayload struct
-            /// @param componentName the component type enum
-            /// @param values the values in order (valueA, valueB, valueC) no more than 3
-            /// @param syncId the synchronization ID
-            /// @param shot if shot event (false by default)
-            void _editDataTbs(rtp::server_payload_t &pl, int componentName, std::vector<float> values, int syncId, bool shot);
 
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system
