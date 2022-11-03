@@ -116,7 +116,7 @@ namespace rtp {
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket;
             boost::array<inputPayload_t, 1> _dataRec;
-            std::vector<inputPayload_t> _listDataRec;
+            std::vector<std::vector<int>> _listDataRec;
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
 
             // For TCP
