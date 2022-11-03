@@ -134,7 +134,6 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
     bool toBuild = false;
     
     // Get Packet
-    std::cout << "receiving from adress : " << _socket.local_endpoint().address().to_string() << ":" << _socket.local_endpoint().port() << std::endl;
     _socket.wait(boost::asio::socket_base::wait_type::wait_read);
     setupBuffer(buffer, _socket.available());
     _socket.receive(boost::asio::buffer(buffer));
@@ -142,9 +141,6 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
     // Throw invalid packets
     if (buffer[0] != 1405)
         return;
-    for (auto it = buffer.begin(); it != buffer.end(); it++) {
-        std::cout << *it << std::endl;
-    }
     for (int i = 2; i < buffer[1];) {
         if (i < buffer[1] && buffer[i] == 2002) {
             current = _getSyncedEntity(r, buffer[i+1]);
@@ -297,70 +293,71 @@ void rtp::NetworkSystems::addChatBox(eng::Registry &reg)
     reg.addComponent<eng::Position>(chatBox, eng::Position(0, 980, 0));
 }
 
-std::vector<int> rtp::NetworkSystems::connect(int port)
-{
-    boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
-    boost::array<connectPayload_t, 1> dataRec;
-    std::vector<int> res;
-    boost::asio::io_context ioContext;
+// std::vector<int> rtp::NetworkSystems::connect(int port)
+// {
+//     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
+//     boost::array<connectPayload_t, 1> dataRec;
+//     std::vector<int> res;
+//     boost::asio::io_context ioContext;
 
-    //ICI adress
+//     //ICI adress
 
-    dataTbs[0].addr1 = 0;
-    dataTbs[0].addr2 = 0;
-    dataTbs[0].addr3 = 0;
-    dataTbs[0].addr4 = 0;
-    dataTbs[0].port = port;
+//     dataTbs[0].addr1 = 0;
+//     dataTbs[0].addr2 = 0;
+//     dataTbs[0].addr3 = 0;
+//     dataTbs[0].addr4 = 0;
 
-    //connection
+//     dataTbs[0].port = port;
 
-    boost::asio::ip::tcp::resolver resolver(ioContext);
+//     //connection
 
-    std::string serverName = "localhost";
+//     boost::asio::ip::tcp::resolver resolver(ioContext);
 
-    std::cout << "CONNECT FROM rtp::Networkystems called" << std::endl;
+//     std::string serverName = "localhost";
+
+//     std::cout << "CONNECT FROM rtp::Networkystems called" << std::endl;
 
 
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
-    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-    boost::asio::ip::tcp::resolver::iterator end;
+//     boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
+//     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+//     boost::asio::ip::tcp::resolver::iterator end;
 
-    boost::asio::ip::tcp::socket socketTCP{ioContext};
-    boost::system::error_code error;
+//     boost::asio::ip::tcp::socket socketTCP{ioContext};
+//     boost::system::error_code error;
 
-    try {
+//     try {
 
-        boost::system::error_code error = boost::asio::error::host_not_found;
-        socketTCP.connect(*(resolver.resolve(query)), error);
-        if (error) {
-            std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
-        } else {
-            std::cout << "[Client][Connect]: connect success" << std::endl;
+//         boost::system::error_code error = boost::asio::error::host_not_found;
+//         socketTCP.connect(*(resolver.resolve(query)), error);
+//         if (error) {
+//             std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
+//         } else {
+//             std::cout << "[Client][Connect]: connect success" << std::endl;
 
-        }
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-        res.push_back(1);
-        return (res);
-    }
+//         }
+//     }
+//     catch (std::exception& e)
+//     {
+//         std::cerr << e.what() << std::endl;
+//         res.push_back(1);
+//         return (res);
+//     }
 
-    boost::asio::write(socketTCP, boost::asio::buffer(dataTbs), error);
+//     boost::asio::write(socketTCP, boost::asio::buffer(dataTbs), error);
 
-    if (error)
-        std::cout << "[Client][Connect]: send failed: " << error.message() << std::endl;
+//     if (error)
+//         std::cout << "[Client][Connect]: send failed: " << error.message() << std::endl;
 
-    // getting response from server
-    boost::asio::read(socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
-    res.push_back(0);
-    res.push_back(dataRec[0].playerId);
-    res.push_back(dataRec[0].syncId);
-    if (error && error != boost::asio::error::eof) {
-        std::cout << "[Client][Connect]: receive failed: " << error.message() << std::endl;
-    } else {
-        std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
-    }
-    _mySyncId = res[2];
-    return (res);
-}
+//     // getting response from server
+//     boost::asio::read(socketTCP, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
+//     res.push_back(0);
+//     res.push_back(dataRec[0].playerId);
+//     res.push_back(dataRec[0].syncId);
+//     if (error && error != boost::asio::error::eof) {
+//         std::cout << "[Client][Connect]: receive failed: " << error.message() << std::endl;
+//     } else {
+//         std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
+//     }
+//     _mySyncId = res[2];
+//     return (res);
+// }

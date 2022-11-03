@@ -95,11 +95,6 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
 
-    dataTbs[0].addr1 = 0;
-    dataTbs[0].addr2 = 0;
-    dataTbs[0].addr3 = 0;
-    dataTbs[0].addr4 = 0;
-
     dataTbs[0].port = _socket.local_endpoint().port();
 
     //connection
@@ -170,11 +165,8 @@ void test()
 
 void rtp::Client::dataReception()
 {
-    std::cout << "test 1" << std::endl;
     while (_gfx.isWindowOpen()) {
-        std::cout << "test 2" << std::endl;
         _net.receiveData(_manager.getTop());
-        std::cout << "test 3" << std::endl;
     }
 }
 
