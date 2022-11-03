@@ -57,6 +57,9 @@ namespace rtp {
             /// @return The filled structure
             boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);
 
+            /// @brief Sets up the differents actions & events for the game
+            void _setupInputs();
+
             int _mySyncId = 0;
             int _myPlayerId = 0;
 
@@ -70,7 +73,7 @@ namespace rtp {
             boost::system::error_code _error;
             rtp::NetworkSystems _net;
             eng::GraphicSystems _gfx;
-
+            eng::SuperInput _inputs;
 
             std::thread _receiveData;
             std::thread _sendData;

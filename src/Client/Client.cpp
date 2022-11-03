@@ -10,7 +10,8 @@
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService),
 _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net("127.0.0.1", 3303, _socket, _gfx.getDelta())
+_net("127.0.0.1", 3303, _socket, _gfx.getDelta()),
+_inputs(_gfx.getRenderWindow())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -22,8 +23,36 @@ rtp::Client::~Client()
 {
 }
 
+void rtp::Client::_setupInputs()
+{
+    _inputs.addAction("Move x");
+    _inputs.addAction("Move y");
+    _inputs.addAction("Fire");
+    _inputs.addAction("Pause");
+    //Thoses are for digital (button) mouvement
+    _inputs.addAction("Move -x");
+    _inputs.addAction("Move -y");
+
+    // Controller inputs
+    _inputs.addEvent("Move x", eng::SuperInput::JoyAnalog::leftStickX, 0);
+    _inputs.addEvent("Move y", eng::SuperInput::JoyAnalog::leftStickY, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyAnalog::rightTrigger, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyButton::a, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyButton::x, 0);
+    _inputs.addEvent("Pause", eng::SuperInput::JoyButton::start, 0);
+
+    // KeyBoard inputs
+    _inputs.addEvent("Move x", eng::SuperInput::Key::d);
+    _inputs.addEvent("Move -x", eng::SuperInput::Key::q);
+    _inputs.addEvent("Move y", eng::SuperInput::Key::s);
+    _inputs.addEvent("Move -y", eng::SuperInput::Key::z);
+    _inputs.addEvent("Fire", eng::SuperInput::Key::space);
+    _inputs.addEvent("Pause", eng::SuperInput::Key::escape);
+}
+
 void rtp::Client::run()
 {
+    _setupInputs();
     systemsLoop();
     //disconnect();
 }
@@ -166,7 +195,7 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket);
+    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs);
     std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, _gfx);
@@ -176,6 +205,7 @@ void rtp::Client::systemsLoop()
     eng::PhysicSystems ps(_gfx.getDelta());
 
     while (_gfx.isWindowOpen()) {
+        _inputs.updateEvents();
         _gfx.eventCatchWindow();
         
         // Receive Inputs

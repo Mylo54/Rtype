@@ -8,8 +8,9 @@
 #include "ClientSystems.hpp"
 
 rtp::ClientSystems::ClientSystems(eng::GraphicSystems &gfx, std::string adress, int port,
-boost::asio::ip::udp::socket &socket):
-_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()), _isWindowFocused(gfx.isWindowFocused()), _gfx(gfx)
+boost::asio::ip::udp::socket &socket, eng::SuperInput &inputs):
+_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()),
+_isWindowFocused(gfx.isWindowFocused()), _gfx(gfx), _inputs(inputs)
 {
     _isButtonRelease = false;
     _isEscapeRelease = false;
@@ -111,34 +112,23 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
         auto &ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            // up and down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                ctrl.value().yAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                ctrl.value().yAxis = 1;
-            else
-                ctrl.value().yAxis = 0;
-            
-            // left and right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                ctrl.value().xAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                ctrl.value().xAxis = 1;
-            else
-                ctrl.value().xAxis = 0;
-            
-            // shoot
-            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            // Move analog & button (round to integer because )
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") > 0.1f ? 1.0f : 0.0f;
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") < -0.1f ? -1.0f : ctrl.value().xAxis;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y")> 0.1f ? 1.0f : 0.0f;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y") < -0.1f ? -1.0f : ctrl.value().yAxis;
 
-            // pause menu
-            if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) && _isEscapeRelease == true) {
-                _isEscapeRelease = false;
+            // Move -button
+            ctrl.value().xAxis -= _inputs.getActionStrength("Move -x");
+            ctrl.value().yAxis -= _inputs.getActionStrength("Move -y");
+            // Shoot
+            ctrl.value().shoot = _inputs.isActionPressed("Fire");
+
+            // Pause menu (move this somewhere else, please)
+            if (_inputs.isActionJustReleased("Pause")) {
                 std::cout << "[DEBUG] key escape pressed" << std::endl;
                 rtp::PauseMenu *pm = new PauseMenu(manager, _gfx);
                 std::cout << "[DEBUG] crea pause menu" << std::endl;
-                //controllables = r.getComponents<Controllable>();
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                _isEscapeRelease = true;
             }
         }
     }
