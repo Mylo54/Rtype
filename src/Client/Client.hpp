@@ -74,6 +74,7 @@ namespace rtp {
             rtp::NetworkSystems _net;
             eng::GraphicSystems _gfx;
             eng::SuperInput _inputs;
+            eng::TextureManager _textureManager;
 
             std::thread _receiveData;
             std::thread _sendData;

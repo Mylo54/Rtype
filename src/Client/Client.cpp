@@ -10,7 +10,7 @@
 rtp::Client::Client(boost::asio::ip::port_type port): _port(port), _socketTCP(_ioService),
 _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net("127.0.0.1", 3303, _socket, _gfx.getDelta()),
+_net("127.0.0.1", 3303, _socket, _gfx.getDelta(), _textureManager),
 _inputs(_gfx.getRenderWindow())
 {
     //Game game(_manager);
@@ -106,7 +106,7 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
 int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl)
 {
     std::cout << "Connecting "  << multiplayer << " lvl = " << lvl << std::endl;
-    rtp::Game game(_manager);
+    rtp::Game game(_manager, _textureManager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
@@ -199,9 +199,9 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs);
+    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs, _textureManager);
     std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
-    rtp::MainMenu mm(_manager, co, _gfx);
+    rtp::MainMenu mm(_manager, co, _gfx, _textureManager);
     //rtp::PauseMenu pm(_manager, _gfx);
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);

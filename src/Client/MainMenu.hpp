@@ -27,7 +27,9 @@ namespace rtp {
             /// @brief MainMenu object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co, eng::GraphicSystems &gfx);
+            MainMenu(eng::RegistryManager &manager,
+            std::function<int(eng::RegistryManager&, bool, int)> &co,
+            eng::GraphicSystems &gfx, eng::TextureManager &textureManager);
             ~MainMenu();
 
         protected:
@@ -82,6 +84,7 @@ namespace rtp {
             /// @brief fct which is used in btn to connect to the server
             std::function<int(eng::RegistryManager &, bool, int)> &_singlePlayerBtnFct;
             eng::GraphicSystems &_gfx;
+            eng::TextureManager &_textureManager;
     };
 }
 

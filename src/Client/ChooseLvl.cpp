@@ -7,7 +7,10 @@
 
 #include "ChooseLvl.hpp"
 
-rtp::ChooseLvl::ChooseLvl(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co) : _manager(manager), _singlePlayerBtnFct(co)
+rtp::ChooseLvl::ChooseLvl(eng::RegistryManager &manager,
+std::function<int(eng::RegistryManager&, bool, int)> &co,
+eng::TextureManager &textureManager):
+_manager(manager), _singlePlayerBtnFct(co), _textureManager(textureManager)
 {
     _manager.addRegistry("lvl");
     _setupRegistry(_manager.getTop());
@@ -71,7 +74,7 @@ void rtp::ChooseLvl::_addButtonLvl1(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl1, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(lvl, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level 1", "assets/MetroidPrimeHunters.ttf"));
@@ -87,7 +90,7 @@ void rtp::ChooseLvl::_addButtonLvl2(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl2, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(lvl, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level 2", "assets/MetroidPrimeHunters.ttf"));
@@ -104,7 +107,7 @@ void rtp::ChooseLvl::_addButtonLvl3(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl3, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(lvl, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level 3", "assets/MetroidPrimeHunters.ttf"));
@@ -121,7 +124,7 @@ void rtp::ChooseLvl::_addButtonLvl4(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvl4, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 800, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(lvl, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level 4", "assets/MetroidPrimeHunters.ttf"));
@@ -138,7 +141,7 @@ void rtp::ChooseLvl::_addButtonLvlFinal(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> lvl = std::bind(&ChooseLvl::_btnFctlvlB, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 900, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(lvl, 0, 0, 128 * 4, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     r.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Level Final", "assets/MetroidPrimeHunters.ttf"));

@@ -8,8 +8,9 @@
 #include "NetworkSystems.hpp"
 
 rtp::NetworkSystems::NetworkSystems(std::string address, int port,
-boost::asio::ip::udp::socket &socket, sf::Time &delta):
-_socket(socket), _delta(delta)
+boost::asio::ip::udp::socket &socket, sf::Time &delta,
+eng::TextureManager &textureManager):
+_socket(socket), _delta(delta), _textureManager(textureManager)
 {
     _endpoint = {boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)};
 }
@@ -176,7 +177,7 @@ void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
     float scale = 1;
     if (type == 0) {
         scale = 3;
-        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.005));
+        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable(_textureManager.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.005));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
         r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
@@ -188,7 +189,7 @@ void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
     float scale = 1;
     if (type == 0) {
         scale = 1;
-        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/bonus.png", 1, sf::IntRect(0, 0, 50, 50), 0.010));
+        r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable(_textureManager.getTextureFromFile("assets/bonus.png"), 1, sf::IntRect(0, 0, 50, 50), 0.010));
         r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(16 * scale, 16 * scale));
         r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
@@ -200,7 +201,6 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
-    r.addComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/players.png", 1, rect, 0.10));
     auto &smoke = r.addComponent<eng::ParticleEmitter>(eng::Entity(e), eng::ParticleEmitter())[e].value();
 
     smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
@@ -211,6 +211,7 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
     smoke.setMaxNumber(100);
     smoke.isLocal = false;
     smoke.setParticleColor(100, 100, 100, 100);
+    r.addComponent<eng::Drawable>(eng::Entity(e), eng::Drawable(_textureManager.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
 
     std::stringstream ss;
     ss << "Player " << playerId << " joined the game!";

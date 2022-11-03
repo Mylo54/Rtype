@@ -7,7 +7,9 @@
 
 #include "PauseMenu.hpp"
 
-rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx) : _manager(manager), _gfx(gfx)
+rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager,
+eng::GraphicSystems &gfx, eng::TextureManager &textureManager):
+_manager(manager), _gfx(gfx), _textureManager(textureManager)
 {
     _manager.addRegistry("PauseMenu");
     _setupRegistry(_manager.getTop());
@@ -91,8 +93,8 @@ void rtp::PauseMenu::_addResumeButton(eng::Registry &r)
     std::cout << "Position:" << r.getComponents<eng::Position>()[btn.getId()].value().x << std::endl;
     r.addComponent<rtp::Button>(btn, rtp::Button(_resumeBtn, 0, 0, 128 * 2, 32 * 1.5));
     std::cout << 3.2 << std::endl;
-    r.emplaceComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));///
-    // r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 0, {0,0,0,0}));
+    r.emplaceComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));///
+    // r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png", 0, {0,0,0,0}));
     std::cout << 3.3 << std::endl;
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
     std::cout << 3.4 << std::endl;
@@ -112,7 +114,7 @@ void rtp::PauseMenu::_addSettingsButton(eng::Registry &r)
     std::cout << 6.31 << std::endl;
     r.addComponent<rtp::Button>(btn, rtp::Button(startBtn, 0, 0, 128 * 2, 32 * 1.5));
     std::cout << 6.32 << std::endl;
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
     std::cout << 6.33 << std::endl;
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
@@ -129,7 +131,7 @@ void rtp::PauseMenu::_addMainMenuButton(eng::Registry &r)
 
     r.addComponent<eng::Position>(btn, eng::Position(832, 540, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(startBtn, 0, 0, 128 * 2, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
     r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "MAIN MENU", "assets/MetroidPrimeHunters.ttf"));
@@ -145,7 +147,7 @@ void rtp::PauseMenu::_addExitButton(eng::Registry &r)
     std::function<int(eng::RegistryManager &)> exit = std::bind(&PauseMenu::_exitBtn, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(832, 589, 0));
     r.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 2, 32 * 1.5));
-    r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
+    r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);
     r.addComponent<eng::Writable>(btntext, eng::Writable("Button", "QUIT GAME", "assets/MetroidPrimeHunters.ttf"));

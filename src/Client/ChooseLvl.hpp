@@ -20,7 +20,9 @@
 namespace rtp {
     class ChooseLvl {
         public:
-            ChooseLvl(eng::RegistryManager &manager, std::function<int(eng::RegistryManager &, bool, int)> &co);
+            ChooseLvl(eng::RegistryManager &manager,
+            std::function<int(eng::RegistryManager &, bool, int)> &co,
+            eng::TextureManager &textureManager);
             ~ChooseLvl();
 
         protected:
@@ -79,6 +81,7 @@ namespace rtp {
 
         private:
             eng::RegistryManager &_manager;
+            eng::TextureManager &_textureManager;
             std::function<int(eng::RegistryManager &, bool, int)> &_singlePlayerBtnFct;
     };
 }

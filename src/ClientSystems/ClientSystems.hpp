@@ -35,7 +35,7 @@ namespace rtp
             /// @param focus the focus state of the window
             ClientSystems(eng::GraphicSystems &gfx,
             std::string adress, int port, boost::asio::ip::udp::socket &socket,
-            eng::SuperInput &inputs);
+            eng::SuperInput &inputs, eng::TextureManager &textureManager);
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
@@ -152,6 +152,7 @@ namespace rtp
             bool _isEscapeRelease;
             eng::GraphicSystems &_gfx;
             eng::SuperInput &_inputs;
+            eng::TextureManager &_textureManager;
     };
 } // namespace rtp
 
