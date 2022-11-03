@@ -61,8 +61,9 @@ void rtp::Server::afterConnection(boost::asio::ip::tcp::socket sckt)
         std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
         std::stringstream a;
         a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
-        _addEndpoint(a.str(), dataRec[0].port);
-        std::cout << "ADDED ENDPOINT {" << a.str() << "} : [" << dataRec[0].port << "]" << std::endl;
+
+        _addEndpoint(sckt.remote_endpoint().address().to_string(), dataRec[0].port);
+        std::cout << " !! ADDED ENDPOINT {" << sckt.remote_endpoint().address().to_string() << "} : [" << dataRec[0].port << "]" << std::endl;
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }

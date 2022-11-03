@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     std::stringstream ss;
     ss << atoi(argv[2]);
     std::string portStr = ss.str();
-    rtp::Client client(port, portStr, serverAddr);
+    rtp::Client client(port, portStr, serverAddr, 6789);
 
     client.run();
     /*

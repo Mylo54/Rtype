@@ -74,6 +74,7 @@ static void emplacePosition(eng::Registry &r, int e, std::vector<int> &b, int &i
     } catch (std::bad_optional_access &error) {
         r.addComponent<eng::Position>(eng::Entity(e), eng::Position(b[i+1], b[i+2], b[i+3]));
     }
+    //std::cout << "position : " << b[i+1] << ";" << b[i+2] << ";" << b[i+3] << std::endl;
     i += 5;
 }
 
@@ -133,6 +134,7 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
     bool toBuild = false;
     
     // Get Packet
+    std::cout << "receiving from adress : " << _socket.local_endpoint().address().to_string() << ":" << _socket.local_endpoint().port() << std::endl;
     _socket.wait(boost::asio::socket_base::wait_type::wait_read);
     setupBuffer(buffer, _socket.available());
     _socket.receive(boost::asio::buffer(buffer));
@@ -140,6 +142,9 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
     // Throw invalid packets
     if (buffer[0] != 1405)
         return;
+    for (auto it = buffer.begin(); it != buffer.end(); it++) {
+        std::cout << *it << std::endl;
+    }
     for (int i = 2; i < buffer[1];) {
         if (i < buffer[1] && buffer[i] == 2002) {
             current = _getSyncedEntity(r, buffer[i+1]);
@@ -150,6 +155,7 @@ void rtp::NetworkSystems::receiveData(eng::Registry &r)
             }
             i+=2;
         }
+        
         emplacePosition(r, current, buffer, i);
         emplaceVelocity(r, current, buffer, i);
         _emplaceEnemy(r, current, buffer, i, toBuild);

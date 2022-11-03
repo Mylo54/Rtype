@@ -7,12 +7,12 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(boost::asio::ip::port_type &port, std::string &portStr, std::string &serverAddr):
-_port(port),
+ rtp::Client::Client(boost::asio::ip::port_type &serverPort, std::string &portStr, std::string &serverAddr, int socketUdpPort):
+_port(serverPort),
 _socketTCP(_ioContext),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), boost::asio::ip::port_type(3301)}),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(socketUdpPort)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net(serverAddr, port, _socket, _gfx.getDelta())
+_net(serverAddr, serverPort, _socket, _gfx.getDelta())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -20,6 +20,13 @@ _net(serverAddr, port, _socket, _gfx.getDelta())
     std::cout << _socket.local_endpoint().port() << ">" << std::endl;
     _serverAddr = serverAddr;
     _portStr = portStr;
+
+
+    // UDP WEIRD PORT THING :
+
+    // boost::asio::ip::udp::resolver resolver(_ioContext);
+    // boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), serverAddr);
+    // boost::asio::ip::udp::endpoint receiver_endpoint = *resolver.resolve(query);
 }
 
 rtp::Client::~Client()
@@ -42,7 +49,7 @@ void rtp::Client::disconnect()
     return;
 }
 
-boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::string address)
+/*boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::string address)
 {
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
 
@@ -72,7 +79,7 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
     std::cout << "addresse : " << dataTbs[0].addr1 << "." << dataTbs[0].addr2 << "." << dataTbs[0].addr3 << "." << dataTbs[0].addr4 << std::endl;
 
     return dataTbs;
-}
+}*/
 
 int rtp::Client::connect(eng::RegistryManager &manager)
 {
@@ -87,7 +94,13 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     dataTbs[0].addr2 = 0;
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
-    dataTbs[0].port = _port;
+
+    dataTbs[0].addr1 = 0;
+    dataTbs[0].addr2 = 0;
+    dataTbs[0].addr3 = 0;
+    dataTbs[0].addr4 = 0;
+
+    dataTbs[0].port = _socket.local_endpoint().port();
 
     //connection
 
@@ -100,6 +113,8 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     boost::asio::ip::tcp::resolver::query query(_serverAddr, _portStr);
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
+
+
 
     try {
 
@@ -155,8 +170,12 @@ void test()
 
 void rtp::Client::dataReception()
 {
-    while (_gfx.isWindowOpen())
+    std::cout << "test 1" << std::endl;
+    while (_gfx.isWindowOpen()) {
+        std::cout << "test 2" << std::endl;
         _net.receiveData(_manager.getTop());
+        std::cout << "test 3" << std::endl;
+    }
 }
 
 void rtp::Client::dataSend()

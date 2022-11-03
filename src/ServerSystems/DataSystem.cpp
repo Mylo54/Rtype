@@ -61,10 +61,13 @@ std::vector<int> toAdd)
 
 void rtp::ServerSystems::_sendDataToAll(std::vector<int> &vector)
 {
+    // for (auto it = vector.begin(); it != vector.end(); it++) {
+    //     std::cout << *it << std::endl;
+    // }
     for (int i = 0; i < _endpoints.size(); i++) {
-        std::cout << "endpoint[" << i << "] : " << _endpoints[i] << std::endl;
+        //std::cout << "endpoint[" << i << "] : " << _endpoints[i] << std::endl;
         _socket.send_to(boost::asio::buffer(vector), _endpoints[i]);
-    } std::cout << "endSyncedDataToAll ENDED" << std::endl;
+    } //std::cout << "endSyncedDataToAll ENDED" << std::endl;
 }
 
 void rtp::ServerSystems::receiveData(eng::Registry &r)
@@ -84,6 +87,8 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
         auto &ctrl = r.getComponents<Controllable>()[e].value();
         ctrl.xAxis = _listDataRec.back()[4];
         ctrl.yAxis = _listDataRec.back()[5];
+        if (ctrl.yAxis == -1)
+            std::cout << "Button pressed on client ctrl.yaxis = " << ctrl.yAxis << std::endl;
         ctrl.shoot = (_listDataRec.back()[6] == 1);
         _listDataRec.pop_back();
     }

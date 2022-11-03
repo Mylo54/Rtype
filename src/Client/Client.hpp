@@ -27,7 +27,7 @@ namespace rtp {
         public:
             /// @brief Client object constructor
             /// @param port Port of connection to the server
-            Client(boost::asio::ip::port_type &port, std::string &portStr, std::string &serverAddr);
+            Client(boost::asio::ip::port_type &port, std::string &portStr, std::string &serverAddr, int socketUdpPort);
             ~Client();
 
             /// @brief Run the client
@@ -49,13 +49,14 @@ namespace rtp {
 
             void dataReception();
             void dataSend();
+
             
         protected:
         private:
             /// @brief Fill the structure sent to the server countaining the client adress
             /// @param address The client adress
             /// @return The filled structure
-            boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);
+            /*boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);*/
 
             int _mySyncId = 0;
             int _myPlayerId = 0;
@@ -76,6 +77,7 @@ namespace rtp {
 
             std::thread _receiveData;
             std::thread _sendData;
+
     };
 }
 
