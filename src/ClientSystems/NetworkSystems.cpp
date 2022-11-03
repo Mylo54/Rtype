@@ -201,6 +201,16 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
     r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
     r.addComponent<eng::Drawable>(eng::Entity(e), eng::Drawable("assets/players.png", 1, rect, 0.10));
+    auto &smoke = r.addComponent<eng::ParticleEmitter>(eng::Entity(e), eng::ParticleEmitter())[e].value();
+
+    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
+    smoke.setBaseSpeed(500, 1000);
+    smoke.setLifetime(5);
+    smoke.setBaseRotation(260, 280);
+    smoke.setEmittingRate(0.01);
+    smoke.setMaxNumber(100);
+    smoke.isLocal = false;
+    smoke.setParticleColor(100, 100, 100, 100);
 
     std::stringstream ss;
     ss << "Player " << playerId << " joined the game!";

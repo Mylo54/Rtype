@@ -57,6 +57,7 @@ void rtp::PauseMenu::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
 }
 
 int startBtn(eng::RegistryManager &manager)

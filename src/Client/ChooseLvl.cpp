@@ -36,6 +36,7 @@ void rtp::ChooseLvl::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
 }
 
 void rtp::ChooseLvl::_addButtons(eng::Registry &r)

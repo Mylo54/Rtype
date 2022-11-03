@@ -38,6 +38,7 @@ void rtp::Game::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
     reg.registerComponents(eng::SparseArray<rtp::Bonus>());
+    reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
 }
 
 void rtp::Game::_addMusic(eng::Registry &reg, std::string filepath)
@@ -60,6 +61,16 @@ eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     reg.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
+    auto &smoke = reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
+
+    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
+    smoke.setBaseSpeed(500, 1000);
+    smoke.setLifetime(5);
+    smoke.setBaseRotation(260, 280);
+    smoke.setEmittingRate(0.01);
+    smoke.setMaxNumber(100);
+    smoke.isLocal = false;
+    smoke.setParticleColorRandom(true);
 
     std::cout << "You are player " << playerId << std::endl;
     return player;

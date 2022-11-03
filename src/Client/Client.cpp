@@ -235,6 +235,7 @@ void rtp::Client::systemsLoop()
         systems.playMusicSystem(_manager.getTop());
         systems.playSoundSystem(_manager.getTop());
         _gfx.clear();
+        _gfx.particleSystem(_manager.getTop());
         systems.backgroundSystem(_manager.getTop());
         _gfx.drawSystem(_manager.getTop());
         _gfx.writeSystem(_manager.getTop());
