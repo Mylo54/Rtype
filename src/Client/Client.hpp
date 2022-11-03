@@ -21,6 +21,7 @@
 #include "Game.hpp"
 #include "MainMenu.hpp"
 #include "PauseMenu.hpp"
+#include "Connection.hpp"
 
 namespace rtp {
     class Client {
@@ -41,7 +42,7 @@ namespace rtp {
             /// [0]: 0 for success, 1 for failure
             /// [1]: the playerId
             /// [2]: the syncId
-            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl);
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map = 0);
             
 
             /// @brief Disconnect the client from the server

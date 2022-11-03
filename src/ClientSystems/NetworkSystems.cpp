@@ -48,7 +48,10 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
             payload[1] += 5;
         }
     }
+    //std::cout << "before send " << std::endl;
     _socket.send_to(boost::asio::buffer(payload), _endpoint);
+    //std::cout << "after send " << std::endl;
+
 }
 
 static float midlerp(float a, float b)

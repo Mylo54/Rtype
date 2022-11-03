@@ -70,10 +70,10 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
     return dataTbs;
 }
 
-int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl)
+int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map)
 {
+    
     std::cout << "Connecting "  << multiplayer << " lvl = " << lvl << std::endl;
-    rtp::Game game(_manager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
@@ -136,14 +136,21 @@ int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lv
 
     if (res[0] == 1)
         return (1);
-    
-    eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
-    _mySyncId = res[2];
+    if (multiplayer == false) {
+        rtp::Game game(_manager);
+        eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
+    } else {
+        rtp::Game game(_manager);
+        std::cout << "multiplayer before connection screen" << std::endl;
+        //rtp::Connection connection(_manager);
+        eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
+    }
     _myPlayerId = res[1];
+    _mySyncId = res[2];
     _net.setSyncId(_mySyncId);
-
     _receiveData = std::thread(&rtp::Client::dataReception, this);
     _sendData = std::thread(&rtp::Client::dataSend, this);
+
     return (0);
 }
 
@@ -167,7 +174,7 @@ void rtp::Client::dataSend()
 void rtp::Client::systemsLoop()
 {
     rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket);
-    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
+    std::function<int(eng::RegistryManager &, bool, int, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, _gfx);
     std::stringstream ss;
