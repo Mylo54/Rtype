@@ -34,7 +34,8 @@ namespace rtp
             /// @param socket udp socket of the server
             /// @param focus the focus state of the window
             ClientSystems(eng::GraphicSystems &gfx,
-            std::string adress, int port, boost::asio::ip::udp::socket &socket);
+            std::string adress, int port, boost::asio::ip::udp::socket &socket,
+            eng::SuperInput &inputs);
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
@@ -150,6 +151,7 @@ namespace rtp
             bool _isButtonRelease;
             bool _isEscapeRelease;
             eng::GraphicSystems &_gfx;
+            eng::SuperInput &_inputs;
     };
 } // namespace rtp
 
