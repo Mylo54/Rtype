@@ -7,12 +7,12 @@
 
 #include "ClientSystems.hpp"
 
-rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
-sf::Time &delta, std::string adress, int port,
-boost::asio::ip::udp::socket &socket, bool &focus):
-_w(w), _c(c), _delta(delta), _isWindowFocused(focus)
+rtp::ClientSystems::ClientSystems(eng::GraphicSystems &gfx, std::string adress, int port,
+boost::asio::ip::udp::socket &socket):
+_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()), _isWindowFocused(gfx.isWindowFocused()), _gfx(gfx)
 {
     _isButtonRelease = false;
+    _isEscapeRelease = false;
 }
 
 rtp::ClientSystems::~ClientSystems()
@@ -99,12 +99,13 @@ void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::controlSystem(eng::Registry &r)
+void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &manager)
 {
     if (_isWindowFocused == false) {
         return;
     }
     auto &controllables = r.getComponents<Controllable>();
+    bool press = true;
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
@@ -128,6 +129,17 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r)
             
             // shoot
             ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+
+            // pause menu
+            if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) && _isEscapeRelease == true) {
+                _isEscapeRelease = false;
+                std::cout << "[DEBUG] key escape pressed" << std::endl;
+                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx);
+                std::cout << "[DEBUG] crea pause menu" << std::endl;
+                //controllables = r.getComponents<Controllable>();
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                _isEscapeRelease = true;
+            }
         }
     }
 }

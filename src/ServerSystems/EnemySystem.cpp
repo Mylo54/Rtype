@@ -12,7 +12,7 @@ void rtp::ServerSystems::setEnemyRate(float seconds)
     _enemyRate = seconds;
 }
 
-void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
+void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
 {
     _enemyTimer -= _getDeltaAsSeconds();
 
@@ -24,7 +24,7 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r)
 
         r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
         r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
-        r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
+        r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * level, 0));
         r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
         _enemyTimer = _enemyRate;
@@ -56,12 +56,12 @@ void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 
 void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
 {
-    auto &ennemies = r.getComponents<EnemyStats>();
+    auto &enemies = r.getComponents<EnemyStats>();
     auto &positions = r.getComponents<eng::Position>();
 
-    for (int i = 0; i < ennemies.size() && i < positions.size(); i++)
-        if (ennemies[i].has_value() && positions[i].has_value())
-            if (ennemies[i].value().health <= 0) {
+    for (int i = 0; i < enemies.size() && i < positions.size(); i++)
+        if (enemies[i].has_value() && positions[i].has_value())
+            if (enemies[i].value().health <= 0) {
                 if (rand() % 5 == 0) {
                     spawnBonus(r, positions[i].value().x, positions[i].value().y);
                 }
@@ -69,12 +69,22 @@ void rtp::ServerSystems::killDeadEnemies(eng::Registry &r)
             }
 }
 
-void rtp::ServerSystems::enemyCollisions(eng::Registry &r)
+void rtp::ServerSystems::enemyCollision(eng::Registry &r, int entity)
 {
-    
-}
+    auto &enemies = r.getComponents<EnemyStats>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &colliders = r.getComponents<rtp::RectCollider>();
+    auto &stats = r.getComponents<rtp::PlayerStats>();
 
-void rtp::ServerSystems::enemyCollision(eng::Registry &r)
-{
-
+    for (int i = 0; i < enemies.size() && i < positions.size(); i++) {
+        if (enemies[i].has_value() && positions[i].has_value()) {
+            auto &enemy = enemies[i].value();
+            auto &enemyPos = positions[i].value();
+            auto &enemyRect = colliders[i].value();
+            if (isColliding(enemyPos, enemyRect, positions[entity].value(), colliders[entity].value())) {
+                stats[entity].value().lives -= 1;
+                r.killEntity(i);
+            }
+        }
+    }
 }

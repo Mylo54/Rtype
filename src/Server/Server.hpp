@@ -111,7 +111,9 @@ namespace rtp {
             bool _askNewPlayer = false;
             int _nPlayer = 1;
             int _lastPlayerSyncId = 0;
-
+            bool _multiPlayer;
+            int _level;
+            rtp::ServerSystems _systems;
             // For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket;

@@ -19,7 +19,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include "ChooseLvl.hpp"
-
+#include <memory>
 namespace rtp {
     class MainMenu {
         public:
@@ -27,7 +27,7 @@ namespace rtp {
             /// @brief MainMenu object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx);
+            MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co, eng::GraphicSystems &gfx);
             ~MainMenu();
 
         protected:
@@ -64,14 +64,23 @@ namespace rtp {
             /// @param reg The Registry on which to add the sprite
             void _addEarth(eng::Registry &reg);
 
+            /// @brief fct for button exit
+            /// @param reg The RegistryManager
             int _exitBtn(eng::RegistryManager &reg);
+
+            /// @brief fct for button choose lvl
+            /// @param reg The RegistryManager
             int _chooseLvlBtn(eng::RegistryManager &reg);
+
+            /// @brief fct for button multiplayer
+            /// @param reg The RegistryManager
+            int _MultiBtn(eng::RegistryManager &reg);
 
         private:
             eng::RegistryManager &_manager;
             
             /// @brief fct which is used in btn to connect to the server
-            std::function<int(eng::RegistryManager &)> _singlePlayerBtnFct;
+            std::function<int(eng::RegistryManager &, bool, int)> &_singlePlayerBtnFct;
             eng::GraphicSystems &_gfx;
     };
 }

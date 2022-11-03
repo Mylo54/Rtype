@@ -14,7 +14,7 @@ int btnFuncStart(eng::RegistryManager &manager)
     return 0;
 }
 
-rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&)> co, eng::GraphicSystems &gfx) : _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx)
+rtp::MainMenu::MainMenu(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int)> &co, eng::GraphicSystems &gfx) : _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx)
 {
     _manager.addRegistry("R1");
     _setupRegistry(_manager.getTop());
@@ -107,8 +107,9 @@ void rtp::MainMenu::_addButtonMultiplayer(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
+    std::function<int(eng::RegistryManager &)> multi = std::bind(&MainMenu::_MultiBtn, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(_singlePlayerBtnFct, 0, 0, 128 * 4, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
@@ -141,8 +142,9 @@ void rtp::MainMenu::_addButtonSettings(eng::Registry &r)
     eng::Entity btntesxt = r.spawnEntity();
     int scale = 4;
 
+    std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
     r.addComponent<eng::Position>(btn, eng::Position(970, 700, 0));
-    r.addComponent<rtp::Button>(btn, rtp::Button(btnFuncStart, 0, 0, 128 * 1.9, 32 * 1.5));
+    r.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     r.addComponent<eng::Drawable>(btn, eng::Drawable("assets/button.png", 3, {0, 0, 128, 32}));
 
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
@@ -158,6 +160,12 @@ int rtp::MainMenu::_exitBtn(eng::RegistryManager &reg)
 
 int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
 {
-    rtp::ChooseLvl cl(_manager, this->_singlePlayerBtnFct);
+    rtp::ChooseLvl *cl = new rtp::ChooseLvl(_manager, this->_singlePlayerBtnFct);
+    return (0);
+}
+
+int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
+{
+    _singlePlayerBtnFct(_manager, true, 1);
     return (0);
 }

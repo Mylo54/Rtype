@@ -70,12 +70,15 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Client::_fillDataToSend(std::s
     return dataTbs;
 }
 
-int rtp::Client::connect(eng::RegistryManager &manager)
+int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl)
 {
+    std::cout << "Connecting "  << multiplayer << " lvl = " << lvl << std::endl;
     rtp::Game game(_manager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
+    std::cout << "adrress" << std::endl;
+
 
     //ICI adress
 
@@ -84,6 +87,8 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
     dataTbs[0].port = _port;
+    dataTbs[0].multiplayer = multiplayer;
+    dataTbs[0].level = lvl;
 
     //connection
 
@@ -161,10 +166,10 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), "127.0.0.1", 3303, _socket, _gfx.isWindowFocused());
-    std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
+    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket);
+    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
     rtp::MainMenu mm(_manager, co, _gfx);
-    //rtp::PauseMenu pm(_manager, co, _gfx);
+    //rtp::PauseMenu pm(_manager, _gfx);
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
@@ -174,7 +179,7 @@ void rtp::Client::systemsLoop()
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        systems.controlSystem(_manager.getTop());
+        systems.controlSystem(_manager.getTop(), _manager);
 
         // Update data
         systems.controlFireSystem(_manager.getTop());

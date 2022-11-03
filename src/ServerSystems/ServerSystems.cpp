@@ -87,8 +87,17 @@ void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)
 
 void rtp::ServerSystems::collisions(eng::Registry &r)
 {
-    bonusCollisions(r);
-    enemyCollisions(r);
+    auto &positions = r.getComponents<eng::Position>();
+    auto &players = r.getComponents<PlayerStats>();
+    auto &colliders = r.getComponents<RectCollider>();
+
+    for (int i = 0; i < players.size() && i < positions.size() && i < colliders.size(); i++) {
+        if (players[i].has_value() && positions[i].has_value() && colliders[i].has_value()) {
+            // bonusCollision(r, players[i].value(), positions[i].value(), colliders[i].value());
+            bonusCollision(r, i);
+            enemyCollision(r, i);
+        }
+    }
 }
 
 bool rtp::ServerSystems::isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2)
