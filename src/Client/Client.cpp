@@ -10,7 +10,7 @@
 rtp::Client::Client(boost::asio::ip::port_type &port, std::string &portStr, std::string &serverAddr):
 _port(port),
 _socketTCP(_ioContext),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("127.0.0.1"), boost::asio::ip::port_type(3301)}),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), boost::asio::ip::port_type(3301)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
 _net(serverAddr, port, _socket, _gfx.getDelta())
 {
