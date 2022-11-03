@@ -132,11 +132,14 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
 
             // pause menu
             if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) && _isEscapeRelease == true) {
-                _isEscapeRelease = false;
                 std::cout << "[DEBUG] key escape pressed" << std::endl;
                 rtp::PauseMenu *pm = new PauseMenu(manager, _gfx);
+                //rtp::PauseMenu pm(manager, _gfx);
                 std::cout << "[DEBUG] crea pause menu" << std::endl;
+                std::cout << "ESCAPE PRESSED !!" << std::endl;
                 //controllables = r.getComponents<Controllable>();
+                _isEscapeRelease = false;
+                std::cout << "_isEscapeRelease = false " << std::endl;
             } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 _isEscapeRelease = true;
             }
