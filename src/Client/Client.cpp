@@ -46,6 +46,10 @@ void rtp::Client::_setupInputs()
     _inputs.addEvent("Move -x", eng::SuperInput::Key::q);
     _inputs.addEvent("Move y", eng::SuperInput::Key::s);
     _inputs.addEvent("Move -y", eng::SuperInput::Key::z);
+    _inputs.addEvent("Move x", eng::SuperInput::Key::left);
+    _inputs.addEvent("Move -x", eng::SuperInput::Key::right);
+    _inputs.addEvent("Move y", eng::SuperInput::Key::down);
+    _inputs.addEvent("Move -y", eng::SuperInput::Key::up);
     _inputs.addEvent("Fire", eng::SuperInput::Key::space);
     _inputs.addEvent("Pause", eng::SuperInput::Key::escape);
 }
