@@ -7,7 +7,9 @@
 
 #include "Game.hpp"
 
-rtp::Game::Game(eng::RegistryManager &manager) : _manager(manager)
+rtp::Game::Game(eng::RegistryManager &manager,
+eng::TextureManager &textureManager):
+_manager(manager), _textureManager(textureManager)
 {
     _manager.addRegistry("R2");
     _setupRegistry(_manager.getTop());
@@ -55,7 +57,7 @@ eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<eng::Velocity>(player, eng::Velocity());
     reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
-    reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
+    reg.addComponent<eng::Drawable>(player, eng::Drawable(_textureManager.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
@@ -72,7 +74,7 @@ eng::Entity rtp::Game::_addEnemy(eng::Registry &reg)
 
     reg.addComponent<eng::Position>(enemy, eng::Position(1920 + (rand() % 2000), rand() % 1080, 0));
     reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-100, 0));
-    reg.addComponent<eng::Drawable>(enemy, eng::Drawable("assets/flyers.png", 3, sf::IntRect(0, 0, 40, 16), 0.10));
+    reg.addComponent<eng::Drawable>(enemy, eng::Drawable(_textureManager.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
     reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
 

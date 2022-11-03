@@ -8,9 +8,10 @@
 #include "ClientSystems.hpp"
 
 rtp::ClientSystems::ClientSystems(eng::GraphicSystems &gfx, std::string adress, int port,
-boost::asio::ip::udp::socket &socket, eng::SuperInput &inputs):
+boost::asio::ip::udp::socket &socket, eng::SuperInput &inputs,
+eng::TextureManager &textureManager):
 _w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()),
-_isWindowFocused(gfx.isWindowFocused()), _gfx(gfx), _inputs(inputs)
+_isWindowFocused(gfx.isWindowFocused()), _gfx(gfx), _inputs(inputs), _textureManager(textureManager)
 {
     _isButtonRelease = false;
     _isEscapeRelease = false;
@@ -127,7 +128,7 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
             // Pause menu (move this somewhere else, please)
             if (_inputs.isActionJustReleased("Pause")) {
                 std::cout << "[DEBUG] key escape pressed" << std::endl;
-                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx);
+                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx, _textureManager);
                 std::cout << "[DEBUG] crea pause menu" << std::endl;
             }
         }
