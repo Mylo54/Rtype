@@ -12,7 +12,7 @@ _port(serverPort),
 _socketTCP(_ioContext),
 _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(socketUdpPort)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net("127.0.0.1", 3303, _socket, _gfx.getDelta(), _textureManager),
+ _net(serverAddr, serverPort, _socket, _gfx.getDelta(), _textureManager),
 _inputs(_gfx.getRenderWindow())
 {
     //Game game(_manager);
