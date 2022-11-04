@@ -15,6 +15,7 @@ rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext,
     _start = false;
     _multiPlayer = true;
     _level = 1;
+    _systems.setTickRate(60);
     //_socket.local_endpoint().port(_port);
 }
 
@@ -167,6 +168,7 @@ void rtp::Server::systemsLoop()
 {
     //rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
+    eng::PhysicSystems(_systems.getDelta());
     _systems.setEnemyRate(5);
     _systems.setBonusRate(17);
 
@@ -177,9 +179,6 @@ void rtp::Server::systemsLoop()
 
     while (!_isEnd)
     {
-        // Update delta time
-        _systems.updDeltaTime();
-
         if (_commandAddEnemy) {
             _commandAddEnemy = false;
             _addEnemy(r);
@@ -210,7 +209,7 @@ void rtp::Server::systemsLoop()
         _systems.sendData(r);
 
         // Limit the frequence of the server
-        _systems.limitTime();
+        _systems.limitTickRate();
     }
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Exiting systems loop" << std::endl;

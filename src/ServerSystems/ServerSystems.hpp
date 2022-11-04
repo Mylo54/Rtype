@@ -64,8 +64,10 @@ namespace rtp {
             void receiveData(eng::Registry &r);
 
             void updDeltaTime();
-            /// @brief Limit the framerate if needed
             void limitTime();
+
+            /// @brief limits the server speed to the previously set "tickrate"
+            void limitTickRate();
 
             /// @brief Prevents player from going out of the window and limit its velocity
             /// @param reg The registry on which to apply the system
@@ -122,6 +124,14 @@ namespace rtp {
             /// @param player The player entity ID
             /// @param bonus The bonus entity ID
             void collectBonus(eng::Registry &r, int player, int bonus);
+
+            /// @brief Get the delta time in second since last tick
+            /// @return a reference to the delta time
+            float &getDelta();
+
+            /// @brief Sets the tick rate for the server
+            /// @param tps number of ticks per second
+            void setTickRate(unsigned int tps);
         protected:
         private:
             /// @brief A method that gets a synced entity id
@@ -143,10 +153,6 @@ namespace rtp {
             /// @param b The bullets data
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
-
-            /// @brief Get the delta time as seconds
-            /// @return the delta time as seconds
-            float _getDeltaAsSeconds();
 
             /// @brief The time to wait between each enemy spawn
             float _enemyRate;
@@ -170,11 +176,13 @@ namespace rtp {
             std::vector<std::vector<int>> &_listDataRec;
 
             /// @brief The delta time since last frame in microseconds
-            long _delta = 0;
-            /// @brief Elapsed time since
-            float _elapsedTime = 0;
+            float _delta = 0;
+
+            std::clock_t _lastClockTime = std::clock();
+
             /// @brief Tick per seconds of the server
-            float _tps = 60;
+            float _tps = 0;
+
             /// @brief Saved value to update the delta time
             std::chrono::steady_clock::time_point _lastUpdate;
     };
