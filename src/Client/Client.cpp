@@ -206,7 +206,7 @@ void rtp::Client::systemsLoop()
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
-    eng::PhysicSystems physics(_gfx.getDelta());
+    eng::PhysicSystems physics(_gfx.getDeltaSeconds());
     eng::AudioSystems sfx;
 
     while (_gfx.isWindowOpen()) {
