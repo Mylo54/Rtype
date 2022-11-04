@@ -56,13 +56,16 @@ void rtp::ChooseLvl::_addBackgrounds(eng::Registry &reg)
 {
     eng::Entity bg = reg.spawnEntity();
     reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
-    reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+    reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/background.png")));
+    reg.addComponent<rtp::Background>(bg, rtp::Background());
     eng::Entity bg2 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg2, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/middleground.png"));
+    reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_textureManager.getTextureFromFile("assets/middleground.png")));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background());
     eng::Entity bg3 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg3, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg3, rtp::Background("assets/background.png"));
+    reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_textureManager.getTextureFromFile("assets/foreground.png")));
+    reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
 void rtp::ChooseLvl::_addButtonLvl1(eng::Registry &r)

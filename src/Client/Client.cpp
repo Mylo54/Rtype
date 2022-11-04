@@ -226,7 +226,7 @@ void rtp::Client::systemsLoop()
         _gfx.animateSystem(_manager.getTop());
         systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
-
+        systems.backgroundSystem(_manager.getTop());
         systems.playerBullets(_manager.getTop());
         systems.killDeadEnemies(_manager.getTop());
         systems.killOutOfBounds(_manager.getTop());
@@ -237,7 +237,6 @@ void rtp::Client::systemsLoop()
         sfx.playSound(_manager.getTop());
         _gfx.clear();
         _gfx.particleSystem(_manager.getTop());
-        systems.backgroundSystem(_manager.getTop());
         _gfx.drawSystem(_manager.getTop());
         _gfx.writeSystem(_manager.getTop());
         _gfx.display();

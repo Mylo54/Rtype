@@ -108,13 +108,16 @@ void rtp::Game::_addBackgrounds(eng::Registry &reg)
         reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
         if (i < 2) {
             reg.addComponent<eng::Velocity>(bg, eng::Velocity(-400, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+            reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/foreground.png")));
+            reg.addComponent<rtp::Background>(bg, rtp::Background());
         } else if (i < 4) {
             reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/middleground.png"));
+            reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/middleground.png")));
+            reg.addComponent<rtp::Background>(bg, rtp::Background());
         } else {
             reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
-            reg.addComponent<rtp::Background>(bg, rtp::Background("assets/background.png"));
+            reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/background.png")));
+            reg.addComponent<rtp::Background>(bg, rtp::Background());
         }
     }
 }

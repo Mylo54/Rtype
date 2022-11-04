@@ -89,14 +89,11 @@ void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
     auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
-        auto &pos = poss[i];
-        auto &bg = bgs[i];
-
-        if (pos.has_value() && bg.has_value()) {
-            if (pos.value().x <= -1920)
-                pos.value().x = 1920;
-            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
-            _w.draw(bg.value().sprite);
+        if (poss[i].has_value() && bgs[i].has_value()) {
+            auto &pos = poss[i].value();
+            auto &bg = bgs[i].value();
+            if (pos.x <= -1920)
+                pos.x = 1920;
         }
     }
 }
