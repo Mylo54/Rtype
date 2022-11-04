@@ -116,7 +116,7 @@ namespace rtp {
             /// @param pos2 Position of the second entity
             /// @param rect2 RectCollider of the second entity
             /// @return true if colliding, else otherwise
-            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
+            bool isColliding(eng::Position &pos1, eng::RectCollider & rect1, eng::Position &pos2, eng::RectCollider & rect2);
             /// @brief A system managing the collecting of bonus by a player
             /// @param r The Registry on which to apply the system
             /// @param player The player entity ID

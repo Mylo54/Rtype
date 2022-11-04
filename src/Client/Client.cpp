@@ -221,6 +221,7 @@ void rtp::Client::systemsLoop()
         systems.controlChatSystem(_manager.getTop());
         systems.controlMovementSystem(_manager.getTop());
         systems.shootSystem(_manager.getTop());
+        //physics.applyGravity(_manager.getTop());
         physics.applyVelocities(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());

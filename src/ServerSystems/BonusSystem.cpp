@@ -24,7 +24,7 @@ void rtp::ServerSystems::spawnBonus(eng::Registry &r, float x, float y)
     r.addComponent<eng::Position>(bns, eng::Position(x, y, 0));
     r.addComponent<eng::Velocity>(bns, eng::Velocity(velX, velY));
     r.addComponent<rtp::Bonus>(bns, rtp::Bonus(0));
-    r.addComponent<rtp::RectCollider>(bns, rtp::RectCollider(16 * scale, 16 * scale));
+    r.addComponent<eng::RectCollider>(bns, eng::RectCollider(16 * scale, 16 * scale));
     r.addComponent<rtp::Synced>(bns, rtp::Synced(bns.getId()));
     _bonusTimer = _bonusRate;
 }
@@ -33,7 +33,7 @@ void rtp::ServerSystems::bonusCollision(eng::Registry &r, int entity)
 {
     auto &bonuses = r.getComponents<Bonus>();
     auto &positions = r.getComponents<eng::Position>();
-    auto &colliders = r.getComponents<rtp::RectCollider>();
+    auto &colliders = r.getComponents<eng::RectCollider>();
     auto &stats = r.getComponents<rtp::PlayerStats>();
 
     for (int i = 0; i < bonuses.size() && i < positions.size(); i++) {
@@ -51,7 +51,7 @@ void rtp::ServerSystems::collectBonus(eng::Registry &r, int player, int bonus)
 {
     auto &bonuses = r.getComponents<Bonus>();
     auto &positions = r.getComponents<eng::Position>();
-    auto &colliders = r.getComponents<rtp::RectCollider>();
+    auto &colliders = r.getComponents<eng::RectCollider>();
     auto &stats = r.getComponents<rtp::PlayerStats>();
     // Changes on player stats
     if (bonuses[bonus].value().type == 0)

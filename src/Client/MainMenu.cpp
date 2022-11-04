@@ -69,13 +69,14 @@ void rtp::MainMenu::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<eng::Writable>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
     reg.registerComponents(eng::SparseArray<rtp::Button>());
     reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
     reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
 }
 

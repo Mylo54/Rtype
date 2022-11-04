@@ -178,7 +178,7 @@ void rtp::NetworkSystems::_completeEnemy(eng::Registry &r, int e)
     if (type == 0) {
         scale = 3;
         r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable(_textureManager.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.005));
-        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40 * scale, 16 * scale));
+        r.emplaceComponent<eng::RectCollider>(eng::Entity(e), eng::RectCollider(40 * scale, 16 * scale));
         r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
 }
@@ -190,7 +190,7 @@ void rtp::NetworkSystems::_completeBonus(eng::Registry &r, int e)
     if (type == 0) {
         scale = 1;
         r.emplaceComponent<eng::Drawable>(eng::Entity(e), eng::Drawable(_textureManager.getTextureFromFile("assets/bonus.png"), 1, sf::IntRect(0, 0, 50, 50), 0.010));
-        r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(16 * scale, 16 * scale));
+        r.emplaceComponent<eng::RectCollider>(eng::Entity(e), eng::RectCollider(16 * scale, 16 * scale));
         r.getComponents<eng::Drawable>()[e].value().sprite.setScale(scale, scale);
     }
 }
@@ -200,8 +200,9 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
     int playerId = r.getComponents<PlayerStats>()[e].value().playerId;
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     r.addComponent<rtp::Shooter>(eng::Entity(e), rtp::Shooter("assets/bullet.png", 25, 4, {65, 25}));
-    r.emplaceComponent<RectCollider>(eng::Entity(e), RectCollider(40, 16));
+    r.emplaceComponent<eng::RectCollider>(eng::Entity(e), eng::RectCollider(40, 16));
     auto &smoke = r.addComponent<eng::ParticleEmitter>(eng::Entity(e), eng::ParticleEmitter())[e].value();
+    r.addComponent<eng::RigidBody>(eng::Entity(e), eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
 
     smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
     smoke.setBaseSpeed(500, 1000);

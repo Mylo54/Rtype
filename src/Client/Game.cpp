@@ -32,7 +32,7 @@ void rtp::Game::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<eng::Writable>());
@@ -41,6 +41,7 @@ void rtp::Game::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<eng::Music>());
     reg.registerComponents(eng::SparseArray<rtp::Bonus>());
     reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
+    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
 }
 
 void rtp::Game::_addMusic(eng::Registry &reg, std::string filepath)
@@ -62,7 +63,8 @@ eng::Entity rtp::Game::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-    reg.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
+    reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
     auto &smoke = reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
 
     smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
@@ -87,7 +89,7 @@ eng::Entity rtp::Game::_addEnemy(eng::Registry &reg)
     reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-100, 0));
     reg.addComponent<eng::Drawable>(enemy, eng::Drawable(_textureManager.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
-    reg.addComponent<rtp::RectCollider>(enemy, rtp::RectCollider(40*scale, 16*scale));
+    reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
 
     reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
     return enemy;

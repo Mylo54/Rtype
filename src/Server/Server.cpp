@@ -127,7 +127,7 @@ void rtp::Server::_addEnemy(eng::Registry &r)
     r.addComponent<eng::Position>(enm, eng::Position(1920, rand() % 1080, 0));
     r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
     r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * _level, 0));
-    r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
+    r.addComponent<eng::RectCollider>(enm, eng::RectCollider(40, 16));
     r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
     _cout.lock();
     std::cout << "[Server][systemsLoop]: added an enemy!" << std::endl;
@@ -227,9 +227,10 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     reg.registerComponents(eng::SparseArray<rtp::Bonus>());
+    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
 }
 
 // Player Id will be stored inside playerstats later...
@@ -242,7 +243,8 @@ void rtp::Server::_addPlayer(eng::Registry &r)
     r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(_nPlayer));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
     r.addComponent<rtp::Synced>(player, rtp::Synced(player.getId()));
-    r.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
+    r.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    r.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
     _lastPlayerSyncId = player.getId();
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Player " << _nPlayer << "has joinded the game!" << std::endl;

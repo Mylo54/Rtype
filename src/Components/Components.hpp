@@ -11,7 +11,6 @@
 #include "Controllable.hpp"
 #include "Shooter.hpp"
 #include "Background.hpp"
-#include "RectCollider.hpp"
 #include "EnemyStats.hpp"
 #include "Bullet.hpp"
 #include "PlayerStats.hpp"

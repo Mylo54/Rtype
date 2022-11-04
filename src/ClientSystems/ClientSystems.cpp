@@ -33,13 +33,9 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
             vel.value().x += ctrl.value().xAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? _delta.asSeconds() * 20 : 0;
 
             // Up & Down
             vel.value().y += ctrl.value().yAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? _delta.asSeconds() * 20 : 0;
         }
     }
 }
@@ -239,7 +235,7 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
     auto &poss = r.getComponents<eng::Position>();
-    auto &rcts = r.getComponents<RectCollider>();
+    auto &rcts = r.getComponents<eng::RectCollider>();
     auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
