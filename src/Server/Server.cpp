@@ -7,22 +7,15 @@
 
 #include "Server.hpp"
 
-<<<<<<< HEAD
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), port)), _socketTCP(_ioContext)
-=======
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)), _socketTCP(_ioContext), _systems(_socket, _mutex, _listDataRec, _endpoints)
->>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), port)), _socketTCP(_ioContext), _systems(_socket, _mutex, _listDataRec, _endpoints)
 {
     this->_clientPort = 0;
     _port = port;
     _isEnd = false;
     _start = false;
-<<<<<<< HEAD
-=======
     _multiPlayer = true;
     _level = 1;
     //_socket.local_endpoint().port(_port);
->>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
 }
 
 rtp::Server::~Server()
@@ -71,17 +64,13 @@ void rtp::Server::afterConnection(boost::asio::ip::tcp::socket sckt)
         std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
         std::stringstream a;
         a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
-<<<<<<< HEAD
 
         _addEndpoint(sckt.remote_endpoint().address().to_string(), dataRec[0].port);
         std::cout << " !! ADDED ENDPOINT {" << sckt.remote_endpoint().address().to_string() << "} : [" << dataRec[0].port << "]" << std::endl;
-=======
-        _addEndpoint(a.str(), dataRec[0].port);
         _multiPlayer = dataRec[0].multiplayer;
         _level = dataRec[0].level;
         std::cout << "level choose : " << _level << std::endl;
         _systems.setEnemyRate(5 - (_level / 1.9));
->>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }

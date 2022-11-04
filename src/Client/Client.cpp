@@ -130,14 +130,12 @@ int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lv
     dataTbs[0].addr2 = 0;
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
-<<<<<<< HEAD
 
     dataTbs[0].port = _socket.local_endpoint().port();
-=======
-    dataTbs[0].port = _port;
+
+    //dataTbs[0].port = _port;
     dataTbs[0].multiplayer = multiplayer;
     dataTbs[0].level = lvl;
->>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
 
     //connection
 
@@ -220,17 +218,11 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
-<<<<<<< HEAD
-    rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), _socket, _gfx.isWindowFocused());
-    std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
-    rtp::MainMenu mm(_manager, co, _gfx);
-    //rtp::PauseMenu pm(_manager, co, _gfx);
-=======
     rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs, _textureManager);
     std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
     rtp::MainMenu mm(_manager, co, _gfx, _textureManager);
-    //rtp::PauseMenu pm(_manager, _gfx);
->>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
+    //rtp::PauseMenu pm(_manager, co, _gfx);
+
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
