@@ -13,7 +13,7 @@
 
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
-* Before submitting, please read the [Contributing to our Rtype project](https://github.com/Mylo54/Rtype/blob/master/CONTRIBUTING.md) guide to learn more about our project’s coding conventions.
+* Before submitting, please read the [Contributing to our Rtype project](lien à changer) guide to learn more about our project’s coding conventions.
 
 #### **Did you fix whitespace, format code, or make a purely cosmetic patch ?**
 
