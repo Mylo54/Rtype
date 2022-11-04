@@ -79,6 +79,9 @@ void rtp::ClientSystems::controlFireSystem(eng::Registry &r)
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
+            if (ctrl.value().shoot2) {
+                ctrl.value().shoot2 = false;
+            }
         }
     }
 }
@@ -124,6 +127,7 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
             ctrl.value().yAxis -= _inputs.getActionStrength("Move -y");
             // Shoot
             ctrl.value().shoot = _inputs.isActionPressed("Fire");
+            ctrl.value().shoot2 = _inputs.isActionJustPressed("Fire2");
 
             // Pause menu (move this somewhere else, please)
             if (_inputs.isActionJustReleased("Pause")) {
