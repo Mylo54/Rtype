@@ -206,7 +206,8 @@ void rtp::Client::systemsLoop()
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
-    eng::PhysicSystems ps(_gfx.getDelta());
+    eng::PhysicSystems physics(_gfx.getDelta());
+    eng::AudioSystems sfx;
 
     while (_gfx.isWindowOpen()) {
         _inputs.updateEvents();
@@ -220,7 +221,7 @@ void rtp::Client::systemsLoop()
         systems.controlChatSystem(_manager.getTop());
         systems.controlMovementSystem(_manager.getTop());
         systems.shootSystem(_manager.getTop());
-        ps.applyVelocities(_manager.getTop());
+        physics.applyVelocities(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());
         systems.buttonStateSystem(_manager.getTop());
@@ -232,8 +233,8 @@ void rtp::Client::systemsLoop()
         systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music
-        systems.playMusicSystem(_manager.getTop());
-        systems.playSoundSystem(_manager.getTop());
+        sfx.playMusic(_manager.getTop());
+        sfx.playSound(_manager.getTop());
         _gfx.clear();
         _gfx.particleSystem(_manager.getTop());
         systems.backgroundSystem(_manager.getTop());

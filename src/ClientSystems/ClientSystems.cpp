@@ -193,38 +193,6 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
     }
 }
 
-void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Sound>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().sound.play();
-            }
-        }
-    }
-}
-
-void rtp::ClientSystems::positionSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
-            pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
-        }
-    }
-}
-
 // Max speed should be defined elsewhere...
 void rtp::ClientSystems::limitPlayer(eng::Registry &r)
 {
@@ -452,22 +420,6 @@ void rtp::ClientSystems::killBullets(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
             else if (pos.y > 1080 || pos.y < -1)
                 r.killEntity(eng::Entity(i));
-        }
-    }
-}
-
-void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Music>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().music->play();
-            }
         }
     }
 }
