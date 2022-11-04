@@ -21,23 +21,6 @@ rtp::ClientSystems::~ClientSystems()
 {
 }
 
-void rtp::ClientSystems::logSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            std::cout << i << ": pos = {" << pos.value().x << ", " << pos.value().y;
-            std::cout << ", " << pos.value().z << "}, vel = {" << vel.value().x;
-            std::cout << ", " << vel.value().y << "}" << std::endl;
-        }
-    }
-}
-
 void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<eng::Velocity>();
