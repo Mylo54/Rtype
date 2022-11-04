@@ -87,6 +87,7 @@ void rtp::ServerSystems::receiveData(eng::Registry &r)
         auto &ctrl = r.getComponents<Controllable>()[e].value();
         ctrl.xAxis = _listDataRec.back()[4];
         ctrl.yAxis = _listDataRec.back()[5];
+        std::cout << "test 66" << std::endl;
         if (ctrl.yAxis == -1)
             std::cout << "Button pressed on client ctrl.yaxis = " << ctrl.yAxis << std::endl;
         ctrl.shoot = (_listDataRec.back()[6] == 1);
