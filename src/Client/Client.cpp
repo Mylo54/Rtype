@@ -28,8 +28,9 @@ void rtp::Client::_setupInputs()
     _inputs.addAction("Move x");
     _inputs.addAction("Move y");
     _inputs.addAction("Fire");
+    _inputs.addAction("Fire2");
     _inputs.addAction("Pause");
-    //Thoses are for digital (button) mouvement
+    //Thoses are for digital (button) movement
     _inputs.addAction("Move -x");
     _inputs.addAction("Move -y");
 
@@ -38,7 +39,8 @@ void rtp::Client::_setupInputs()
     _inputs.addEvent("Move y", eng::SuperInput::JoyAnalog::leftStickY, 0);
     _inputs.addEvent("Fire", eng::SuperInput::JoyAnalog::rightTrigger, 0);
     _inputs.addEvent("Fire", eng::SuperInput::JoyButton::a, 0);
-    _inputs.addEvent("Fire", eng::SuperInput::JoyButton::x, 0);
+    _inputs.addEvent("Fire2", eng::SuperInput::JoyAnalog::leftTrigger, 0);
+    _inputs.addEvent("Fire2", eng::SuperInput::JoyButton::x, 0);
     _inputs.addEvent("Pause", eng::SuperInput::JoyButton::start, 0);
 
     // KeyBoard inputs
@@ -51,6 +53,7 @@ void rtp::Client::_setupInputs()
     _inputs.addEvent("Move y", eng::SuperInput::Key::down);
     _inputs.addEvent("Move -y", eng::SuperInput::Key::up);
     _inputs.addEvent("Fire", eng::SuperInput::Key::space);
+    _inputs.addEvent("Fire2", eng::SuperInput::Key::e);
     _inputs.addEvent("Pause", eng::SuperInput::Key::escape);
 }
 
