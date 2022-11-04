@@ -14,7 +14,6 @@
 #include <boost/array.hpp>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
@@ -41,7 +40,7 @@ namespace rtp {
             /// [0]: 0 for success, 1 for failure
             /// [1]: the playerId
             /// [2]: the syncId
-            int connect(eng::RegistryManager &manager);
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl);
             
 
             /// @brief Disconnect the client from the server
@@ -57,6 +56,9 @@ namespace rtp {
             /// @param address The client adress
             /// @return The filled structure
             /*boost::array<demandConnectPayload_s, 1> _fillDataToSend(std::string address);*/
+
+            /// @brief Sets up the differents actions & events for the game
+            void _setupInputs();
 
             int _mySyncId = 0;
             int _myPlayerId = 0;
@@ -74,6 +76,8 @@ namespace rtp {
 
             std::string _serverAddr;
             std::string _portStr;
+            eng::SuperInput _inputs;
+            eng::TextureManager _textureManager;
 
             std::thread _receiveData;
             std::thread _sendData;

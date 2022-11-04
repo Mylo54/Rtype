@@ -14,7 +14,6 @@
 #include <boost/array.hpp>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
@@ -25,7 +24,7 @@ namespace rtp {
 
             /// @brief Gamr object constructor
             /// @param manager reference to registry manager
-            Game(eng::RegistryManager &manager);
+            Game(eng::RegistryManager &manager, eng::TextureManager &textures);
             ~Game();
 
             /// @brief Adds a controllable player to a registry
@@ -59,6 +58,7 @@ namespace rtp {
             void _addScore(eng::Registry &reg);
         private:
             eng::RegistryManager &_manager;
+            eng::TextureManager &_textureManager;
     };
 }
 

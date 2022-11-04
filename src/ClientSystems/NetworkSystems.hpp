@@ -33,7 +33,8 @@ namespace rtp
             /// @param socket udp socket of the client
             /// @param mySyncId synchronisation id of the player
             NetworkSystems(std::string address, int port,
-            boost::asio::ip::udp::socket &socket, sf::Time &delta);
+            boost::asio::ip::udp::socket &socket, sf::Time &delta,
+            eng::TextureManager &textureManager);
             ~NetworkSystems();
 
             /// @brief A system which sends data to the server
@@ -131,6 +132,7 @@ namespace rtp
             int _mySyncId;
 
             sf::Time &_delta;
+            eng::TextureManager &_textureManager;
     };
 } // namespace rtp
 

@@ -12,7 +12,8 @@ _port(serverPort),
 _socketTCP(_ioContext),
 _socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(socketUdpPort)}),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
-_net(serverAddr, serverPort, _socket, _gfx.getDelta())
+_net("127.0.0.1", 3303, _socket, _gfx.getDelta(), _textureManager),
+_inputs(_gfx.getRenderWindow())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
@@ -33,8 +34,40 @@ rtp::Client::~Client()
 {
 }
 
+void rtp::Client::_setupInputs()
+{
+    _inputs.addAction("Move x");
+    _inputs.addAction("Move y");
+    _inputs.addAction("Fire");
+    _inputs.addAction("Pause");
+    //Thoses are for digital (button) mouvement
+    _inputs.addAction("Move -x");
+    _inputs.addAction("Move -y");
+
+    // Controller inputs
+    _inputs.addEvent("Move x", eng::SuperInput::JoyAnalog::leftStickX, 0);
+    _inputs.addEvent("Move y", eng::SuperInput::JoyAnalog::leftStickY, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyAnalog::rightTrigger, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyButton::a, 0);
+    _inputs.addEvent("Fire", eng::SuperInput::JoyButton::x, 0);
+    _inputs.addEvent("Pause", eng::SuperInput::JoyButton::start, 0);
+
+    // KeyBoard inputs
+    _inputs.addEvent("Move x", eng::SuperInput::Key::d);
+    _inputs.addEvent("Move -x", eng::SuperInput::Key::q);
+    _inputs.addEvent("Move y", eng::SuperInput::Key::s);
+    _inputs.addEvent("Move -y", eng::SuperInput::Key::z);
+    _inputs.addEvent("Move x", eng::SuperInput::Key::left);
+    _inputs.addEvent("Move -x", eng::SuperInput::Key::right);
+    _inputs.addEvent("Move y", eng::SuperInput::Key::down);
+    _inputs.addEvent("Move -y", eng::SuperInput::Key::up);
+    _inputs.addEvent("Fire", eng::SuperInput::Key::space);
+    _inputs.addEvent("Pause", eng::SuperInput::Key::escape);
+}
+
 void rtp::Client::run()
 {
+    _setupInputs();
     systemsLoop();
     //disconnect();
 }
@@ -81,12 +114,15 @@ void rtp::Client::disconnect()
     return dataTbs;
 }*/
 
-int rtp::Client::connect(eng::RegistryManager &manager)
+int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lvl)
 {
-    rtp::Game game(_manager);
+    std::cout << "Connecting "  << multiplayer << " lvl = " << lvl << std::endl;
+    rtp::Game game(_manager, _textureManager);
     boost::array<demandConnectPayload_s, 1> dataTbs = {CONNECT};
     boost::array<connectPayload_t, 1> dataRec;
     std::vector<int> res;
+    std::cout << "adrress" << std::endl;
+
 
     //ICI adress
 
@@ -94,8 +130,14 @@ int rtp::Client::connect(eng::RegistryManager &manager)
     dataTbs[0].addr2 = 0;
     dataTbs[0].addr3 = 0;
     dataTbs[0].addr4 = 0;
+<<<<<<< HEAD
 
     dataTbs[0].port = _socket.local_endpoint().port();
+=======
+    dataTbs[0].port = _port;
+    dataTbs[0].multiplayer = multiplayer;
+    dataTbs[0].level = lvl;
+>>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
 
     //connection
 
@@ -178,42 +220,52 @@ void rtp::Client::dataSend()
 
 void rtp::Client::systemsLoop()
 {
+<<<<<<< HEAD
     rtp::ClientSystems systems(_gfx.getRenderWindow(), _gfx.getClock(), _gfx.getDelta(), _socket, _gfx.isWindowFocused());
     std::function<int(eng::RegistryManager &)> co = std::bind(&Client::connect, this, _manager);
     rtp::MainMenu mm(_manager, co, _gfx);
     //rtp::PauseMenu pm(_manager, co, _gfx);
+=======
+    rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs, _textureManager);
+    std::function<int(eng::RegistryManager &, bool, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3);
+    rtp::MainMenu mm(_manager, co, _gfx, _textureManager);
+    //rtp::PauseMenu pm(_manager, _gfx);
+>>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);
-    eng::PhysicSystems ps(_gfx.getDelta());
+    eng::PhysicSystems physics(_gfx.getDelta());
+    eng::AudioSystems sfx;
 
     while (_gfx.isWindowOpen()) {
+        _inputs.updateEvents();
         _gfx.eventCatchWindow();
         
         // Receive Inputs
-        systems.controlSystem(_manager.getTop());
+        systems.controlSystem(_manager.getTop(), _manager);
 
         // Update data
         systems.controlFireSystem(_manager.getTop());
         systems.controlChatSystem(_manager.getTop());
         systems.controlMovementSystem(_manager.getTop());
         systems.shootSystem(_manager.getTop());
-        ps.applyVelocities(_manager.getTop());
+        //physics.applyGravity(_manager.getTop());
+        physics.applyVelocities(_manager.getTop());
         systems.limitPlayer(_manager.getTop());
         _gfx.animateSystem(_manager.getTop());
         systems.buttonStateSystem(_manager.getTop());
         systems.buttonSystem(_manager.getTop(), _manager);
-
+        systems.backgroundSystem(_manager.getTop());
         systems.playerBullets(_manager.getTop());
         systems.killDeadEnemies(_manager.getTop());
         systems.killOutOfBounds(_manager.getTop());
         systems.killBullets(_manager.getTop());
 
         // Display & play sounds/music
-        systems.playMusicSystem(_manager.getTop());
-        systems.playSoundSystem(_manager.getTop());
+        sfx.playMusic(_manager.getTop());
+        sfx.playSound(_manager.getTop());
         _gfx.clear();
-        systems.backgroundSystem(_manager.getTop());
+        _gfx.particleSystem(_manager.getTop());
         _gfx.drawSystem(_manager.getTop());
         _gfx.writeSystem(_manager.getTop());
         _gfx.display();

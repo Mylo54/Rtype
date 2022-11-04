@@ -14,7 +14,7 @@ eng::Entity makeEnemy(eng::Registry &r, sf::RenderWindow &w, sf::Clock &c)
 
     r.addComponent<rtp::Position>(res, rtp::Position(1920, rand() % 1080, 0));
     r.addComponent<rtp::Velocity>(res, rtp::Velocity(-5, 0));
-    r.addComponent<rtp::Drawable>(res, rtp::Drawable("../assets/flyers.png" 3, sf::IntRect(0, 0, 40, 16), 0.005));
+    r.addComponent<rtp::Drawable>(res, rtp::Drawable(_textureManager.getTextureFromFile("../assets/flyers.png" 3, sf::IntRect(0, 0, 40, 16), 0.005));
 
     r.getComponents<rtp::Drawable>()[res.getId()].value().sprite.setScale(2, 2);
     return res;

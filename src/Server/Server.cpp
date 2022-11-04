@@ -7,12 +7,22 @@
 
 #include "Server.hpp"
 
+<<<<<<< HEAD
 rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), port)), _socketTCP(_ioContext)
+=======
+rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)), _socketTCP(_ioContext), _systems(_socket, _mutex, _listDataRec, _endpoints)
+>>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
 {
     this->_clientPort = 0;
     _port = port;
     _isEnd = false;
     _start = false;
+<<<<<<< HEAD
+=======
+    _multiPlayer = true;
+    _level = 1;
+    //_socket.local_endpoint().port(_port);
+>>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
 }
 
 rtp::Server::~Server()
@@ -61,9 +71,17 @@ void rtp::Server::afterConnection(boost::asio::ip::tcp::socket sckt)
         std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
         std::stringstream a;
         a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
+<<<<<<< HEAD
 
         _addEndpoint(sckt.remote_endpoint().address().to_string(), dataRec[0].port);
         std::cout << " !! ADDED ENDPOINT {" << sckt.remote_endpoint().address().to_string() << "} : [" << dataRec[0].port << "]" << std::endl;
+=======
+        _addEndpoint(a.str(), dataRec[0].port);
+        _multiPlayer = dataRec[0].multiplayer;
+        _level = dataRec[0].level;
+        std::cout << "level choose : " << _level << std::endl;
+        _systems.setEnemyRate(5 - (_level / 1.9));
+>>>>>>> 9d2887abbbf1e668d7268641f374e6ce22e1f75c
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }
@@ -121,8 +139,8 @@ void rtp::Server::_addEnemy(eng::Registry &r)
 
     r.addComponent<eng::Position>(enm, eng::Position(1920, rand() % 1080, 0));
     r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
-    r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5, 0));
-    r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40, 16));
+    r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * _level, 0));
+    r.addComponent<eng::RectCollider>(enm, eng::RectCollider(40, 16));
     r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
     _cout.lock();
     std::cout << "[Server][systemsLoop]: added an enemy!" << std::endl;
@@ -160,10 +178,10 @@ void rtp::Server::_exitServer(std::thread &sys, std::thread &rec, std::thread &c
 
 void rtp::Server::systemsLoop()
 {
-    rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
+    //rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
-    systems.setEnemyRate(5);
-    systems.setBonusRate(17);
+    _systems.setEnemyRate(5);
+    _systems.setBonusRate(17);
 
     _setupRegistry(r);
     _cout.lock();
@@ -173,7 +191,7 @@ void rtp::Server::systemsLoop()
     while (!_isEnd)
     {
         // Update delta time
-        systems.updDeltaTime();
+        _systems.updDeltaTime();
 
         if (_commandAddEnemy) {
             _commandAddEnemy = false;
@@ -185,27 +203,27 @@ void rtp::Server::systemsLoop()
         }
 
         // Receive data
-        systems.receiveData(r);
+        _systems.receiveData(r);
 
         // Apply new controls
-        systems.controlMovementSystem(r);
-        systems.controlFireSystem(r);
+        _systems.controlMovementSystem(r);
+        _systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
-        systems.positionSystem(r);
-        systems.limitPlayer(r);
-        systems.playerBullets(r);
-        systems.killDeadEnemies(r);
-        systems.killOutOfBounds(r);
-        systems.spawnEnemies(r);
-        systems.collisions(r);
+        _systems.positionSystem(r);
+        _systems.limitPlayer(r);
+        _systems.playerBullets(r);
+        _systems.killDeadEnemies(r);
+        _systems.killOutOfBounds(r);
+        _systems.spawnEnemies(r, _level);
+        _systems.collisions(r);
         // systems.spawnBonus(r);
 
         // Send the new data
-        systems.sendData(r);
+        _systems.sendData(r);
 
         // Limit the frequence of the server
-        systems.limitTime();
+        _systems.limitTime();
     }
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Exiting systems loop" << std::endl;
@@ -222,9 +240,10 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
     reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
+    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
     reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     reg.registerComponents(eng::SparseArray<rtp::Bonus>());
+    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
 }
 
 // Player Id will be stored inside playerstats later...
@@ -237,7 +256,8 @@ void rtp::Server::_addPlayer(eng::Registry &r)
     r.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(_nPlayer));
     r.addComponent<rtp::Controllable>(player, rtp::Controllable());
     r.addComponent<rtp::Synced>(player, rtp::Synced(player.getId()));
-    r.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
+    r.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    r.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
     _lastPlayerSyncId = player.getId();
     _cout.lock();
     std::cout << "[Server][systemsLoop]: Player " << _nPlayer << "has joinded the game!" << std::endl;

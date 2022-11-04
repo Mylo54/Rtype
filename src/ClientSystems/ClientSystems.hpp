@@ -11,6 +11,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
+#include "../Client/PauseMenu.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 
@@ -32,8 +33,10 @@ namespace rtp
             /// @param port port of the server
             /// @param socket udp socket of the server
             /// @param focus the focus state of the window
-            ClientSystems(sf::RenderWindow &w, sf::Clock &c, sf::Time &delta, boost::asio::ip::udp::socket &socket,
-            bool &focus);
+
+            ClientSystems(eng::GraphicSystems &gfx,
+            std::string adress, int port, boost::asio::ip::udp::socket &socket,
+            eng::SuperInput &inputs, eng::TextureManager &textureManager);
             ~ClientSystems();
 
             /// @brief A system who applies velocities on positions
@@ -58,7 +61,7 @@ namespace rtp
 
             /// @brief A system who handles inputs and stores actions
             /// @param r The Registry on which to apply the system
-            void controlSystem(eng::Registry &r);
+            void controlSystem(eng::Registry &r, eng::RegistryManager &manager);
 
             /// @brief A system who handle movement on controllable entities
             /// @param r The registry on which to apply the system
@@ -147,6 +150,10 @@ namespace rtp
             sf::Time &_delta;
             bool &_isWindowFocused;
             bool _isButtonRelease;
+            bool _isEscapeRelease;
+            eng::GraphicSystems &_gfx;
+            eng::SuperInput &_inputs;
+            eng::TextureManager &_textureManager;
     };
 } // namespace rtp
 

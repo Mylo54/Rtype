@@ -7,33 +7,18 @@
 
 #include "ClientSystems.hpp"
 
-rtp::ClientSystems::ClientSystems(sf::RenderWindow &w, sf::Clock &c,
-sf::Time &delta,
-boost::asio::ip::udp::socket &socket, bool &focus):
-_w(w), _c(c), _delta(delta), _isWindowFocused(focus)
+rtp::ClientSystems::ClientSystems(eng::GraphicSystems &gfx, std::string adress, int port,
+boost::asio::ip::udp::socket &socket, eng::SuperInput &inputs,
+eng::TextureManager &textureManager):
+_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()),
+_isWindowFocused(gfx.isWindowFocused()), _gfx(gfx), _inputs(inputs), _textureManager(textureManager)
 {
     _isButtonRelease = false;
+    _isEscapeRelease = false;
 }
 
 rtp::ClientSystems::~ClientSystems()
 {
-}
-
-void rtp::ClientSystems::logSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            std::cout << i << ": pos = {" << pos.value().x << ", " << pos.value().y;
-            std::cout << ", " << pos.value().z << "}, vel = {" << vel.value().x;
-            std::cout << ", " << vel.value().y << "}" << std::endl;
-        }
-    }
 }
 
 void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
@@ -48,13 +33,9 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
             vel.value().x += ctrl.value().xAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? _delta.asSeconds() * 20 : 0;
 
             // Up & Down
             vel.value().y += ctrl.value().yAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? _delta.asSeconds() * 20 : 0;
         }
     }
 }
@@ -87,47 +68,45 @@ void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
     auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
-        auto &pos = poss[i];
-        auto &bg = bgs[i];
-
-        if (pos.has_value() && bg.has_value()) {
-            if (pos.value().x <= -1920)
-                pos.value().x = 1920;
-            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
-            _w.draw(bg.value().sprite);
+        if (poss[i].has_value() && bgs[i].has_value()) {
+            auto &pos = poss[i].value();
+            auto &bg = bgs[i].value();
+            if (pos.x <= -1920)
+                pos.x = 1920;
         }
     }
 }
 
-void rtp::ClientSystems::controlSystem(eng::Registry &r)
+void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &manager)
 {
     if (_isWindowFocused == false) {
         return;
     }
     auto &controllables = r.getComponents<Controllable>();
+    bool press = true;
 
     for (int i = 0; i < controllables.size(); i++) {
         auto &ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            // up and down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                ctrl.value().yAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                ctrl.value().yAxis = 1;
-            else
-                ctrl.value().yAxis = 0;
-            
-            // left and right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                ctrl.value().xAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                ctrl.value().xAxis = 1;
-            else
-                ctrl.value().xAxis = 0;
-            
-            // shoot
-            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            // Move analog & button (round to integer because )
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") > 0.1f ? 1.0f : 0.0f;
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") < -0.1f ? -1.0f : ctrl.value().xAxis;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y")> 0.1f ? 1.0f : 0.0f;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y") < -0.1f ? -1.0f : ctrl.value().yAxis;
+
+            // Move -button
+            ctrl.value().xAxis -= _inputs.getActionStrength("Move -x");
+            ctrl.value().yAxis -= _inputs.getActionStrength("Move -y");
+            // Shoot
+            ctrl.value().shoot = _inputs.isActionPressed("Fire");
+
+            // Pause menu (move this somewhere else, please)
+            if (_inputs.isActionJustReleased("Pause")) {
+                std::cout << "[DEBUG] key escape pressed" << std::endl;
+                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx, _textureManager);
+                std::cout << "[DEBUG] crea pause menu" << std::endl;
+            }
         }
     }
 }
@@ -186,38 +165,6 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 r.addComponent(bullet, eng::Sound("assets/fire.wav", true));
                 r.addComponent(bullet, rtp::Bullet(2));
             }
-        }
-    }
-}
-
-void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Sound>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().sound.play();
-            }
-        }
-    }
-}
-
-void rtp::ClientSystems::positionSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
-            pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
         }
     }
 }
@@ -288,7 +235,7 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
     auto &poss = r.getComponents<eng::Position>();
-    auto &rcts = r.getComponents<RectCollider>();
+    auto &rcts = r.getComponents<eng::RectCollider>();
     auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
@@ -449,22 +396,6 @@ void rtp::ClientSystems::killBullets(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
             else if (pos.y > 1080 || pos.y < -1)
                 r.killEntity(eng::Entity(i));
-        }
-    }
-}
-
-void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Music>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().music->play();
-            }
         }
     }
 }
