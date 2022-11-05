@@ -125,9 +125,6 @@ namespace rtp
             /// @brief The endpoint where we send data
             boost::asio::ip::udp::endpoint _endpoint;
 
-            /// @brief Container for received data
-            boost::array<server_payload_t ,1> _dataBuffer;
-
             /// @brief The sync id corresponding to the client character
             int _mySyncId;
 
