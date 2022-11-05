@@ -129,7 +129,7 @@ void rtp::Server::_addEnemy(eng::Registry &r)
     eng::Entity enm = r.spawnEntity();
 
     r.addComponent<eng::Position>(enm, eng::Position(1920, rand() % 1080, 0));
-    r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
+    r.addComponent<eng::Velocity>(enm, eng::Velocity(-100, 0));
     r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * _level, 0));
     r.addComponent<eng::RectCollider>(enm, eng::RectCollider(40, 16));
     r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
@@ -171,7 +171,7 @@ void rtp::Server::systemsLoop()
 {
     //rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
-    eng::PhysicSystems(_systems.getDelta());
+    eng::PhysicSystems physics(_systems.getDelta());
     rtp::DataSystems data(_mutex, _listDataRec, _socket, _endpoints);
     _systems.setEnemyRate(5);
     _systems.setBonusRate(17);
@@ -200,7 +200,8 @@ void rtp::Server::systemsLoop()
         _systems.controlFireSystem(r);
 
         // Apply logic and physics calculations
-        _systems.positionSystem(r);
+        physics.applyGravity(r);
+        physics.applyVelocities(r);
         _systems.limitPlayer(r);
         _systems.playerBullets(r);
         _systems.killDeadEnemies(r);

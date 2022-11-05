@@ -13,7 +13,7 @@ void rtp::ServerSystems::limitPlayer(eng::Registry &r)
     auto &pos = r.getComponents<eng::Position>();
     auto &ves = r.getComponents<eng::Velocity>();
     auto &pls = r.getComponents<PlayerStats>();
-    float maxSpeed = 15;
+    float maxSpeed = 300;
 
     for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
         if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
@@ -50,7 +50,7 @@ void rtp::ServerSystems::controlFireSystem(eng::Registry &r)
             
             ctrl.value().shoot = false;
             ctrl.value().hasShot = true;
-            r.addComponent(bullet, eng::Velocity(15, 0));
+            r.addComponent(bullet, eng::Velocity(300, 0));
             r.addComponent(bullet, eng::Position(pos.x + 65, pos.y + 25, pos.z));
             r.addComponent(bullet, rtp::Bullet(2));
         }

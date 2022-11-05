@@ -16,41 +16,18 @@ rtp::ServerSystems::~ServerSystems()
 {
 }
 
-void rtp::ServerSystems::positionSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * _delta * 20);
-            pos.value().y += (vel.value().y * _delta * 20);
-        }
-    }
-}
-
 void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 {
     auto &velocities = r.getComponents<eng::Velocity>();
     auto &controllables = r.getComponents<Controllable>();
 
     for (int i = 0; i < controllables.size() && i < velocities.size(); i++) {
-        auto &ctrl = controllables[i];
-        auto &vel = velocities[i];
+        if (velocities[i].has_value() && controllables[i].has_value()) {
+            auto &ctrl = controllables[i].value();
+            auto &vel = velocities[i].value();
 
-        if (vel.has_value() && ctrl.has_value()) {
-            // Left & Right
-            vel.value().x += ctrl.value().xAxis * _delta * 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -_delta * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? _delta * 20 : 0;
-
-            // Up & Down
-            vel.value().y += ctrl.value().yAxis * _delta * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -_delta * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? _delta * 20 : 0;
+            vel.x += ctrl.xAxis * _delta * 20 * 2;
+            vel.y += ctrl.yAxis * _delta * 20 * 2;
         }
     }
 }

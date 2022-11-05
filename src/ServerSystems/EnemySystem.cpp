@@ -23,7 +23,7 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
         int scale = 3;
 
         r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
-        r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
+        r.addComponent<eng::Velocity>(enm, eng::Velocity(-100, 0));
         r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * level, 0));
         r.addComponent<eng::RectCollider>(enm, eng::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
