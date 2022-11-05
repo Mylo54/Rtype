@@ -154,7 +154,7 @@ int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
 
 int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
 {
-    //MapVoter *mv = new MapVoter(_manager, _singlePlayerBtnFct);
+    //MapVoter *mv = new MapVoter(_manager, _singlePlayerBtnFct, _textureManager);
     _singlePlayerBtnFct(_manager, true, 1, 0);
     return (0);
 }

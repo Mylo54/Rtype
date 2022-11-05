@@ -364,7 +364,7 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
                     btn.btnFunction(manager);
                 }
             }
-        }<iframe src="https://giphy.com/embed/VWLIFnPGtpAGY" width="480" height="265" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/black-and-white-sad-bw-VWLIFnPGtpAGY">via GIPHY</a></p>
+        }
         return;
     }
 }

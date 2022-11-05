@@ -14,11 +14,11 @@
 #include <boost/array.hpp>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include <memory>
+#include "Miscellaneous.hpp"
 
 namespace rtp {
     class MapVoter {
@@ -26,14 +26,12 @@ namespace rtp {
             /// @brief MapVoter object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            MapVoter(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int, int)> &co);
+            MapVoter(eng::RegistryManager &manager,
+            std::function<int(eng::RegistryManager&, bool, int, int)> &co,
+            eng::TextureManager &textureManager);
             ~MapVoter();
 
         protected:
-            /// @brief Setup the registry with every sparse array needed
-            /// @param reg The Registry to setup
-            void _setupRegistry(eng::Registry &reg);
-
             /// @brief Adds all buttons to a registry
             /// @param reg The Registry on which to adds the buttons
             void _addButtons(eng::Registry &reg);
@@ -68,6 +66,7 @@ namespace rtp {
         private:
             eng::RegistryManager &_manager;
             std::function<int(eng::RegistryManager&, bool, int, int)> &_co;
+            eng::TextureManager &_textureManager;
     };
 }
 

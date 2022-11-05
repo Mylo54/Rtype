@@ -174,12 +174,12 @@ int rtp::Client::connect(eng::RegistryManager &manager, bool multiplayer, int lv
     if (res[0] == 1)
         return (1);
     if (multiplayer == false) {
-        rtp::Game game(_manager);
+        rtp::Game game(_manager, _textureManager);
         eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
     } else {
-        rtp::Game game(_manager);
+        rtp::Game game(_manager, _textureManager);
         std::cout << "multiplayer before connection screen" << std::endl;
-        //rtp::Connection connection(_manager);
+        //rtp::Connection connection(_manager, _textureManager);
         eng::Entity player = game.addPlayer(_manager.getTop(), res[1], res[2]);
     }
     _myPlayerId = res[1];

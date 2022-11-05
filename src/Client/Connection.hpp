@@ -14,11 +14,11 @@
 #include <boost/array.hpp>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
 #include <memory>
+#include "Miscellaneous.hpp"
 
 namespace rtp {
     class Connection {
@@ -26,15 +26,12 @@ namespace rtp {
             /// @brief Connection object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            Connection(eng::RegistryManager &manager);
+            Connection(eng::RegistryManager &manager,
+            eng::TextureManager &textureManager);
             ~Connection();
 
             eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
         protected:
-            /// @brief Setup the registry with every sparse array needed
-            /// @param reg The Registry to setup
-            void _setupRegistry(eng::Registry &reg);
-
             /// @brief Add layers of backgrounds to a registry
             /// @param reg The Registry on which to add the backgrounds
             void _addBackgrounds(eng::Registry &reg);
@@ -43,6 +40,7 @@ namespace rtp {
             int _btnFctStart(eng::RegistryManager &reg);
         private:
             eng::RegistryManager &_manager;
+            eng::TextureManager &_textureManager;
     };
 }
 
