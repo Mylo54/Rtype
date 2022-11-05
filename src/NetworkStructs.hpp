@@ -77,11 +77,6 @@ namespace rtp
         int playerId;
         int syncId;
     } connectPayload_t;
-
-    typedef struct inputPayload_s {
-        int ACTION_NAME;
-        int syncId;
-    } inputPayload_t;
 } // namespace rtp
 
 

@@ -65,7 +65,7 @@ void rtp::Client::disconnect()
 {
     // Disconnect here
     std::cout << "[CLIENT][DISCONNECT] : send disconnect" << std::endl;
-    boost::array<inputPayload_t, 1> dataTbs = {LEAVE_GAME};
+    boost::array<connectPayload_t, 1> dataTbs = {LEAVE_GAME};
     //_socket.send_to(boost::asio::buffer(dataTbs),  boost::asio::ip::udp::endpoint{boost::asio::ip::udp::v4(), boost::asio::ip::port_type(_port)});
     boost::asio::write(_socketTCP, boost::asio::buffer(dataTbs), _error);
     return;

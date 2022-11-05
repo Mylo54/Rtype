@@ -222,7 +222,7 @@ void rtp::NetworkSystems::_completePlayer(eng::Registry &r, int e)
 void rtp::NetworkSystems::disconnectSystems(eng::Registry &r)
 {
     auto &synceds = r.getComponents<Synced>();
-    boost::array<inputPayload_t, 1UL> data;
+    boost::array<connectPayload_t, 1UL> data;
 
     for (int i = 0; i < synceds.size(); i++) {
         auto sync = synceds[i];
