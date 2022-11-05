@@ -29,6 +29,7 @@
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
 #include "../ServerSystems/ServerSystems.hpp"
+#include "../ServerSystems/DataSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 
 namespace rtp {

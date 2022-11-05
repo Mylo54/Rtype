@@ -7,10 +7,7 @@
 
 #include "ServerSystems.hpp"
 
-rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
-    std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
-    std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
-    _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
+rtp::ServerSystems::ServerSystems()
 {
     _lastUpdate = std::chrono::steady_clock::now();
 }
@@ -29,8 +26,8 @@ void rtp::ServerSystems::positionSystem(eng::Registry &r)
         auto &vel = velocities[i];
 
         if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * float(_delta) / 1000000 * 20);
-            pos.value().y += (vel.value().y * float(_delta) / 1000000 * 20);
+            pos.value().x += (vel.value().x * _delta * 20);
+            pos.value().y += (vel.value().y * _delta * 20);
         }
     }
 }
@@ -46,27 +43,16 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * _getDeltaAsSeconds() * 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -(_getDeltaAsSeconds() * 20) : 0;
-            vel.value().x += (vel.value().x < 0) ? _getDeltaAsSeconds() * 20 : 0;
+            vel.value().x += ctrl.value().xAxis * _delta * 20 * 2;
+            vel.value().x += (vel.value().x > 0) ? -_delta * 20 : 0;
+            vel.value().x += (vel.value().x < 0) ? _delta * 20 : 0;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * _getDeltaAsSeconds() * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -(_getDeltaAsSeconds() * 20) : 0;
-            vel.value().y += (vel.value().y < 0) ? _getDeltaAsSeconds() * 20 : 0;
+            vel.value().y += ctrl.value().yAxis * _delta * 20 * 2;
+            vel.value().y += (vel.value().y > 0) ? -_delta * 20 : 0;
+            vel.value().y += (vel.value().y < 0) ? _delta * 20 : 0;
         }
     }
-}
-
-int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
-{
-    auto synceds = r.getComponents<Synced>();
-
-    for (int i = 0; i < synceds.size(); i++)
-        if (synceds[i].has_value() == true)
-            if (synceds[i].value().id == syncId)
-                return i;
-    return -1;
 }
 
 void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)

@@ -7,26 +7,25 @@
 
 #include "ServerSystems.hpp"
 
-void rtp::ServerSystems::limitTime()
+void rtp::ServerSystems::limitTickRate()
 {
-    if ((_tps != 0) && ((1 / _tps) > _elapsedTime)) {
-        long long sleeptime = ((1.0 / _tps) - _elapsedTime) * 1000000;
-        std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));       
-        _delta = sleeptime + (_elapsedTime * 1000000);
-    }
-    else {
-        _delta = _elapsedTime * 1000000;
+    if (_tps != 0) {
+        float elapsed = (std::clock() - _lastClockTime) / CLOCKS_PER_SEC;
+        usleep((_tps - elapsed) * CLOCKS_PER_SEC);
+        _delta = _tps - elapsed;
+        _lastClockTime = std::clock();
     }
 }
 
-void rtp::ServerSystems::updDeltaTime()
+float &rtp::ServerSystems::getDelta()
 {
-    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    _elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
-    _lastUpdate = now;
+    return _delta;
 }
 
-float rtp::ServerSystems::_getDeltaAsSeconds()
+void rtp::ServerSystems::setTickRate(unsigned int tps)
 {
-    return (float(_delta) / 1000000);
+    if (tps == 0)
+        _tps = 0;
+    else
+        _tps = 1.0f / tps;
 }

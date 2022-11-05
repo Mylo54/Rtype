@@ -14,7 +14,7 @@ void rtp::ServerSystems::setEnemyRate(float seconds)
 
 void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
 {
-    _enemyTimer -= _getDeltaAsSeconds();
+    _enemyTimer -= _delta;
 
     if (_enemyTimer <= 0) {
         eng::Entity enm = r.spawnEntity();
