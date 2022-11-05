@@ -29,7 +29,6 @@ namespace rtp {
 
         protected:
             void _addButton(eng::Registry &r);
-            void _setupRegistry(eng::Registry &reg);
             void _addResumeButton(eng::Registry &r);
             void _addSettingsButton(eng::Registry &r);
             void _addMainMenuButton(eng::Registry &r);

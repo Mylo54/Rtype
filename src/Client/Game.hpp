@@ -17,6 +17,7 @@
 #include "../ClientSystems/NetworkSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../NetworkStructs.hpp"
+#include "Miscellaneous.hpp"
 
 namespace rtp {
     class Game {
@@ -35,9 +36,6 @@ namespace rtp {
             eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
             
         protected:
-            /// @brief Setup the registry with every sparse array needed
-            /// @param reg The Registry to setup
-            void _setupRegistry(eng::Registry &reg);
 
             /// @brief Adds a music to the registry
             /// @param reg the registry on which to add the music

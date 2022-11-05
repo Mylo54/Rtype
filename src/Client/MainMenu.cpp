@@ -21,7 +21,7 @@ _manager(manager), _singlePlayerBtnFct(co), _gfx(gfx),
 _textureManager(textureManager)
 {
     _manager.addRegistry("R1");
-    _setupRegistry(_manager.getTop());
+    setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     _addBackgrounds(_manager.getTop());
     _addEarth(_manager.getTop());
@@ -57,27 +57,6 @@ void rtp::MainMenu::_addBackgrounds(eng::Registry &reg)
     reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
     reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_textureManager.getTextureFromFile("assets/foreground.png")));
     reg.addComponent<rtp::Background>(bg3, rtp::Background());
-}
-
-void rtp::MainMenu::_setupRegistry(eng::Registry &reg)
-{
-    reg.registerComponents(eng::SparseArray<eng::Velocity>());
-    reg.registerComponents(eng::SparseArray<eng::Position>());
-    reg.registerComponents(eng::SparseArray<eng::Drawable>());
-    reg.registerComponents(eng::SparseArray<eng::Sound>());
-    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
-    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
-    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
-    reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
-    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
-    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-    reg.registerComponents(eng::SparseArray<eng::Writable>());
-    reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::Button>());
-    reg.registerComponents(eng::SparseArray<eng::Music>());
-    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
-    reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
 }
 
 rtp::MainMenu::~MainMenu()

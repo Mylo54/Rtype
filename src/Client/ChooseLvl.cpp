@@ -13,34 +13,13 @@ eng::TextureManager &textureManager):
 _manager(manager), _singlePlayerBtnFct(co), _textureManager(textureManager)
 {
     _manager.addRegistry("lvl");
-    _setupRegistry(_manager.getTop());
+    setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     std::cout << "call here" << std::endl;
 }
 
 rtp::ChooseLvl::~ChooseLvl()
 {
-}
-
-void rtp::ChooseLvl::_setupRegistry(eng::Registry &reg)
-{
-    reg.registerComponents(eng::SparseArray<eng::Velocity>());
-    reg.registerComponents(eng::SparseArray<eng::Position>());
-    reg.registerComponents(eng::SparseArray<eng::Drawable>());
-    reg.registerComponents(eng::SparseArray<eng::Sound>());
-    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
-    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
-    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
-    reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
-    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
-    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-    reg.registerComponents(eng::SparseArray<eng::Writable>());
-    reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::Button>());
-    reg.registerComponents(eng::SparseArray<eng::Music>());
-    reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
-    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
 }
 
 void rtp::ChooseLvl::_addButtons(eng::Registry &r)

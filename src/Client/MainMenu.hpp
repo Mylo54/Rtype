@@ -19,6 +19,8 @@
 #include "../NetworkStructs.hpp"
 #include "ChooseLvl.hpp"
 #include <memory>
+#include "Miscellaneous.hpp"
+
 namespace rtp {
     class MainMenu {
         public:
@@ -32,10 +34,6 @@ namespace rtp {
             ~MainMenu();
 
         protected:
-
-            /// @brief Setup the registry with every sparse array needed
-            /// @param reg The Registry to setup
-            void _setupRegistry(eng::Registry &reg);
 
             /// @brief Adds all buttons to a registry
             /// @param reg The Registry on which to adds the buttons
