@@ -116,7 +116,7 @@ void rtp::ClientSystems::buttonStateSystem(eng::Registry &r)
     auto &buttons = r.getComponents<Button>();
     auto &positions = r.getComponents<eng::Position>();
     auto &sprite = r.getComponents<eng::Drawable>();
-    auto mousePos = sf::Mouse::getPosition(_w);
+    auto mousePos = _inputs.getMousePosition();
 
     for (int i = 0; i < buttons.size(); i++) {
         if (buttons[i].has_value()) {
@@ -125,11 +125,12 @@ void rtp::ClientSystems::buttonStateSystem(eng::Registry &r)
             auto &pos = positions[i].value();
             sf::IntRect rect = spr.sprite.getTextureRect();
 
-            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+            if (mousePos[0] > pos.x && mousePos[0] < pos.x + btn.width
+            && mousePos[1] > pos.y && mousePos[1] < pos.y + btn.height) {
                 rect.left = (spr.sheetDirection == 1) ? rect.width : 0;
                 rect.top = (spr.sheetDirection == 3) ? rect.height : 0;
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if (_inputs.isActionPressed("MouseLeft")) {
+                    std::cout << "debug" << std::endl;
                     rect.left += (spr.sheetDirection == 1) ? rect.width : 0;
                     rect.top += (spr.sheetDirection == 3) ? rect.height : 0;
                 }
@@ -350,35 +351,21 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
 {
     auto &buttons = r.getComponents<Button>();
     auto &positions = r.getComponents<eng::Position>();
-    auto mousePos = sf::Mouse::getPosition(_w);
+    auto mousePos = _inputs.getMousePosition();
 
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isButtonRelease == true) {
-        _isButtonRelease = false;
+    if (_inputs.isActionJustReleased("MouseLeft")) {
         for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
             if (buttons[i].has_value() && positions[i].has_value()) {
                 auto &btn = buttons[i].value();
                 auto &pos = positions[i].value();
 
-                if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-                && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                if (mousePos[0] > pos.x && mousePos[0] < pos.x + btn.width
+                && mousePos[1] > pos.y && mousePos[1] < pos.y + btn.height) {
                     btn.btnFunction(manager);
                 }
             }
         }
         return;
-    }
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        return;
-    for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
-        if (buttons[i].has_value() && positions[i].has_value()) {
-            auto &btn = buttons[i].value();
-            auto &pos = positions[i].value();
-            
-            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
-                _isButtonRelease = true;
-            }
-        }
     }
 }
 

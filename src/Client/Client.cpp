@@ -25,6 +25,7 @@ rtp::Client::~Client()
 
 void rtp::Client::_setupInputs()
 {
+    _inputs.addAction("MouseLeft");
     _inputs.addAction("Move x");
     _inputs.addAction("Move y");
     _inputs.addAction("Fire");
@@ -52,6 +53,9 @@ void rtp::Client::_setupInputs()
     _inputs.addEvent("Move -y", eng::SuperInput::Key::up);
     _inputs.addEvent("Fire", eng::SuperInput::Key::space);
     _inputs.addEvent("Pause", eng::SuperInput::Key::escape);
+
+    // Mouse inputs
+    _inputs.addEvent("MouseLeft", eng::SuperInput::MouseButton::left);
 }
 
 void rtp::Client::run()
