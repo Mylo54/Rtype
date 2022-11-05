@@ -71,8 +71,6 @@ namespace rtp
             std::vector<int> connect(int port);
 
             void setSyncId(int id);
-
-            void setDelta(sf::Time &delta);
         protected:
         private:
             /// @brief Emplace a network received enemy

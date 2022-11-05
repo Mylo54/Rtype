@@ -24,11 +24,6 @@ void rtp::NetworkSystems::setSyncId(int id)
     _mySyncId = id;
 }
 
-void rtp::NetworkSystems::setDelta(sf::Time &delta)
-{
-    _delta = delta;
-}
-
 void rtp::NetworkSystems::sendData(eng::Registry &r)
 {
     auto &controllables = r.getComponents<Controllable>();
