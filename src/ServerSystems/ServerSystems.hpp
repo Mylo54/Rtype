@@ -30,9 +30,7 @@ namespace rtp {
             /// @param mutex 
             /// @param listDataRec 
             /// @param endpoints 
-            ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
-            std::vector<boost::asio::ip::udp::endpoint> &endpoints);
+            ServerSystems();
             ~ServerSystems();
             
             /// @brief A system who applies velocities on positions
@@ -58,10 +56,6 @@ namespace rtp {
             /// @brief A system which sends data to ALL clients
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
-
-            /// @brief A system which receive and write data in the registry
-            /// @param r The Registry on which to apply the system
-            void receiveData(eng::Registry &r);
 
             void updDeltaTime();
             void limitTime();
@@ -134,20 +128,6 @@ namespace rtp {
             void setTickRate(unsigned int tps);
         protected:
         private:
-            /// @brief A method that gets a synced entity id
-            /// @param syncId The synced component id
-            /// @return The entity id
-            int _getSyncedEntity(eng::Registry &r, int syncId);
-
-            /// @brief A generic function that send a vector to all endpoints
-            /// @param vector The vector to send to all endpoints
-            void _sendDataToAll(std::vector<int> &vector);
-
-            /// @brief adds ints to the payload in parameters
-            /// @param payload ref to the payload vector
-            /// @param toAdd the ints to add to the payload
-            void _addToPayload(std::vector<int> &payload, std::vector<int> toAdd);
-
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system
             /// @param b The bullets data
@@ -165,15 +145,6 @@ namespace rtp {
 
             /// @brief The timer until the next bonus spawns
             float _bonusTimer;
-
-            /// @brief data sending socket
-            boost::asio::ip::udp::socket &_socket;
-            /// @brief list (vector) of client endpoints
-            std::vector<boost::asio::ip::udp::endpoint> &_endpoints;
-            /// @brief atomic variable of acces to listDataRec
-            std::mutex &_mutex;
-            /// @brief List of all received payload
-            std::vector<std::vector<int>> &_listDataRec;
 
             /// @brief The delta time since last frame in microseconds
             float _delta = 0;

@@ -7,10 +7,7 @@
 
 #include "ServerSystems.hpp"
 
-rtp::ServerSystems::ServerSystems(boost::asio::ip::udp::socket &socket,
-    std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
-    std::vector<boost::asio::ip::udp::endpoint> &endpoints) : _socket(socket),
-    _mutex(mutex), _listDataRec(listDataRec), _endpoints(endpoints)
+rtp::ServerSystems::ServerSystems()
 {
     _lastUpdate = std::chrono::steady_clock::now();
 }
@@ -56,17 +53,6 @@ void rtp::ServerSystems::controlMovementSystem(eng::Registry &r)
             vel.value().y += (vel.value().y < 0) ? _delta * 20 : 0;
         }
     }
-}
-
-int rtp::ServerSystems::_getSyncedEntity(eng::Registry &r, int syncId)
-{
-    auto synceds = r.getComponents<Synced>();
-
-    for (int i = 0; i < synceds.size(); i++)
-        if (synceds[i].has_value() == true)
-            if (synceds[i].value().id == syncId)
-                return i;
-    return -1;
 }
 
 void rtp::ServerSystems::killOutOfBounds(eng::Registry &r)

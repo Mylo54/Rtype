@@ -7,7 +7,10 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(boost::asio::ip::port_type port) : _socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)), _socketTCP(_ioContext), _systems(_socket, _mutex, _listDataRec, _endpoints)
+rtp::Server::Server(boost::asio::ip::port_type port) :
+_socket(this->_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address("0.0.0.0"), port}),
+_acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303)),
+_socketTCP(_ioContext)
 {
     this->_clientPort = 0;
     _port = port;
@@ -169,6 +172,7 @@ void rtp::Server::systemsLoop()
     //rtp::ServerSystems systems(_socket, _mutex, _listDataRec, _endpoints);
     eng::Registry r;
     eng::PhysicSystems(_systems.getDelta());
+    rtp::DataSystems data(_mutex, _listDataRec, _socket, _endpoints);
     _systems.setEnemyRate(5);
     _systems.setBonusRate(17);
 
@@ -189,7 +193,7 @@ void rtp::Server::systemsLoop()
         }
 
         // Receive data
-        _systems.receiveData(r);
+        data.receiveData(r);
 
         // Apply new controls
         _systems.controlMovementSystem(r);
@@ -206,7 +210,7 @@ void rtp::Server::systemsLoop()
         // systems.spawnBonus(r);
 
         // Send the new data
-        _systems.sendData(r);
+        data.sendData(r);
 
         // Limit the frequence of the server
         _systems.limitTickRate();
