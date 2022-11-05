@@ -15,7 +15,6 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include "../NetworkStructs.hpp"
 #include "Game.hpp"
@@ -24,12 +23,12 @@
 namespace rtp {
     class PauseMenu {
         public:
-            PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx);
+            PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx,
+            eng::TextureManager &textureManager);
             ~PauseMenu();
 
         protected:
             void _addButton(eng::Registry &r);
-            void _setupRegistry(eng::Registry &reg);
             void _addResumeButton(eng::Registry &r);
             void _addSettingsButton(eng::Registry &r);
             void _addMainMenuButton(eng::Registry &r);
@@ -40,6 +39,7 @@ namespace rtp {
             eng::RegistryManager _manager;
             std::function<int(eng::RegistryManager &)> _gameBtnFct;
             eng::GraphicSystems &_gfx;
+            eng::TextureManager &_textureManager;
     };
 }
 

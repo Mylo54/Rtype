@@ -7,10 +7,12 @@
 
 #include "Connection.hpp"
 
-rtp::Connection::Connection(eng::RegistryManager &manager) : _manager(manager)
+rtp::Connection::Connection(eng::RegistryManager &manager,
+eng::TextureManager &textureManager):
+_manager(manager), _textureManager(textureManager)
 {
     _manager.addRegistry("Connection");
-    _setupRegistry(_manager.getTop());
+    setupRegistry(_manager.getTop());
     //_addButtonStart(_manager.getTop());
     _addBackgrounds(_manager.getTop());
 }
@@ -19,37 +21,20 @@ rtp::Connection::~Connection()
 {
 }
 
-
 void rtp::Connection::_addBackgrounds(eng::Registry &reg)
 {
     eng::Entity bg = reg.spawnEntity();
     reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
-    reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+    reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/background.png")));
+    reg.addComponent<rtp::Background>(bg, rtp::Background());
     eng::Entity bg2 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg2, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/middleground.png"));
+    reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_textureManager.getTextureFromFile("assets/middleground.png")));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background());
     eng::Entity bg3 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg3, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg3, rtp::Background("assets/background.png"));
-}
-
-void rtp::Connection::_setupRegistry(eng::Registry &reg)
-{
-    reg.registerComponents(eng::SparseArray<eng::Velocity>());
-    reg.registerComponents(eng::SparseArray<eng::Position>());
-    reg.registerComponents(eng::SparseArray<eng::Drawable>());
-    reg.registerComponents(eng::SparseArray<eng::Sound>());
-    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
-    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
-    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
-    reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
-    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
-    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-    reg.registerComponents(eng::SparseArray<eng::Writable>());
-    reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::Button>());
-    reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_textureManager.getTextureFromFile("assets/foreground.png")));
+    reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
 void rtp::Connection::_addButtonStart(eng::Registry &r)
@@ -85,7 +70,7 @@ eng::Entity rtp::Connection::addPlayer(eng::Registry &reg, int playerId, int syn
     reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-    reg.addComponent<rtp::RectCollider>(player, rtp::RectCollider(40, 16));
+    reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
 
     std::cout << "You are player " << playerId << std::endl;
     return player;

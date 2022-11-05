@@ -33,7 +33,8 @@ namespace rtp
             /// @param socket udp socket of the client
             /// @param mySyncId synchronisation id of the player
             NetworkSystems(std::string address, int port,
-            boost::asio::ip::udp::socket &socket, sf::Time &delta);
+            boost::asio::ip::udp::socket &socket, sf::Time &delta,
+            eng::TextureManager &textureManager);
             ~NetworkSystems();
 
             /// @brief A system which sends data to the server
@@ -70,8 +71,6 @@ namespace rtp
             std::vector<int> connect(int port);
 
             void setSyncId(int id);
-
-            void setDelta(sf::Time &delta);
         protected:
         private:
             /// @brief Emplace a network received enemy
@@ -124,13 +123,11 @@ namespace rtp
             /// @brief The endpoint where we send data
             boost::asio::ip::udp::endpoint _endpoint;
 
-            /// @brief Container for received data
-            boost::array<server_payload_t ,1> _dataBuffer;
-
             /// @brief The sync id corresponding to the client character
             int _mySyncId;
 
             sf::Time &_delta;
+            eng::TextureManager &_textureManager;
     };
 } // namespace rtp
 

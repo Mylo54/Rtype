@@ -8,8 +8,10 @@
 #include "ClientSystems.hpp"
 
 rtp::ClientSystems::ClientSystems(eng::GraphicSystems &gfx, std::string adress, int port,
-boost::asio::ip::udp::socket &socket):
-_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()), _isWindowFocused(gfx.isWindowFocused()), _gfx(gfx)
+boost::asio::ip::udp::socket &socket, eng::SuperInput &inputs,
+eng::TextureManager &textureManager):
+_w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()),
+_isWindowFocused(gfx.isWindowFocused()), _gfx(gfx), _inputs(inputs), _textureManager(textureManager)
 {
     _isButtonRelease = false;
     _isEscapeRelease = false;
@@ -17,23 +19,6 @@ _w(gfx.getRenderWindow()), _c(gfx.getClock()), _delta(gfx.getDelta()), _isWindow
 
 rtp::ClientSystems::~ClientSystems()
 {
-}
-
-void rtp::ClientSystems::logSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            std::cout << i << ": pos = {" << pos.value().x << ", " << pos.value().y;
-            std::cout << ", " << pos.value().z << "}, vel = {" << vel.value().x;
-            std::cout << ", " << vel.value().y << "}" << std::endl;
-        }
-    }
 }
 
 void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
@@ -48,13 +33,9 @@ void rtp::ClientSystems::controlMovementSystem(eng::Registry &r)
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
             vel.value().x += ctrl.value().xAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().x += (vel.value().x > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().x += (vel.value().x < 0) ? _delta.asSeconds() * 20 : 0;
 
             // Up & Down
             vel.value().y += ctrl.value().yAxis * _delta.asSeconds() * 20 * 2;
-            vel.value().y += (vel.value().y > 0) ? -_delta.asSeconds() * 20 : 0;
-            vel.value().y += (vel.value().y < 0) ? _delta.asSeconds() * 20 : 0;
         }
     }
 }
@@ -87,14 +68,11 @@ void rtp::ClientSystems::backgroundSystem(eng::Registry &r)
     auto &poss = r.getComponents<eng::Position>();
 
     for (int i = 0; i < bgs.size() && i < poss.size(); i++) {
-        auto &pos = poss[i];
-        auto &bg = bgs[i];
-
-        if (pos.has_value() && bg.has_value()) {
-            if (pos.value().x <= -1920)
-                pos.value().x = 1920;
-            bg.value().sprite.setPosition({pos.value().x, pos.value().y});
-            _w.draw(bg.value().sprite);
+        if (poss[i].has_value() && bgs[i].has_value()) {
+            auto &pos = poss[i].value();
+            auto &bg = bgs[i].value();
+            if (pos.x <= -1920)
+                pos.x = 1920;
         }
     }
 }
@@ -111,37 +89,23 @@ void rtp::ClientSystems::controlSystem(eng::Registry &r, eng::RegistryManager &m
         auto &ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            // up and down
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                ctrl.value().yAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                ctrl.value().yAxis = 1;
-            else
-                ctrl.value().yAxis = 0;
-            
-            // left and right
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                ctrl.value().xAxis = -1;
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                ctrl.value().xAxis = 1;
-            else
-                ctrl.value().xAxis = 0;
-            
-            // shoot
-            ctrl.value().shoot = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            // Move analog & button (round to integer because )
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") > 0.1f ? 1.0f : 0.0f;
+            ctrl.value().xAxis = _inputs.getActionStrength("Move x") < -0.1f ? -1.0f : ctrl.value().xAxis;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y")> 0.1f ? 1.0f : 0.0f;
+            ctrl.value().yAxis = _inputs.getActionStrength("Move y") < -0.1f ? -1.0f : ctrl.value().yAxis;
 
-            // pause menu
-            if ((!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) && _isEscapeRelease == true) {
+            // Move -button
+            ctrl.value().xAxis -= _inputs.getActionStrength("Move -x");
+            ctrl.value().yAxis -= _inputs.getActionStrength("Move -y");
+            // Shoot
+            ctrl.value().shoot = _inputs.isActionPressed("Fire");
+
+            // Pause menu (move this somewhere else, please)
+            if (_inputs.isActionJustReleased("Pause")) {
                 std::cout << "[DEBUG] key escape pressed" << std::endl;
-                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx);
-                //rtp::PauseMenu pm(manager, _gfx);
+                rtp::PauseMenu *pm = new PauseMenu(manager, _gfx, _textureManager);
                 std::cout << "[DEBUG] crea pause menu" << std::endl;
-                std::cout << "ESCAPE PRESSED !!" << std::endl;
-                //controllables = r.getComponents<Controllable>();
-                _isEscapeRelease = false;
-                std::cout << "_isEscapeRelease = false " << std::endl;
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                _isEscapeRelease = true;
             }
         }
     }
@@ -152,7 +116,7 @@ void rtp::ClientSystems::buttonStateSystem(eng::Registry &r)
     auto &buttons = r.getComponents<Button>();
     auto &positions = r.getComponents<eng::Position>();
     auto &sprite = r.getComponents<eng::Drawable>();
-    auto mousePos = sf::Mouse::getPosition(_w);
+    auto mousePos = _inputs.getMousePosition();
 
     for (int i = 0; i < buttons.size(); i++) {
         if (buttons[i].has_value()) {
@@ -161,11 +125,12 @@ void rtp::ClientSystems::buttonStateSystem(eng::Registry &r)
             auto &pos = positions[i].value();
             sf::IntRect rect = spr.sprite.getTextureRect();
 
-            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+            if (mousePos[0] > pos.x && mousePos[0] < pos.x + btn.width
+            && mousePos[1] > pos.y && mousePos[1] < pos.y + btn.height) {
                 rect.left = (spr.sheetDirection == 1) ? rect.width : 0;
                 rect.top = (spr.sheetDirection == 3) ? rect.height : 0;
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if (_inputs.isActionPressed("MouseLeft")) {
+                    std::cout << "debug" << std::endl;
                     rect.left += (spr.sheetDirection == 1) ? rect.width : 0;
                     rect.top += (spr.sheetDirection == 3) ? rect.height : 0;
                 }
@@ -201,38 +166,6 @@ void rtp::ClientSystems::shootSystem(eng::Registry &r)
                 r.addComponent(bullet, eng::Sound("assets/fire.wav", true));
                 r.addComponent(bullet, rtp::Bullet(2));
             }
-        }
-    }
-}
-
-void rtp::ClientSystems::playSoundSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Sound>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().sound.play();
-            }
-        }
-    }
-}
-
-void rtp::ClientSystems::positionSystem(eng::Registry &r)
-{
-    auto &positions = r.getComponents<eng::Position>();
-    auto &velocities = r.getComponents<eng::Velocity>();
-
-    for (int i = 0; i < positions.size() && i < velocities.size(); i++) {
-        auto &pos = positions[i];
-        auto &vel = velocities[i];
-
-        if (pos.has_value() && vel.has_value()) {
-            pos.value().x += (vel.value().x * _delta.asSeconds() * 20);
-            pos.value().y += (vel.value().y * _delta.asSeconds() * 20);
         }
     }
 }
@@ -303,7 +236,7 @@ void rtp::ClientSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
     auto &poss = r.getComponents<eng::Position>();
-    auto &rcts = r.getComponents<RectCollider>();
+    auto &rcts = r.getComponents<eng::RectCollider>();
     auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
@@ -418,35 +351,21 @@ void rtp::ClientSystems::buttonSystem(eng::Registry &r, eng::RegistryManager &ma
 {
     auto &buttons = r.getComponents<Button>();
     auto &positions = r.getComponents<eng::Position>();
-    auto mousePos = sf::Mouse::getPosition(_w);
+    auto mousePos = _inputs.getMousePosition();
 
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isButtonRelease == true) {
-        _isButtonRelease = false;
+    if (_inputs.isActionJustReleased("MouseLeft")) {
         for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
             if (buttons[i].has_value() && positions[i].has_value()) {
                 auto &btn = buttons[i].value();
                 auto &pos = positions[i].value();
 
-                if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-                && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
+                if (mousePos[0] > pos.x && mousePos[0] < pos.x + btn.width
+                && mousePos[1] > pos.y && mousePos[1] < pos.y + btn.height) {
                     btn.btnFunction(manager);
                 }
             }
         }
         return;
-    }
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        return;
-    for (int i = 0; i < buttons.size() && i < positions.size(); i++) {
-        if (buttons[i].has_value() && positions[i].has_value()) {
-            auto &btn = buttons[i].value();
-            auto &pos = positions[i].value();
-            
-            if (mousePos.x > pos.x && mousePos.x < pos.x + btn.width
-            && mousePos.y > pos.y && mousePos.y < pos.y + btn.height) {
-                _isButtonRelease = true;
-            }
-        }
     }
 }
 
@@ -464,22 +383,6 @@ void rtp::ClientSystems::killBullets(eng::Registry &r)
                 r.killEntity(eng::Entity(i));
             else if (pos.y > 1080 || pos.y < -1)
                 r.killEntity(eng::Entity(i));
-        }
-    }
-}
-
-void rtp::ClientSystems::playMusicSystem(eng::Registry &r)
-{
-    auto &sounds = r.getComponents<eng::Music>();
-
-    for (int i = 0; i < sounds.size(); i++) {
-        auto &snd = sounds[i];
-
-        if (snd.has_value()) {
-            if (snd.value().toPlay) {
-                snd.value().toPlay = false;
-                snd.value().music->play();
-            }
         }
     }
 }

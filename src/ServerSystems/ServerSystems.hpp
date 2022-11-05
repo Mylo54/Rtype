@@ -30,9 +30,7 @@ namespace rtp {
             /// @param mutex 
             /// @param listDataRec 
             /// @param endpoints 
-            ServerSystems(boost::asio::ip::udp::socket &socket,
-            std::mutex &mutex, std::vector<std::vector<int>> &listDataRec,
-            std::vector<boost::asio::ip::udp::endpoint> &endpoints);
+            ServerSystems();
             ~ServerSystems();
             
             /// @brief A system who applies velocities on positions
@@ -59,13 +57,11 @@ namespace rtp {
             /// @param r The Registry on which to apply the system
             void sendData(eng::Registry &r);
 
-            /// @brief A system which receive and write data in the registry
-            /// @param r The Registry on which to apply the system
-            void receiveData(eng::Registry &r);
-
             void updDeltaTime();
-            /// @brief Limit the framerate if needed
             void limitTime();
+
+            /// @brief limits the server speed to the previously set "tickrate"
+            void limitTickRate();
 
             /// @brief Prevents player from going out of the window and limit its velocity
             /// @param reg The registry on which to apply the system
@@ -116,37 +112,27 @@ namespace rtp {
             /// @param pos2 Position of the second entity
             /// @param rect2 RectCollider of the second entity
             /// @return true if colliding, else otherwise
-            bool isColliding(eng::Position &pos1, rtp::RectCollider & rect1, eng::Position &pos2, rtp::RectCollider & rect2);
+            bool isColliding(eng::Position &pos1, eng::RectCollider & rect1, eng::Position &pos2, eng::RectCollider & rect2);
             /// @brief A system managing the collecting of bonus by a player
             /// @param r The Registry on which to apply the system
             /// @param player The player entity ID
             /// @param bonus The bonus entity ID
             void collectBonus(eng::Registry &r, int player, int bonus);
+
+            /// @brief Get the delta time in second since last tick
+            /// @return a reference to the delta time
+            float &getDelta();
+
+            /// @brief Sets the tick rate for the server
+            /// @param tps number of ticks per second
+            void setTickRate(unsigned int tps);
         protected:
         private:
-            /// @brief A method that gets a synced entity id
-            /// @param syncId The synced component id
-            /// @return The entity id
-            int _getSyncedEntity(eng::Registry &r, int syncId);
-
-            /// @brief A generic function that send a vector to all endpoints
-            /// @param vector The vector to send to all endpoints
-            void _sendDataToAll(std::vector<int> &vector);
-
-            /// @brief adds ints to the payload in parameters
-            /// @param payload ref to the payload vector
-            /// @param toAdd the ints to add to the payload
-            void _addToPayload(std::vector<int> &payload, std::vector<int> toAdd);
-
             /// @brief A short system which damage an enemy and destroys bullets
             /// @param r The Registry on which to apply the system
             /// @param b The bullets data
             /// @param p The Position of the bullet
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
-
-            /// @brief Get the delta time as seconds
-            /// @return the delta time as seconds
-            float _getDeltaAsSeconds();
 
             /// @brief The time to wait between each enemy spawn
             float _enemyRate;
@@ -160,21 +146,14 @@ namespace rtp {
             /// @brief The timer until the next bonus spawns
             float _bonusTimer;
 
-            /// @brief data sending socket
-            boost::asio::ip::udp::socket &_socket;
-            /// @brief list (vector) of client endpoints
-            std::vector<boost::asio::ip::udp::endpoint> &_endpoints;
-            /// @brief atomic variable of acces to listDataRec
-            std::mutex &_mutex;
-            /// @brief List of all received payload
-            std::vector<std::vector<int>> &_listDataRec;
-
             /// @brief The delta time since last frame in microseconds
-            long _delta = 0;
-            /// @brief Elapsed time since
-            float _elapsedTime = 0;
+            float _delta = 0;
+
+            std::clock_t _lastClockTime = std::clock();
+
             /// @brief Tick per seconds of the server
-            float _tps = 60;
+            float _tps = 0;
+
             /// @brief Saved value to update the delta time
             std::chrono::steady_clock::time_point _lastUpdate;
     };

@@ -29,6 +29,7 @@
 #include "Lobby.hpp"
 #include "../Components/Components.hpp"
 #include "../ServerSystems/ServerSystems.hpp"
+#include "../ServerSystems/DataSystems.hpp"
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 
 namespace rtp {
@@ -117,7 +118,6 @@ namespace rtp {
             // For UDP
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socket;
-            boost::array<inputPayload_t, 1> _dataRec;
             std::vector<std::vector<int>> _listDataRec;
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
 

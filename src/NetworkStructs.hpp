@@ -55,15 +55,6 @@ namespace rtp
         void * body = NULL;
     } networkPayload;
 
-    typedef struct server_payload_s {
-        int COMPONENT_NAME;
-        int syncId;
-        float valueA;
-        float valueB;
-        float valueC;
-        bool shot;
-    } server_payload_t;
-
     typedef struct synced_elem {
         int COMPONENT_NAME;
         size_t id;
@@ -86,11 +77,6 @@ namespace rtp
         int playerId;
         int syncId;
     } connectPayload_t;
-
-    typedef struct inputPayload_s {
-        int ACTION_NAME;
-        int syncId;
-    } inputPayload_t;
 } // namespace rtp
 
 

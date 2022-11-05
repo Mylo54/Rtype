@@ -14,7 +14,7 @@ void rtp::ServerSystems::setEnemyRate(float seconds)
 
 void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
 {
-    _enemyTimer -= _getDeltaAsSeconds();
+    _enemyTimer -= _delta;
 
     if (_enemyTimer <= 0) {
         eng::Entity enm = r.spawnEntity();
@@ -23,9 +23,9 @@ void rtp::ServerSystems::spawnEnemies(eng::Registry &r, int level)
         int scale = 3;
 
         r.addComponent<eng::Position>(enm, eng::Position(1919, posY, 0));
-        r.addComponent<eng::Velocity>(enm, eng::Velocity(-5, 0));
+        r.addComponent<eng::Velocity>(enm, eng::Velocity(-100, 0));
         r.addComponent<rtp::EnemyStats>(enm, rtp::EnemyStats(5 * level, 0));
-        r.addComponent<rtp::RectCollider>(enm, rtp::RectCollider(40 * scale, 16 * scale));
+        r.addComponent<eng::RectCollider>(enm, eng::RectCollider(40 * scale, 16 * scale));
         r.addComponent<rtp::Synced>(enm, rtp::Synced(enm.getId()));
         _enemyTimer = _enemyRate;
     }
@@ -35,7 +35,7 @@ void rtp::ServerSystems::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
 {
     auto &enms = r.getComponents<EnemyStats>();
     auto &poss = r.getComponents<eng::Position>();
-    auto &rcts = r.getComponents<RectCollider>();
+    auto &rcts = r.getComponents<eng::RectCollider>();
     auto &p = r.getComponents<eng::Position>()[blt.getId()].value();
     auto &b = r.getComponents<Bullet>()[blt.getId()].value();
 
@@ -73,7 +73,7 @@ void rtp::ServerSystems::enemyCollision(eng::Registry &r, int entity)
 {
     auto &enemies = r.getComponents<EnemyStats>();
     auto &positions = r.getComponents<eng::Position>();
-    auto &colliders = r.getComponents<rtp::RectCollider>();
+    auto &colliders = r.getComponents<eng::RectCollider>();
     auto &stats = r.getComponents<rtp::PlayerStats>();
 
     for (int i = 0; i < enemies.size() && i < positions.size(); i++) {

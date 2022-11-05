@@ -7,10 +7,13 @@
 
 #include "MapVoter.hpp"
 
-rtp::MapVoter::MapVoter(eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int, int)> &co) : _manager(manager), _co(co)
+rtp::MapVoter::MapVoter(eng::RegistryManager &manager,
+std::function<int(eng::RegistryManager&, bool, int, int)> &co,
+eng::TextureManager &textureManager):
+_manager(manager), _co(co), _textureManager(textureManager)
 {
     _manager.addRegistry("MapVoter");
-    _setupRegistry(_manager.getTop());
+    setupRegistry(_manager.getTop());
     _addButtons(_manager.getTop());
     _addBackgrounds(_manager.getTop());
 }
@@ -19,37 +22,20 @@ rtp::MapVoter::~MapVoter()
 {
 }
 
-
 void rtp::MapVoter::_addBackgrounds(eng::Registry &reg)
 {
     eng::Entity bg = reg.spawnEntity();
     reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
-    reg.addComponent<rtp::Background>(bg, rtp::Background("assets/foreground.png"));
+    reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/background.png")));
+    reg.addComponent<rtp::Background>(bg, rtp::Background());
     eng::Entity bg2 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg2, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg2, rtp::Background("assets/middleground.png"));
+    reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_textureManager.getTextureFromFile("assets/middleground.png")));
+    reg.addComponent<rtp::Background>(bg2, rtp::Background());
     eng::Entity bg3 = reg.spawnEntity();
-    reg.addComponent<eng::Position>(bg3, eng::Position(-50, -50, 0));
-    reg.addComponent<rtp::Background>(bg3, rtp::Background("assets/background.png"));
-}
-
-void rtp::MapVoter::_setupRegistry(eng::Registry &reg)
-{
-    reg.registerComponents(eng::SparseArray<eng::Velocity>());
-    reg.registerComponents(eng::SparseArray<eng::Position>());
-    reg.registerComponents(eng::SparseArray<eng::Drawable>());
-    reg.registerComponents(eng::SparseArray<eng::Sound>());
-    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
-    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
-    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
-    reg.registerComponents(eng::SparseArray<rtp::Background>());
-    reg.registerComponents(eng::SparseArray<rtp::RectCollider>());
-    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
-    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
-    reg.registerComponents(eng::SparseArray<eng::Writable>());
-    reg.registerComponents(eng::SparseArray<rtp::Synced>());
-    reg.registerComponents(eng::SparseArray<rtp::Button>());
-    reg.registerComponents(eng::SparseArray<eng::Music>());
+    reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
+    reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_textureManager.getTextureFromFile("assets/foreground.png")));
+    reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
 void rtp::MapVoter::_addButtons(eng::Registry &r)

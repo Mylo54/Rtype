@@ -16,17 +16,10 @@ namespace rtp
     /// @brief A class holding a background visual element
     class Background {
         public:
-            /// @brief Background object constructor
-            /// @param textureFilePath path to the texture file to load
-            Background(std::string textureFilePath)
-            {
-                texture->loadFromFile(textureFilePath);
-                sprite.setTexture(*texture);
-            }
+            /// @brief Component usefull to track parallax sprites
+            Background()
+            {}
             ~Background() {}
-
-            sf::Texture *texture = new sf::Texture;
-            sf::Sprite sprite;
         protected:
         private:
     };

@@ -13,14 +13,17 @@
 #include <fstream>
 #include "../Components/Components.hpp"
 #include "../ClientSystems/ClientSystems.hpp"
-#include "../ClientSystems/GraphicsSystems.hpp"
 #include "../ClientSystems/NetworkSystems.hpp"
 #include "../NetworkStructs.hpp"
+#include "Miscellaneous.hpp"
 
 namespace rtp {
     class ChooseLvl {
         public:
-            ChooseLvl(eng::RegistryManager &manager, std::function<int(eng::RegistryManager &, bool, int, int)> &co);
+            ChooseLvl(eng::RegistryManager &manager,
+            std::function<int(eng::RegistryManager &, bool, int, int)> &co,
+            eng::TextureManager &textureManager);
+
             ~ChooseLvl();
 
         protected:
@@ -28,10 +31,6 @@ namespace rtp {
             /// @brief Adds all buttons to a registry
             /// @param reg The Registry on which to adds the buttons
             void _addButtons(eng::Registry &r);
-
-            /// @brief Setup the registry with every sparse array needed
-            /// @param reg The Registry to setup
-            void _setupRegistry(eng::Registry &reg);
 
             /// @brief Add layers of backgrounds to a registry
             /// @param reg The Registry on which to add the backgrounds
@@ -79,7 +78,9 @@ namespace rtp {
 
         private:
             eng::RegistryManager &_manager;
+            eng::TextureManager &_textureManager;
             std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
+
     };
 }
 
