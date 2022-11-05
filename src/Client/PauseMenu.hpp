@@ -33,10 +33,10 @@ namespace rtp {
             void _addSettingsButton(eng::Registry &r);
             void _addMainMenuButton(eng::Registry &r);
             void _addExitButton(eng::Registry &r);
-            void _addBackgrounds(eng::Registry &reg);
+            void _addBackground(eng::Registry &reg);
             int _exitBtn(eng::RegistryManager &reg);
         private:
-            eng::RegistryManager &_manager;
+            eng::RegistryManager _manager;
             std::function<int(eng::RegistryManager &)> _gameBtnFct;
             eng::GraphicSystems &_gfx;
             eng::TextureManager &_textureManager;

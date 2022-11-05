@@ -11,12 +11,12 @@ rtp::PauseMenu::PauseMenu(eng::RegistryManager &manager,
 eng::GraphicSystems &gfx, eng::TextureManager &textureManager):
 _manager(manager), _gfx(gfx), _textureManager(textureManager)
 {
-    _manager.addRegistry("PauseMenu");
+    _manager.addRegistry("PauseMenu");///
     setupRegistry(_manager.getTop());
     std::cout << 2 << std::endl;
-    //_addButton(_manager.getTop());///
+    _addButton(_manager.getTop());///
     std::cout << "[DEbug] before addBackground call" << std::endl;
-    _addBackgrounds(_manager.getTop());
+    _addBackground(_manager.getTop());
     std::cout << "[DEbug] after addBackground call" << std::endl;
 }
 
@@ -28,7 +28,7 @@ int _resumeBtn(eng::RegistryManager &reg)
     return (0);
 }
 
-void rtp::PauseMenu::_addBackgrounds(eng::Registry &reg)
+void rtp::PauseMenu::_addBackground(eng::Registry &reg)
 {
     eng::Entity bg = reg.spawnEntity();
 
@@ -53,11 +53,11 @@ void rtp::PauseMenu::_addButton(eng::Registry &r)
     std::cout << 2.1 << std::endl;
     _addResumeButton(r);
     std::cout << 2.2 << std::endl;
-    //_addSettingsButton(r);
+    _addSettingsButton(r);
     std::cout << 2.3 << std::endl;
-    //_addMainMenuButton(r);
+    _addMainMenuButton(r);
     std::cout << 2.4 << std::endl;
-    //_addExitButton(r);
+    _addExitButton(r);
     std::cout << 2.5 << std::endl;
 }
 
@@ -69,11 +69,13 @@ void rtp::PauseMenu::_addResumeButton(eng::Registry &r)
 
     std::cout << 3 << std::endl;
     r.addComponent<eng::Position>(btn, eng::Position(832, 442, 0));
+
+
     std::cout << 3.1 << std::endl;
-    std::cout << "Position:" << r.getComponents<eng::Position>()[btn.getId()].value().x << std::endl;
+    std::cout << "Position:" << btn.getId() << r.getComponents<eng::Position>()[btn.getId()].value().x << std::endl;
     r.addComponent<rtp::Button>(btn, rtp::Button(_resumeBtn, 0, 0, 128 * 2, 32 * 1.5));
     std::cout << 3.2 << std::endl;
-    r.emplaceComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));///
+    r.emplaceComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
     // r.addComponent<eng::Drawable>(btn, eng::Drawable(_textureManager.getTextureFromFile("assets/button.png", 0, {0,0,0,0}));
     std::cout << 3.3 << std::endl;
     r.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(2, 1.5);

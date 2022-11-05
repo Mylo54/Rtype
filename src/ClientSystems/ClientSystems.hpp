@@ -12,6 +12,7 @@
 #include "../NetworkStructs.hpp"
 #include "../Components/Components.hpp"
 #include "../Client/PauseMenu.hpp"
+#include "../Client/MainMenu.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 
