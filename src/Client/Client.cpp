@@ -10,15 +10,14 @@
  rtp::Client::Client(boost::asio::ip::port_type &serverPort, std::string &portStr, std::string &serverAddr, int socketUdpPort):
 _port(serverPort),
 _socketTCP(_ioContext),
-_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(socketUdpPort)}),
+_socket(_ioContext, boost::asio::ip::udp::endpoint{boost::asio::ip::make_address(serverAddr), boost::asio::ip::port_type(socketUdpPort)}, SO_REUSEADDR | SO_REUSEPORT),
 _gfx(1920, 1080, "CHLOEMIAMIAMRTYPE"),
- _net(serverAddr, serverPort, _socket, _gfx.getDelta(), _textureManager),
+_net(serverAddr, serverPort, _socket, _gfx.getDelta(), _textureManager),
 _inputs(_gfx.getRenderWindow())
 {
     //Game game(_manager);
     //MainMenu mm(_manager);
-    std::cout << "My address: <" << _socket.local_endpoint().address() << ":";
-    std::cout << _socket.local_endpoint().port() << ">" << std::endl;
+    std::cout << "My address: <" << _socket.local_endpoint().address() << ":" << _socket.local_endpoint().port() << ">" << std::endl;
     _serverAddr = serverAddr;
     _portStr = portStr;
 

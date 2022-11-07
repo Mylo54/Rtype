@@ -45,7 +45,7 @@ void rtp::NetworkSystems::sendData(eng::Registry &r)
             payload.push_back(synceds[i].value().id);
             payload.push_back(ctrl.xAxis);
             payload.push_back(ctrl.yAxis);
-            std::cout << "[TEST_DEBUG] ctrl.yAxis = " << ctrl.yAxis << std::endl;
+            //std::cout << "[TEST_DEBUG] ctrl.yAxis = " << ctrl.yAxis << std::endl;
             payload.push_back(ctrl.shoot);
             payload[1] += 5;
         }
