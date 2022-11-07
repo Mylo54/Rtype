@@ -25,15 +25,30 @@ namespace rtp
             /// @return 0 if connect succesfuly, 1 if failed
             int connectionToServer(bool multiplayer, int lvl, int port);
 
+            /// @brief fct bloquante connection between server and client
+            void runConnectToClient();
+
+            /// @brief fonction for server to connect to the client
+            /// @return void
+            void connectToClient();
+
         protected:
             /// @brief send and receive info after TCP connection to the server
             /// @return 0 if connect succesfuly, 1 if failed
             int _sendAfterConnectToServer(bool multiplayer, int lvl, int port);
+
+            /// @brief Execute when connection is established : confirm client connection
+            /// @param sckt : client socket
+            void _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
         private:
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP{_ioContext};
             boost::asio::ip::tcp::socket _socketTCP;
 
+            std::vector<std::vector<int>> _listDataRec;
+            std::vector<boost::asio::ip::udp::endpoint> _endpoints;
+            std::optional<boost::asio::ip::tcp::socket> _socketOptional;
+            std::vector<boost::asio::ip::tcp::socket *> _socketList;
             int _mySyncId = 0;//utile ?
             int _myPlayerId = 0;//utile ?
     };
