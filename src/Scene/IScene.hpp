@@ -2,22 +2,22 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Server
+** IScene
 */
 
-#ifndef SERVER_HPP_
-#define SERVER_HPP_
+#ifndef ISCENE_HPP_
+#define ISCENE_HPP_
 
 namespace rtp
 {
-    class Server {
+    class IScene {
         public:
-            Server();
-            ~Server();
+            IScene();
+            ~IScene();
 
         protected:
         private:
     };
 } // namespace rtp
 
-#endif /* !SERVER_HPP_ */
+#endif /* !ISCENE_HPP_ */

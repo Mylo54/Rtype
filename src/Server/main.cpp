@@ -2,49 +2,13 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** mainServer
+** main
 */
 
+#include <iostream>
 
-#include "Server.hpp"
-
-int errorManagement(int ac, char **av)
+int main(int argc, char **argv)
 {
-    if (ac != 2)
-        return(84);
-    for (int i = 0; i < strlen(av[1]); i++) {
-        if(!isdigit(av[1][i])) {
-            std::cout << "PORT format is not correct according to syntax\n";
-            return (84);
-        }
-    }
-    return(0);
-}
-
-int printHelp()
-{
-    std::cout << "[RTYPE - SERVER]" << std::endl;
-    std::cout << "\t./RType-Server [port]" << std::endl;
-    std::cout << "[port]: the port you want to open for the clients to connect" << std::endl;
-    return (0);
-}
-
-int main(int ac, char **av)
-{
-    std::string arg;
-
-    if (ac >= 2) {
-        arg = av[1];
-        if ((arg == "-h" || arg == "-help"))
-            return (printHelp());
-    }
-    try {
-        boost::asio::ip::port_type port(3303);
-        rtp::Server srv(port);
-        srv.run();
-    }
-    catch (const std::exception &error) {
-        std::cerr << error.what() << std::endl;
-    }
+    std::cout << "Server is up!" << std::endl;
     return (0);
 }

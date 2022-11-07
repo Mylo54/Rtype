@@ -2,22 +2,22 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** Server
+** Network
 */
 
-#ifndef SERVER_HPP_
-#define SERVER_HPP_
+#ifndef NETWORK_HPP_
+#define NETWORK_HPP_
 
 namespace rtp
 {
-    class Server {
+    class Network {
         public:
-            Server();
-            ~Server();
+            Network();
+            ~Network();
 
         protected:
         private:
     };
 } // namespace rtp
 
-#endif /* !SERVER_HPP_ */
+#endif /* !NETWORK_HPP_ */

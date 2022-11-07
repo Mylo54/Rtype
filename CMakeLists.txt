@@ -46,14 +46,13 @@ add_subdirectory(external/EngineCoreSuper)
 
 #####   Files
 
-FILE(GLOB_RECURSE CLIENT_SYSTEMS src/ClientSystems/*.cpp)
-FILE(GLOB_RECURSE SERVER_SYSTEMS src/ServerSystems/*.cpp)
+FILE(GLOB_RECURSE SRCS_NETWORK src/Network/*.cpp)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${CLIENT_SYSTEMS} ${SRCS_CLIENT})
+add_executable(Client-Rtype ${SRCS_CLIENT})
 
 target_include_directories(
   Client-Rtype PUBLIC
@@ -81,7 +80,7 @@ target_link_libraries(
 
 #####    SERVER
 
-add_executable(Server-Rtype ${SERVER_SYSTEMS} ${SRCS_SERVER})
+add_executable(Server-Rtype ${SRCS_SERVER})
 
 target_include_directories(
   Server-Rtype PUBLIC

@@ -1,18 +1,14 @@
 /*
 ** EPITECH PROJECT, 2022
-** src
+** rtype
 ** File description:
 ** main
 */
 
-#include "Client.hpp"
+#include <iostream>
 
 int main(int argc, char **argv)
 {
-    srand(time(NULL));
-    boost::asio::ip::port_type port = (rand() % 1000) + 3000;
-    rtp::Client client(port);
-
-    client.run();
-    return 0;
+    std::cout << "Client is up!" << std::endl;
+    return (0);
 }
