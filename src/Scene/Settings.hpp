@@ -12,7 +12,7 @@
 
 namespace rtp
 {
-    class Settings : public AScene{
+    class Settings : public AScene {
         public:
             Settings(scene_package_t pack);
             ~Settings();
