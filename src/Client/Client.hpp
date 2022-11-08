@@ -41,6 +41,7 @@ namespace rtp
         private:
             scene_package_t _makePackage();
             void _setupInputEvents();
+            void _handleSceneEvents();
 
             int _sceneEvent = sceneEvent::none;
             int _sceneNumber = sceneNumber::menu;

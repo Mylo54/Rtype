@@ -7,7 +7,7 @@
 
 #include "Settings.hpp"
 
-rtp::Settings::Settings(scene_package_t pack): AScene(pack)
+rtp::Settings::Settings(scene_package_t pack, sf::Color c): AScene(pack), color(c)
 {
 }
 
@@ -33,15 +33,19 @@ void rtp::Settings::systemRun()
     // Update input events
     _input.updateEvents();
 
-    if (_input.isActionPressed("ui_escape"))
+    if (_input.isActionJustPressed("ui_escape"))
         _sceneEvent = 1;
+    if (_input.isActionJustPressed("ui_accept")) {
+        _sceneEvent = 2;
+        _sceneNumber = 3;
+    }
 
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
 
     // clear, draw & display
-    _graphic.clear();
+    _graphic.clear(color);
     _graphic.animateSystem(_reg);
     _graphic.display();
     _graphic.particleSystem(_reg);

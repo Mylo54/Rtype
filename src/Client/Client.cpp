@@ -15,6 +15,7 @@ _inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds())
 
 rtp::Client::~Client()
 {
+    //TODO: clear scene stack
 }
 
 rtp::scene_package_t rtp::Client::_makePackage()
@@ -46,27 +47,37 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_accept", eng::SuperInput::JoyButton::a, 0);
 }
 
+void rtp::Client::_handleSceneEvents()
+{
+    if (_sceneEvent == rtp::sceneEvent::pushScene) {
+        _registries.addRegistry("new");
+        if (_sceneNumber == rtp::sceneNumber::option) {
+            _scenes.push(new rtp::Settings(_makePackage(), sf::Color(rand())));
+            _scenes.top()->setupRegistry();
+        }
+    }
+    if (_sceneEvent == rtp::sceneEvent::popScene) {
+        _registries.popRegistry();
+        delete _scenes.top();
+        _scenes.pop();
+    }
+    _sceneEvent = rtp::sceneEvent::none;
+}
+
 int rtp::Client::run()
 {
     _setupInputEvents();
     _registries.addRegistry("start");
-    rtp::Settings optionScene(_makePackage());
-    _scenes.push(&optionScene);
+    rtp::Settings *optionScene = new rtp::Settings(_makePackage(), sf::Color::Red);
+    _scenes.push(optionScene);
 
     std::cout << "Client is up!" << std::endl;
     _scenes.top()->setupRegistry();
     while (_graphics.isWindowOpen() && !_scenes.empty()) {
+        // run systems
         _scenes.top()->systemRun();
-
-        // change scene & registry when event asks for;
-        if (_sceneEvent == rtp::sceneEvent::pushScene) {
-            _registries.addRegistry("new");
-            //scenes.push(askedscene);
-        }
-        if (_sceneEvent == rtp::sceneEvent::popScene) {
-            _registries.popRegistry();
-            _scenes.pop();
-        }
+        // change scene & registry if asked
+        _handleSceneEvents();
     }
     return (0);
 }
