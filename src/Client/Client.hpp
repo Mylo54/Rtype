@@ -11,12 +11,9 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
-<<<<<<< HEAD
 #include "../Scene/AScene.hpp"
 #include "../Scene/MainMenu.hpp"
-=======
 #include "../Scene/Settings.hpp"
->>>>>>> 51e7414285af0ef357980b9ba8e0c9f998eeb921
 
 namespace rtp
 {
