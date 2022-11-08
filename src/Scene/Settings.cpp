@@ -15,6 +15,11 @@ rtp::Settings::~Settings()
 {
 }
 
+void rtp::Settings::setupScene()
+{
+    setupRegistry();
+}
+
 void rtp::Settings::setupRegistry()
 {
     _reg.registerComponents(eng::SparseArray<eng::Velocity>());

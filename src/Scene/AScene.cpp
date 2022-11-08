@@ -16,7 +16,7 @@ _sceneEvent(pack.sceneEvent), _sceneNumber(pack.sceneNumber)
 
 void rtp::AScene::setupScene()
 {
-    
+    setupRegistry();
 }
 
 void rtp::AScene::setupRegistry()

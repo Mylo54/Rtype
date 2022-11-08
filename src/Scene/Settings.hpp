@@ -17,6 +17,7 @@ namespace rtp
             Settings(scene_package_t pack, sf::Color c);
             ~Settings();
 
+            void setupScene() override;
             void setupRegistry() override;
             void systemRun() override;
             sf::Color color;

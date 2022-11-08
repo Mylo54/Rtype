@@ -55,7 +55,7 @@ void rtp::Client::_handleSceneEvents()
         _registries.addRegistry("new");
         if (_sceneNumber == rtp::sceneNumber::option) {
             _scenes.push(new rtp::Settings(_makePackage(), sf::Color(rand())));
-            _scenes.top()->setupRegistry();
+            _scenes.top()->setupScene();
         }
     }
     if (_sceneEvent == rtp::sceneEvent::popScene) {
