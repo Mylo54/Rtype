@@ -53,7 +53,7 @@ FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE})
+add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK})
 
 target_include_directories(
   Client-Rtype PUBLIC
@@ -81,7 +81,7 @@ target_link_libraries(
 
 #####    SERVER
 
-add_executable(Server-Rtype ${SRCS_SERVER})
+add_executable(Server-Rtype ${SRCS_SERVER} ${SRCS_NETWORK})
 
 target_include_directories(
   Server-Rtype PUBLIC
