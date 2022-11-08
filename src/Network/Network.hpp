@@ -12,6 +12,7 @@
 #include <fstream>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <optional>
 #include "NetworkStructs.hpp"
 
 namespace rtp
@@ -39,7 +40,9 @@ namespace rtp
 
             /// @brief Execute when connection is established : confirm client connection
             /// @param sckt : client socket
-            void _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
+            boost::array<rtp::demandConnectPayload_s, 1> _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
+
+            void _addEndpoint(std::string address, int port);
         private:
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP{_ioContext};

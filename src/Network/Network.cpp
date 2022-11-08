@@ -37,7 +37,7 @@ int rtp::Network::_sendAfterConnectToServer(bool multiplayer, int lvl, int port)
         std::cout << "[Client][Connect]:action receive number : " << dataRec[0].ACTION_NAME << std::endl;
     }
     _myPlayerId = dataRec[0].playerId;
-    _mySyncId = dataRec[0].syncIdc;
+    _mySyncId = dataRec[0].syncId;
     return (0);
 }
 
@@ -48,7 +48,6 @@ int rtp::Network::connectionToServer(bool multiplayer, int lvl, int port)
     boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
-    _port = port;
 
     try {
 
@@ -71,7 +70,7 @@ int rtp::Network::connectionToServer(bool multiplayer, int lvl, int port)
     return (_sendAfterConnectToServer(multiplayer, lvl, port));
 }
 
-boost::array<demandConnectPayload_s, 1> rtp::Network::_afterConnectionToClient(boost::asio::ip::tcp::socket sckt)
+boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToClient(boost::asio::ip::tcp::socket sckt)
 {
     boost::array<connectPayload_t, 1> dataTbs = {OK};
     boost::system::error_code error;
@@ -93,7 +92,6 @@ boost::array<demandConnectPayload_s, 1> rtp::Network::_afterConnectionToClient(b
         std::stringstream a;
         a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
         _addEndpoint(a.str(), dataRec[0].port);
-        std::cout << "level choose : " << _level << std::endl;
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }
@@ -104,20 +102,26 @@ boost::array<demandConnectPayload_s, 1> rtp::Network::_afterConnectionToClient(b
 
 void rtp::Network::connectToClient()
 {
+    boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
     _socketOptional.emplace(_ioContext);
-    _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
+    acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
     {
         if (error) {
             std::cout << "[Server][connect]: connect failed" << std::endl;
         } else {
             std::cout << "[Server][connect]: connect success" << std::endl;
-            _afterConnection(std::move(*_socketOptional));
+            _afterConnectionToClient(std::move(*_socketOptional));
         }
         connectToClient();
     });
 }
 
-void rtp::Server::runConnectToClient()
+void rtp::Network::runConnectToClient() //thread direct dedans ?
 {
     _ioContext.run();
+}
+
+void rtp::Network::_addEndpoint(std::string address, int port)
+{
+    _endpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
 }
