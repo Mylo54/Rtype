@@ -74,7 +74,8 @@ int rtp::Client::run()
     _scenes.push(mainMenuScene);
 
     std::cout << "Client is up!" << std::endl;
-    _scenes.top()->setupRegistry();
+    _scenes.top()->setupScene();
+    // _scenes.top()->setupRegistry();
     while (_graphics.isWindowOpen() && !_scenes.empty()) {
         // run systems
         _scenes.top()->systemRun();

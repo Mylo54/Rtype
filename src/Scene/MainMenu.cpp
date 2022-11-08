@@ -9,10 +9,6 @@
 
 rtp::MainMenu::MainMenu(rtp::scene_package_t pack): AScene(pack)
 {
-    setupRegistry();
-    _addButtons();
-    _addBackgrounds();
-    _addEarth();   
 }
 
 rtp::MainMenu::~MainMenu()
@@ -21,7 +17,11 @@ rtp::MainMenu::~MainMenu()
 
 void rtp::MainMenu::setupScene()
 {
-
+    setupRegistry();
+    _addButtons();
+    _addButtons();
+    _addBackgrounds();
+    _addEarth();
 }
 
 void rtp::MainMenu::setupRegistry()
@@ -48,16 +48,31 @@ void rtp::MainMenu::setupRegistry()
 
 void rtp::MainMenu::systemRun()
 {
-    _graphic.eventCatchWindow();
+    // Update input events
+    _input.updateEvents();
+
+    if (_input.isActionJustPressed("ui_escape"))
+        _sceneEvent = 1;
+    if (_input.isActionJustPressed("ui_accept")) {
+        _sceneEvent = 2;
+        _sceneNumber = 3;
+    }
+
+    // Play sounds & music
+    _audio.playMusic(_reg);
+    _audio.playSound(_reg);
+
+    // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
-    _graphic.drawSystem(_reg);
     _graphic.display();
+    _graphic.particleSystem(_reg);
+    _graphic.drawSystem(_reg);
+    _graphic.writeSystem(_reg);
 }
 
 void rtp::MainMenu::_addButtons()
 {
-    std::cout << "Alabama" << std::endl;
     _addButtonStartLocal();
     _addButtonMultiplayer();
     _addButtonSettings();
