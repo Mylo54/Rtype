@@ -46,7 +46,7 @@ namespace rtp
         private:
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP{_ioContext};
-            boost::asio::ip::tcp::socket _socketTCP;
+            boost::asio::ip::tcp::socket _socketTCP{_ioContext};
 
             std::vector<std::vector<int>> _listDataRec;
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
