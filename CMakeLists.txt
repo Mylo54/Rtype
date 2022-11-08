@@ -49,10 +49,11 @@ add_subdirectory(external/EngineCoreSuper)
 FILE(GLOB_RECURSE SRCS_NETWORK src/Network/*.cpp)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
+FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${SRCS_CLIENT})
+add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE})
 
 target_include_directories(
   Client-Rtype PUBLIC
