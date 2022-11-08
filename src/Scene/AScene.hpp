@@ -23,6 +23,8 @@ namespace rtp
         rtp::Network &network;
         eng::SuperInput &input;
         eng::TextureManager &texture;
+        int &sceneEvent;
+        int &sceneNumber;
     };
     class AScene : public IScene {
     public:
@@ -31,6 +33,8 @@ namespace rtp
         void setupRegistry() override;
         void systemRun() override;
     protected:
+        int &_sceneEvent;
+        int &_sceneNumber;
         eng::Registry &_reg;
         eng::GraphicSystems &_graphic;
         eng::PhysicSystems &_physic;

@@ -11,8 +11,12 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
+<<<<<<< HEAD
 #include "../Scene/AScene.hpp"
 #include "../Scene/MainMenu.hpp"
+=======
+#include "../Scene/Settings.hpp"
+>>>>>>> 51e7414285af0ef357980b9ba8e0c9f998eeb921
 
 namespace rtp
 {
@@ -25,7 +29,8 @@ namespace rtp
     enum sceneNumber{
         game,
         menu,
-        pause
+        pause,
+        option
         // ...others
     };
 
@@ -41,6 +46,7 @@ namespace rtp
         protected:
         private:
             scene_package_t _makePackage();
+            void _setupInputEvents();
 
             int _sceneEvent;
             int _sceneNumber;
