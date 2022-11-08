@@ -17,25 +17,35 @@ rtp::Client::~Client()
 {
 }
 
+rtp::scene_package_t rtp::Client::_makePackage()
+{
+    scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
+        _net, _inputs, _textures};
+
+    return (pkg);
+}
+
 int rtp::Client::run()
 {
     _sceneEvent = sceneEvent::none;
     _sceneNumber = sceneNumber::menu;
     _registries.addRegistry("start");
+    rtp::AScene defaultScene(_makePackage());
+    _scenes.push(&defaultScene);
 
     std::cout << "Client is up!" << std::endl;
-    while (_graphics.isWindowOpen()) {
-        // this will be replaced by scenes.top().run;
-        {
-            _graphics.eventCatchWindow();
-            _graphics.clear();
-            _graphics.display();
-        }
+    defaultScene.setupRegistry();
+    while (_graphics.isWindowOpen() && !_scenes.empty()) {
+        _scenes.top()->systemRun();
 
-        // change scene & registry when event;
-        if (_sceneEvent != rtp::sceneEvent::none) {
+        // change scene & registry when event asks for;
+        if (_sceneEvent == rtp::sceneEvent::pushScene) {
             _registries.addRegistry("new");
             //scenes.push(askedscene);
+        }
+        if (_sceneEvent == rtp::sceneEvent::popScene) {
+            _registries.popRegistry();
+            _scenes.pop();
         }
     }
     return (0);

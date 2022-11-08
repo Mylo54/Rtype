@@ -11,7 +11,7 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
-#include "../Scene/IScene.hpp"
+#include "../Scene/AScene.hpp"
 
 namespace rtp
 {
@@ -38,6 +38,8 @@ namespace rtp
             int run();
         protected:
         private:
+            scene_package_t _makePackage();
+
             int _sceneEvent;
             int _sceneNumber;
             eng::RegistryManager _registries;
@@ -45,8 +47,9 @@ namespace rtp
             eng::PhysicSystems _physics;
             eng::GraphicSystems _graphics;
             eng::AudioSystems _audio;
-            //rtp::Network _net;
-            std::stack<rtp::IScene> _scenes;
+            rtp::Network _net;
+            eng::TextureManager _textures;
+            std::stack<rtp::IScene*> _scenes;
     };
 } // namespace rtp
 

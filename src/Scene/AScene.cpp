@@ -7,9 +7,8 @@
 
 #include "AScene.hpp"
 
-rtp::AScene::AScene(scene_package_t &pack) : IScene(), _reg(pack.reg), _graphic(pack.graphic), _physic(pack.physic), _audio(pack.audio), _network(pack.network), _input(pack.input), _texture(pack.texture)
+rtp::AScene::AScene(scene_package_t pack) : IScene(), _reg(pack.reg), _graphic(pack.graphic), _physic(pack.physic), _audio(pack.audio), _network(pack.network), _input(pack.input), _texture(pack.texture)
 {
-
 }
 
 void rtp::AScene::setupRegistry()
@@ -36,6 +35,7 @@ void rtp::AScene::setupRegistry()
 
 void rtp::AScene::systemRun()
 {
+    _graphic.eventCatchWindow();
     _graphic.clear();
     _graphic.animateSystem(_reg);
     _graphic.drawSystem(_reg);

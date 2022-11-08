@@ -24,7 +24,7 @@ namespace rtp
     };
     class AScene : public IScene {
     public:
-        AScene(scene_package_t &pack);
+        AScene(scene_package_t pack);
         ~AScene() = default;
         void setupRegistry() override;
         void systemRun() override;
