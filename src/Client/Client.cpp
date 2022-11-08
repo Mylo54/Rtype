@@ -49,11 +49,6 @@ void rtp::Client::_setupInputEvents()
 int rtp::Client::run()
 {
     _setupInputEvents();
-    _inputs.addAction("a");
-    _inputs.addEvent("a", eng::SuperInput::Key::a);
-
-    _sceneEvent = sceneEvent::none;
-    _sceneNumber = sceneNumber::option;
     _registries.addRegistry("start");
     rtp::Settings optionScene(_makePackage());
     _scenes.push(&optionScene);
@@ -62,8 +57,6 @@ int rtp::Client::run()
     _scenes.top()->setupRegistry();
     while (_graphics.isWindowOpen() && !_scenes.empty()) {
         _scenes.top()->systemRun();
-        if (_inputs.isActionJustPressed("a"))
-            std::cout << "action" << std::endl;
 
         // change scene & registry when event asks for;
         if (_sceneEvent == rtp::sceneEvent::pushScene) {
