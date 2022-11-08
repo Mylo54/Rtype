@@ -14,6 +14,11 @@ _sceneEvent(pack.sceneEvent), _sceneNumber(pack.sceneNumber)
 {
 }
 
+void rtp::AScene::setupScene()
+{
+    
+}
+
 void rtp::AScene::setupRegistry()
 {
     _reg.registerComponents(eng::SparseArray<eng::Velocity>());

@@ -69,7 +69,9 @@ int rtp::Client::run()
     _setupInputEvents();
     _registries.addRegistry("start");
     rtp::Settings *optionScene = new rtp::Settings(_makePackage(), sf::Color::Red);
-    _scenes.push(optionScene);
+    rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
+    // _scenes.push(optionScene);
+    _scenes.push(mainMenuScene);
 
     std::cout << "Client is up!" << std::endl;
     _scenes.top()->setupRegistry();

@@ -7,10 +7,8 @@
 
 #include "MainMenu.hpp"
 
-rtp::MainMenu::MainMenu(rtp::scene_package_t &pack, eng::RegistryManager &manager, std::function<int(eng::RegistryManager&, bool, int, int)> &co):
-                        AScene(pack), _manager(manager), _singlePlayerBtnFct(co)
+rtp::MainMenu::MainMenu(rtp::scene_package_t pack): AScene(pack)
 {
-    _manager.addRegistry("MainMenu");
     setupRegistry();
     _addButtons();
     _addBackgrounds();
@@ -19,6 +17,11 @@ rtp::MainMenu::MainMenu(rtp::scene_package_t &pack, eng::RegistryManager &manage
 
 rtp::MainMenu::~MainMenu()
 {
+}
+
+void rtp::MainMenu::setupScene()
+{
+
 }
 
 void rtp::MainMenu::setupRegistry()
@@ -50,7 +53,6 @@ void rtp::MainMenu::systemRun()
     _graphic.animateSystem(_reg);
     _graphic.drawSystem(_reg);
     _graphic.display();
-    std::cout << "systemRun of MainMenu";
 }
 
 void rtp::MainMenu::_addButtons()
@@ -67,7 +69,7 @@ void rtp::MainMenu::_addButtonStartLocal()
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 2;
-    std::function<int(eng::RegistryManager &)> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this, _manager);
+    // std::function<int(eng::RegistryManager &)> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this, _manager);
 
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     // _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
@@ -84,7 +86,7 @@ void rtp::MainMenu::_addButtonExit()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
+    // std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
     // _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -99,7 +101,7 @@ void rtp::MainMenu::_addButtonMultiplayer()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;    
 
-    std::function<int(eng::RegistryManager &)> multi = std::bind(&MainMenu::_MultiBtn, this, _manager);
+    // std::function<int(eng::RegistryManager &)> multi = std::bind(&MainMenu::_MultiBtn, this, _manager);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
     // _reg.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -115,7 +117,7 @@ void rtp::MainMenu::_addButtonSettings()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
+    // std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
     _reg.addComponent<eng::Position>(btn, eng::Position(970, 700, 0));
     // _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -171,6 +173,7 @@ int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
 int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
 {
     //MapVoter *mv = new MapVoter(_manager, _singlePlayerBtnFct, _texture);
-    _singlePlayerBtnFct(_manager, true, 1, 0);
+
+    // _singlePlayerBtnFct(_manager, true, 1, 0);
     return (0);
 }

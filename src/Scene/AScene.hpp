@@ -27,23 +27,24 @@ namespace rtp
         int &sceneNumber;
     };
     class AScene : public IScene {
-    public:
-        AScene(scene_package_t pack);
-        ~AScene() = default;
-        void setupRegistry() override;
-        void systemRun() override;
-    protected:
-        int &_sceneEvent;
-        int &_sceneNumber;
-        eng::Registry &_reg;
-        eng::GraphicSystems &_graphic;
-        eng::PhysicSystems &_physic;
-        eng::AudioSystems &_audio;
-        rtp::Network &_network;
-        eng::SuperInput &_input;
-        eng::TextureManager &_texture;
-    private:
-};
+        public:
+            AScene(scene_package_t pack);
+            ~AScene() = default;
+            void setupScene() override;
+            void setupRegistry() override;
+            void systemRun() override;
+        protected:
+            int &_sceneEvent;
+            int &_sceneNumber;
+            eng::Registry &_reg;
+            eng::GraphicSystems &_graphic;
+            eng::PhysicSystems &_physic;
+            eng::AudioSystems &_audio;
+            rtp::Network &_network;
+            eng::SuperInput &_input;
+            eng::TextureManager &_texture;
+        private:
+    };
 } // namespace rtp
 
 #endif /* !ASCENE_HPP_ */
