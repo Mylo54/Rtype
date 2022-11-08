@@ -11,6 +11,8 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
+#include "../Scene/AScene.hpp"
+#include "../Scene/MainMenu.hpp"
 #include "../Scene/Settings.hpp"
 
 namespace rtp
@@ -37,6 +39,7 @@ namespace rtp
             /// @brief run the Client
             /// @return 0 on success, 84 on program failure
             int run();
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map);
         protected:
         private:
             scene_package_t _makePackage();

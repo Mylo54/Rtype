@@ -10,15 +10,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
-// #include "../Components/Components.hpp"
-// #include "../ClientSystems/ClientSystems.hpp"
-// #include "../ClientSystems/NetworkSystems.hpp"
-// #include "../NetworkStructs.hpp"
-// #include "ChooseLvl.hpp"
 #include <memory>
-// #include "MapVoter.hpp"
 #include "AScene.hpp"
 
 namespace rtp {
@@ -28,11 +20,11 @@ namespace rtp {
             /// @brief MainMenu object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            MainMenu(rtp::scene_package_t &pack,
-            eng::RegistryManager &manager,
-            std::function<int(eng::RegistryManager&, bool, int, int)> &co);
+            MainMenu(rtp::scene_package_t pack);
             ~MainMenu();
+            void setupScene() override;
             void setupRegistry() override;
+            void systemRun() override;
         protected:
 
             /// @brief Adds all buttons to the scene
@@ -69,10 +61,8 @@ namespace rtp {
             int _MultiBtn(eng::RegistryManager &regMan);
 
         private:
-            eng::RegistryManager &_manager;
-            
             /// @brief fct which is used in btn to connect to the server
-            std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
+            // std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
     };
 }
 
