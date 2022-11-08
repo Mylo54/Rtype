@@ -6,9 +6,13 @@
 */
 
 #include <iostream>
+#include "Client.hpp"
 
 int main(int argc, char **argv)
 {
-    std::cout << "Client is up!" << std::endl;
+    rtp::Client client;
+    int success = 0;
+
+    success = client.run();
     return (0);
 }
