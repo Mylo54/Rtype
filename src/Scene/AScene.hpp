@@ -9,7 +9,7 @@
 #define ASCENE_HPP_
 
 #include "IScene.hpp"
-#include "../Network/NetworkStructs.hpp"
+#include "../Network/Network.hpp"
 
 namespace rtp
 {
@@ -19,7 +19,7 @@ namespace rtp
         eng::PhysicSystems &physic;
         eng::AudioSystems &audio;
         rtp::Network &network;
-        eng::InputManager &input;
+        eng::SuperInput &input;
         eng::TextureManager &texture;
     };
     class AScene : public IScene {
@@ -34,7 +34,7 @@ namespace rtp
         eng::PhysicSystems &_physic;
         eng::AudioSystems &_audio;
         rtp::Network &_network;
-        eng::InputManager &_input;
+        eng::SuperInput &_input;
         eng::TextureManager &_texture;
     private:
 };
