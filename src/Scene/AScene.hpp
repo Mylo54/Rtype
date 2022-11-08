@@ -8,6 +8,8 @@
 #ifndef ASCENE_HPP_
 #define ASCENE_HPP_
 
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
 #include "IScene.hpp"
 #include "../Network/Network.hpp"
 

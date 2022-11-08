@@ -43,8 +43,19 @@ void rtp::MainMenu::setupRegistry()
     // _reg.registerComponents(eng::SparseArray<rtp::Bonus>());
 }
 
+void rtp::MainMenu::systemRun()
+{
+    _graphic.eventCatchWindow();
+    _graphic.clear();
+    _graphic.animateSystem(_reg);
+    _graphic.drawSystem(_reg);
+    _graphic.display();
+    std::cout << "systemRun of MainMenu";
+}
+
 void rtp::MainMenu::_addButtons()
 {
+    std::cout << "Alabama" << std::endl;
     _addButtonStartLocal();
     _addButtonMultiplayer();
     _addButtonSettings();

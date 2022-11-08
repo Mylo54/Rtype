@@ -10,15 +10,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
-// #include "../Components/Components.hpp"
-// #include "../ClientSystems/ClientSystems.hpp"
-// #include "../ClientSystems/NetworkSystems.hpp"
-// #include "../NetworkStructs.hpp"
-// #include "ChooseLvl.hpp"
 #include <memory>
-// #include "MapVoter.hpp"
 #include "AScene.hpp"
 
 namespace rtp {
@@ -33,6 +25,7 @@ namespace rtp {
             std::function<int(eng::RegistryManager&, bool, int, int)> &co);
             ~MainMenu();
             void setupRegistry() override;
+            void systemRun() override;
         protected:
 
             /// @brief Adds all buttons to the scene
