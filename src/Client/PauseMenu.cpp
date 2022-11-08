@@ -36,6 +36,8 @@ void rtp::PauseMenu::_addBackground(eng::Registry &reg)
 
     reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
     std::cout << "[DEbug] position" << std::endl;
+
+    reg.addComponent<eng::Drawable>(bg, eng::Drawable(_textureManager.getTextureFromFile("assets/PM_bckgrd.png")));
     
     reg.addComponent<rtp::Background>(bg, rtp::Background());
     std::cout << "[DEbug] bck" << std::endl;

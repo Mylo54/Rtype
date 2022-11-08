@@ -213,8 +213,9 @@ void rtp::Client::systemsLoop()
     rtp::ClientSystems systems(_gfx, "127.0.0.1", 3303, _socket, _inputs, _textureManager);
     std::function<int(eng::RegistryManager &, bool, int, int)> co = std::bind(&Client::connect, this, std::placeholders::_1,  std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
     rtp::MainMenu mm(_manager, co, _gfx, _textureManager);
+    //rtp::PauseMenu pm(_manager, _gfx, _textureManager);
+    //rtp::OptionsMenu om(_manager, _gfx, _textureManager);
 
-    //rtp::PauseMenu pm(_manager, _gfx);
     std::stringstream ss;
     _gfx.setFrameRateLimit(60);
     _net.writeInChatBox(_manager.getTop(), ss.str(), rtp::NetworkSystems::ChatBoxStyle::EVENT);

@@ -20,6 +20,7 @@
 #include "Game.hpp"
 #include "MainMenu.hpp"
 #include "PauseMenu.hpp"
+#include "OptionsMenu.hpp"
 #include "Connection.hpp"
 
 namespace rtp {

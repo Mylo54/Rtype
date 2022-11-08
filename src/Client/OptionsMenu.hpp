@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2022
 ** B-CPP-500-NCY-5-1-rtype-clovis.schneider
 ** File description:
-** PauseMenu
+** OptionsMenu
 */
 
-#ifndef PAUSEMENU_HPP_
-#define PAUSEMENU_HPP_
+#ifndef OPTIONSMENU_HPP_
+#define OPTIONSMENU_HPP_
 
 #include <iostream>
 #include <fstream>
@@ -21,26 +21,26 @@
 #include "MainMenu.hpp"
 
 namespace rtp {
-    class PauseMenu {
+    class OptionsMenu {
         public:
-            PauseMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx,
+            OptionsMenu(eng::RegistryManager &manager, eng::GraphicSystems &gfx,
             eng::TextureManager &textureManager);
-            ~PauseMenu();
+            ~OptionsMenu();
 
         protected:
+            //void _setupRegistry(eng::Registry &reg);
             void _addButton(eng::Registry &r);
-            void _addResumeButton(eng::Registry &r);
-            void _addSettingsButton(eng::Registry &r);
+            void _addBackground(eng::Registry &reg);
             void _addMainMenuButton(eng::Registry &r);
             void _addExitButton(eng::Registry &r);
-            void _addBackground(eng::Registry &reg);
-            int _exitBtn(eng::RegistryManager &reg);
+            //void _addSettingsButton(eng::Registry &r);
+            //void _addResumeButton(eng::Registry &r);
+            //int _exitBtn(eng::RegistryManager &reg);
         private:
             eng::RegistryManager &_manager;
-            std::function<int(eng::RegistryManager &)> _gameBtnFct;
             eng::GraphicSystems &_gfx;
             eng::TextureManager &_textureManager;
     };
 }
 
-#endif /* !PAUSEMENU_HPP_ */
+#endif /* !OPTIONSMENU_HPP_ */
