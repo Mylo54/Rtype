@@ -15,76 +15,64 @@
 // #include "../Components/Components.hpp"
 // #include "../ClientSystems/ClientSystems.hpp"
 // #include "../ClientSystems/NetworkSystems.hpp"
-#include <EngineCoreSuper/EngineCoreSuper.hpp>
 // #include "../NetworkStructs.hpp"
 // #include "ChooseLvl.hpp"
 #include <memory>
-// #include "Miscellaneous.hpp"
 // #include "MapVoter.hpp"
-#include "IScene.hpp"
+#include "AScene.hpp"
 
 namespace rtp {
-    class MainMenu {
+    class MainMenu : public AScene {
         public:
 
             /// @brief MainMenu object constructor
             /// @param manager reference to registry manager
             /// @param co function connect
-            MainMenu(eng::RegistryManager &manager,
-            std::function<int(eng::RegistryManager&, bool, int, int)> &co,
-            eng::GraphicSystems &gfx, eng::TextureManager &textureManager);
-
+            MainMenu(rtp::scene_package_t &pack,
+            eng::RegistryManager &manager,
+            std::function<int(eng::RegistryManager&, bool, int, int)> &co);
             ~MainMenu();
-
+            void setupRegistry() override;
         protected:
 
-            /// @brief Adds all buttons to a registry
-            /// @param reg The Registry on which to adds the buttons
-            void _addButtons(eng::Registry &reg);
+            /// @brief Adds all buttons to the scene
+            void _addButtons();
 
-            /// @brief Adds button singleplayer to a registry
-            /// @param reg The Registry on which to adds the button
-            void _addButtonStartLocal(eng::Registry &reg);
+            /// @brief Adds button singleplayer to the scene
+            void _addButtonStartLocal();
 
-            /// @brief Adds button Exit to a registry
-            /// @param reg The Registry on which to adds the button
-            void _addButtonExit(eng::Registry &reg);
+            /// @brief Adds button Exit to the scene
+            void _addButtonExit();
 
-            /// @brief Adds button multiplayer to a registry
-            /// @param reg The Registry on which to adds the button
-            void _addButtonMultiplayer(eng::Registry &reg);
+            /// @brief Adds button multiplayer to the scene
+            void _addButtonMultiplayer();
 
-            /// @brief Adds button Setting to a registry
-            /// @param reg The Registry on which to adds the button
-            void _addButtonSettings(eng::Registry &reg);
+            /// @brief Adds button Setting to the scene
+            void _addButtonSettings();
 
-            /// @brief Add layers of backgrounds to a registry
-            /// @param reg The Registry on which to add the backgrounds
-            void _addBackgrounds(eng::Registry &reg);
+            /// @brief Add layers of backgrounds to the scene
+            void _addBackgrounds();
 
-            /// @brief Add sprite earth
-            /// @param reg The Registry on which to add the sprite
-            void _addEarth(eng::Registry &reg);
+            /// @brief Add sprite earth to the scene
+            void _addEarth();
 
             /// @brief fct for button exit
             /// @param reg The RegistryManager
-            int _exitBtn(eng::RegistryManager &reg);
+            int _exitBtn(eng::RegistryManager &regMan);
 
             /// @brief fct for button choose lvl
-            /// @param reg The RegistryManager
-            int _chooseLvlBtn(eng::RegistryManager &reg);
+            /// @param regMan The RegistryManager
+            int _chooseLvlBtn(eng::RegistryManager &regMan);
 
             /// @brief fct for button multiplayer
-            /// @param reg The RegistryManager
-            int _MultiBtn(eng::RegistryManager &reg);
+            /// @param regMan The RegistryManager
+            int _MultiBtn(eng::RegistryManager &regMan);
 
         private:
             eng::RegistryManager &_manager;
             
             /// @brief fct which is used in btn to connect to the server
             std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
-            eng::GraphicSystems &_gfx;
-            eng::TextureManager &_textureManager;
     };
 }
 
