@@ -8,12 +8,16 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
+#include <iostream>
+
 namespace rtp
 {
     class Server {
         public:
             Server();
             ~Server();
+
+            void run();
 
         protected:
         private:

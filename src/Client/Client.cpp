@@ -47,6 +47,8 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_accept", eng::SuperInput::JoyButton::a, 0);
 }
 
+// This will end in a SceneManager Object in the engine after the end of the
+// refactor thinking, no worries ^^
 void rtp::Client::_handleSceneEvents()
 {
     if (_sceneEvent == rtp::sceneEvent::pushScene) {
