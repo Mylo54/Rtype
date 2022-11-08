@@ -45,8 +45,8 @@ namespace rtp
             scene_package_t _makePackage();
             void _setupInputEvents();
 
-            int _sceneEvent;
-            int _sceneNumber;
+            int _sceneEvent = sceneEvent::none;
+            int _sceneNumber = sceneNumber::menu;
             eng::RegistryManager _registries;
             eng::SuperInput _inputs;
             eng::PhysicSystems _physics;
