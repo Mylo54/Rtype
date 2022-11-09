@@ -43,7 +43,7 @@ void rtp::AScene::setupRegistry()
 
 void rtp::AScene::systemRun()
 {
-    _graphic.eventCatchWindow();
+    _input.updateEvents();
     _graphic.clear();
     _graphic.animateSystem(_reg);
     _graphic.drawSystem(_reg);
