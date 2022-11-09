@@ -12,6 +12,8 @@
 #include <fstream>
 #include <memory>
 #include "AScene.hpp"
+#include "../GameComponent/Button.hpp"
+#include "../System/ButtonSystem.hpp"
 
 namespace rtp {
     class MainMenu : public AScene {
@@ -49,17 +51,13 @@ namespace rtp {
             void _addEarth();
 
             /// @brief fct for button exit
-            /// @param reg The RegistryManager
-            int _exitBtn(eng::RegistryManager &regMan);
+            int _exitBtn();
 
             /// @brief fct for button choose lvl
-            /// @param regMan The RegistryManager
-            int _chooseLvlBtn(eng::RegistryManager &regMan);
+            int _chooseLvlBtn();
 
             /// @brief fct for button multiplayer
-            /// @param regMan The RegistryManager
-            int _MultiBtn(eng::RegistryManager &regMan);
-
+            int _MultiBtn();
         private:
             /// @brief fct which is used in btn to connect to the server
             // std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;

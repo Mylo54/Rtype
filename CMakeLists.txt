@@ -50,10 +50,11 @@ FILE(GLOB_RECURSE SRCS_NETWORK src/Network/*.cpp)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
+FILE(GLOB_RECURSE SRCS_SYSTEM src/System/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK})
+add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK} ${SRCS_SYSTEM})
 
 target_include_directories(
   Client-Rtype PUBLIC

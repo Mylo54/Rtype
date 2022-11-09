@@ -12,6 +12,7 @@
 #include <boost/array.hpp>
 #include "IScene.hpp"
 #include "../Network/Network.hpp"
+#include "../System/ButtonSystem.hpp"
 
 namespace rtp
 {
@@ -23,6 +24,7 @@ namespace rtp
         rtp::Network &network;
         eng::SuperInput &input;
         eng::TextureManager &texture;
+        rtp::ButtonSystem &buttonSystem;
         int &sceneEvent;
         int &sceneNumber;
     };
@@ -43,6 +45,7 @@ namespace rtp
             rtp::Network &_network;
             eng::SuperInput &_input;
             eng::TextureManager &_texture;
+            rtp::ButtonSystem &_buttonSystem;
         private:
     };
 } // namespace rtp

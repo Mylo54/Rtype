@@ -36,7 +36,7 @@ void rtp::MainMenu::setupRegistry()
     _reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
     _reg.registerComponents(eng::SparseArray<eng::RigidBody>());
     // _reg.registerComponents(eng::SparseArray<rtp::Background>());
-    // _reg.registerComponents(eng::SparseArray<rtp::Button>());
+    _reg.registerComponents(eng::SparseArray<rtp::Button>());
 }
 
 void rtp::MainMenu::systemRun()
@@ -51,6 +51,11 @@ void rtp::MainMenu::systemRun()
         _sceneNumber = 3;
     }
 
+    // Animate buttons
+    _buttonSystem.buttonStateSystem(_reg, _input);
+    // Apply button actions
+    _buttonSystem.buttonClick(_reg, _input);
+
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
@@ -58,10 +63,10 @@ void rtp::MainMenu::systemRun()
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
-    _graphic.display();
     _graphic.particleSystem(_reg);
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
+    _graphic.display();
 }
 
 void rtp::MainMenu::_addButtons()
@@ -77,10 +82,10 @@ void rtp::MainMenu::_addButtonStartLocal()
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 2;
-    // std::function<int(eng::RegistryManager &)> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this, _manager);
+    std::function<int(eng::RegistryManager &)> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this);
 
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
-    // _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
@@ -96,7 +101,7 @@ void rtp::MainMenu::_addButtonExit()
 
     // std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
-    // _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
+    // _reg.addComponent<rtp::Button>(btn, rtp::Button(0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Quit Games", "assets/MetroidPrimeHunters.ttf"));
@@ -166,19 +171,19 @@ void rtp::MainMenu::_addEarth()
     draw[bg.getId()].value().protect = true;
 }
 
-int rtp::MainMenu::_exitBtn(eng::RegistryManager &regMan)
+int rtp::MainMenu::_exitBtn()
 {
     _graphic.closeWindow();
     return (0);
 }
 
-int rtp::MainMenu::_chooseLvlBtn(eng::RegistryManager &reg)
+int rtp::MainMenu::_chooseLvlBtn()
 {
     // rtp::ChooseLvl *cl = new rtp::ChooseLvl(_manager, this->_singlePlayerBtnFct, _texture);
     return (0);
 }
 
-int rtp::MainMenu::_MultiBtn(eng::RegistryManager &reg)
+int rtp::MainMenu::_MultiBtn()
 {
     //MapVoter *mv = new MapVoter(_manager, _singlePlayerBtnFct, _texture);
 
