@@ -40,10 +40,6 @@ void rtp::Settings::systemRun()
 
     if (_input.isActionJustPressed("ui_escape"))
         _sceneEvent = 1;
-    if (_input.isActionJustPressed("ui_accept")) {
-        _sceneEvent = 2;
-        _sceneNumber = 3;
-    }
 
     // Play sounds & music
     _audio.playMusic(_reg);

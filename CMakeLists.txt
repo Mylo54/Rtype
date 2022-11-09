@@ -51,10 +51,11 @@ FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
 FILE(GLOB_RECURSE SRCS_SYSTEM src/System/*.cpp)
+FILE(GLOB_RECURSE SRCS_GAMECOMPONENT src/GameComponent/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK} ${SRCS_SYSTEM})
+add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK} ${SRCS_SYSTEM} ${SRCS_GAMECOMPONENT})
 
 target_include_directories(
   Client-Rtype PUBLIC

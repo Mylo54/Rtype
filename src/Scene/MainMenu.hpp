@@ -13,15 +13,13 @@
 #include <memory>
 #include "AScene.hpp"
 #include "../GameComponent/Button.hpp"
+#include "../GameComponent/Background.hpp"
 #include "../System/ButtonSystem.hpp"
 
 namespace rtp {
     class MainMenu : public AScene {
         public:
-
             /// @brief MainMenu object constructor
-            /// @param manager reference to registry manager
-            /// @param co function connect
             MainMenu(rtp::scene_package_t pack);
             ~MainMenu();
             void setupScene() override;

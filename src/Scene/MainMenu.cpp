@@ -35,7 +35,7 @@ void rtp::MainMenu::setupRegistry()
     _reg.registerComponents(eng::SparseArray<eng::Music>());
     _reg.registerComponents(eng::SparseArray<eng::ParticleEmitter>());
     _reg.registerComponents(eng::SparseArray<eng::RigidBody>());
-    // _reg.registerComponents(eng::SparseArray<rtp::Background>());
+    _reg.registerComponents(eng::SparseArray<rtp::Background>());
     _reg.registerComponents(eng::SparseArray<rtp::Button>());
 }
 
@@ -46,10 +46,6 @@ void rtp::MainMenu::systemRun()
 
     if (_input.isActionJustPressed("ui_escape"))
         _sceneEvent = 1;
-    if (_input.isActionJustPressed("ui_accept")) {
-        _sceneEvent = 2;
-        _sceneNumber = 3;
-    }
 
     // Animate buttons
     _buttonSystem.buttonStateSystem(_reg, _input);
@@ -145,15 +141,15 @@ void rtp::MainMenu::_addBackgrounds()
     eng::Entity bg = _reg.spawnEntity();
     _reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
     _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
-    // _reg.addComponent<rtp::Background>(bg, rtp::Background());
+    _reg.addComponent<rtp::Background>(bg, rtp::Background());
     eng::Entity bg2 = _reg.spawnEntity();
     _reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
     _reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_texture.getTextureFromFile("assets/middleground.png")));
-    // _reg.addComponent<rtp::Background>(bg2, rtp::Background());
+    _reg.addComponent<rtp::Background>(bg2, rtp::Background());
     eng::Entity bg3 = _reg.spawnEntity();
     _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
     _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
-    // _reg.addComponent<rtp::Background>(bg3, rtp::Background());
+    _reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
 void rtp::MainMenu::_addEarth()
@@ -179,17 +175,15 @@ int rtp::MainMenu::_exitBtnFunction()
 
 int rtp::MainMenu::_chooseLvlBtnFunction()
 {
-    // Modify destination to Choose level menu
-    std::cout << "Choose Level Menu" << std::endl;
+    // TODO: Modify destination to Choose level menu
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 4;
     return (0);
 }
 
 int rtp::MainMenu::_multiBtnFunction()
 {
-    // Modify destination to ??, menu
-    std::cout << "Multi Level Menu" << std::endl;
+    // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
     _sceneNumber = 3;
     return (0);
@@ -197,8 +191,7 @@ int rtp::MainMenu::_multiBtnFunction()
 
 int rtp::MainMenu::_settingBtnFunction()
 {
-    // Modify destination to Choose level menu
-    std::cout << "Settings menu" << std::endl;
+    // TODO: Modify destination to Choose level menu
     _sceneEvent = 2;
     _sceneNumber = 3;
     return (0);

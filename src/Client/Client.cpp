@@ -60,6 +60,10 @@ void rtp::Client::_handleSceneEvents()
             _scenes.push(new rtp::Settings(_makePackage(), sf::Color(rand())));
             _scenes.top()->setupScene();
         }
+        if (_sceneNumber == rtp::sceneNumber::chooseLvl) {
+            _scenes.push(new rtp::ChooseLvl(_makePackage()));
+            _scenes.top()->setupScene();
+        }
     }
     if (_sceneEvent == rtp::sceneEvent::popScene) {
         _registries.popRegistry();
@@ -75,8 +79,10 @@ int rtp::Client::run()
     _registries.addRegistry("start");
     rtp::Settings *optionScene = new rtp::Settings(_makePackage(), sf::Color::Red);
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
+    rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
     // _scenes.push(optionScene);
-    _scenes.push(mainMenuScene);
+    // _scenes.push(mainMenuScene);
+    _scenes.push(chooseLvl);
 
     std::cout << "Client is up!" << std::endl;
     _scenes.top()->setupScene();
