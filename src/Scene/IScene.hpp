@@ -15,6 +15,8 @@ namespace rtp
     class IScene {
         public:
             virtual ~IScene(){}
+            /// @brief Sets up the scene
+            virtual void setupScene() = 0;
             /// @brief Sets up the sparseArrays in the registry
             /// @return True on success
             virtual void setupRegistry() = 0;

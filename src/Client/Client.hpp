@@ -11,7 +11,9 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
-#include "../Scene/IScene.hpp"
+#include "../Scene/AScene.hpp"
+#include "../Scene/MainMenu.hpp"
+#include "../Scene/Settings.hpp"
 
 namespace rtp
 {
@@ -24,7 +26,8 @@ namespace rtp
     enum sceneNumber{
         game,
         menu,
-        pause
+        pause,
+        option
         // ...others
     };
 
@@ -36,17 +39,23 @@ namespace rtp
             /// @brief run the Client
             /// @return 0 on success, 84 on program failure
             int run();
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map);
         protected:
         private:
-            int _sceneEvent;
-            int _sceneNumber;
+            scene_package_t _makePackage();
+            void _setupInputEvents();
+            void _handleSceneEvents();
+
+            int _sceneEvent = sceneEvent::none;
+            int _sceneNumber = sceneNumber::menu;
             eng::RegistryManager _registries;
             eng::SuperInput _inputs;
             eng::PhysicSystems _physics;
             eng::GraphicSystems _graphics;
             eng::AudioSystems _audio;
-            //rtp::Network _net;
-            std::stack<rtp::IScene> _scenes;
+            rtp::Network _net;
+            eng::TextureManager _textures;
+            std::stack<rtp::IScene*> _scenes;
     };
 } // namespace rtp
 

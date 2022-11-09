@@ -5,10 +5,12 @@
 ** main
 */
 
-#include <iostream>
+#include "Server.hpp"
 
 int main(int argc, char **argv)
 {
-    std::cout << "Server is up!" << std::endl;
+    rtp::Server server;
+
+    server.run();
     return (0);
 }
