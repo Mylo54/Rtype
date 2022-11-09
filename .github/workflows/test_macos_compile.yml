@@ -9,6 +9,7 @@ jobs:
       - name: Get Conan
         run: |
           pip install conan
+          sudo ln -s ~/.local/bin/conan /usr/bin/conan
       - name: Create default profile
         run: conan profile new default --detect
       - name: build
