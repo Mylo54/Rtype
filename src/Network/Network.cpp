@@ -7,7 +7,7 @@
 
 #include "Network.hpp"
 
-rtp::Network::Network()
+rtp::Network::Network() : _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303))
 {
 }
 
@@ -84,6 +84,9 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToCli
     dataTbs[0].syncId = _lastPlayerSyncId;
     _start = true;*/
 
+    dataTbs[0].playerId = 0;
+    dataTbs[0].syncId = 1;
+
     boost::asio::read(sckt, boost::asio::buffer(dataRec), boost::asio::transfer_all(), error);
     if (error && error != boost::asio::error::eof) {
         std::cout << "[Server][connect]: Receive failed: " << error.message() << std::endl;
@@ -102,9 +105,11 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToCli
 
 void rtp::Network::connectToClient()
 {
-    boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
+    std::cout << "[Server][connect]: debug connect async" << std::endl;
+
+    //boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
     _socketOptional.emplace(_ioContext);
-    acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
+    _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
     {
         if (error) {
             std::cout << "[Server][connect]: connect failed" << std::endl;
@@ -116,8 +121,19 @@ void rtp::Network::connectToClient()
     });
 }
 
-void rtp::Network::runConnectToClient() //thread direct dedans ?
+void rtp::Network::runConnectToClient()
 {
+    std::cout << "[Server][connect]: debug" << std::endl;
+
+    std::thread connect(&rtp::Network::connect, this);
+    std::cout << "[Server][connect]: debug2" << std::endl;
+
+}
+
+void rtp::Network::connect()
+{
+    std::cout << "[Server][connect]: run" << std::endl;
+
     _ioContext.run();
 }
 

@@ -33,6 +33,8 @@ namespace rtp
             /// @return void
             void connectToClient();
 
+            void connect();
+
         protected:
             /// @brief send and receive info after TCP connection to the server
             /// @return 0 if connect succesfuly, 1 if failed
@@ -43,6 +45,7 @@ namespace rtp
             boost::array<rtp::demandConnectPayload_s, 1> _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
 
             void _addEndpoint(std::string address, int port);
+
         private:
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP{_ioContext};
@@ -52,8 +55,11 @@ namespace rtp
             std::vector<boost::asio::ip::udp::endpoint> _endpoints;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
             std::vector<boost::asio::ip::tcp::socket *> _socketList;
+            boost::asio::ip::tcp::acceptor _acceptor;
             int _mySyncId = 0;//utile ?
             int _myPlayerId = 0;//utile ?
+
+            std::thread _connectToClient;
     };
 } // namespace rtp
 
