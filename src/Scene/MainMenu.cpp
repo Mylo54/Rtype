@@ -82,7 +82,7 @@ void rtp::MainMenu::_addButtonStartLocal()
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 2;
-    std::function<int(eng::RegistryManager &)> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this);
+    std::function<int()> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this);
 
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
@@ -179,7 +179,8 @@ int rtp::MainMenu::_exitBtn()
 
 int rtp::MainMenu::_chooseLvlBtn()
 {
-    // rtp::ChooseLvl *cl = new rtp::ChooseLvl(_manager, this->_singlePlayerBtnFct, _texture);
+    _sceneEvent = 2;
+    _sceneNumber = 3;
     return (0);
 }
 

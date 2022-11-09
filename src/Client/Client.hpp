@@ -28,7 +28,8 @@ namespace rtp
         game,
         menu,
         pause,
-        option
+        option,
+        chooseLvl
         // ...others
     };
 

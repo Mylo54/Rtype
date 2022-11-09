@@ -23,13 +23,13 @@ namespace rtp
             /// @param width_ Width (in pixels) of your button
             /// @param height_ Height (in pixels) of your button
 
-            Button(std::function<int (eng::RegistryManager&)> btnFunction_, int top_, int left_,
+            Button(std::function<int ()> btnFunction_, int top_, int left_,
             int width_, int height_): btnFunction(btnFunction_), top(top_),
             left(left_), width(width_), height(height_)
             {}
             ~Button() {}
 
-            std::function<int(eng::RegistryManager&)> btnFunction;
+            std::function<int()> btnFunction;
             int top;
             int left;
             int width;

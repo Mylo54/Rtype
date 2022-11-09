@@ -60,7 +60,7 @@ void rtp::ButtonSystem::buttonClick(eng::Registry &reg, eng::SuperInput &input)
 
                 if (mousePos[0] > pos.x && mousePos[0] < pos.x + btn.width
                 && mousePos[1] > pos.y && mousePos[1] < pos.y + btn.height) {
-                    // btn.btnFunction(manager);
+                    btn.btnFunction();
                 }
             }
         }
