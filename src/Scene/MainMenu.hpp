@@ -33,7 +33,7 @@ namespace rtp {
             void _addButtons();
 
             /// @brief Adds button singleplayer to the scene
-            void _addButtonStartLocal();
+            void _addSinglePlayerButton();
 
             /// @brief Adds button Exit to the scene
             void _addButtonExit();
@@ -50,17 +50,15 @@ namespace rtp {
             /// @brief Add sprite earth to the scene
             void _addEarth();
 
+            /// @brief fct for button settings
+            int _settingBtnFunction();
             /// @brief fct for button exit
-            int _exitBtn();
-
+            int _exitBtnFunction();
             /// @brief fct for button choose lvl
-            int _chooseLvlBtn();
-
+            int _chooseLvlBtnFunction();
             /// @brief fct for button multiplayer
-            int _MultiBtn();
+            int _multiBtnFunction();
         private:
-            /// @brief fct which is used in btn to connect to the server
-            // std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
     };
 }
 

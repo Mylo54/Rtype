@@ -71,18 +71,18 @@ void rtp::MainMenu::systemRun()
 
 void rtp::MainMenu::_addButtons()
 {
-    _addButtonStartLocal();
+    _addSinglePlayerButton();
+    _addButtonExit();
     _addButtonMultiplayer();
     _addButtonSettings();
-    _addButtonExit();
 }
 
-void rtp::MainMenu::_addButtonStartLocal()
+void rtp::MainMenu::_addSinglePlayerButton()
 {
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 2;
-    std::function<int()> chooseLvl = std::bind(&MainMenu::_chooseLvlBtn, this);
+    std::function<int()> chooseLvl = std::bind(&MainMenu::_chooseLvlBtnFunction, this);
 
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
@@ -99,12 +99,12 @@ void rtp::MainMenu::_addButtonExit()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    // std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
+    std::function<int()> exit = std::bind(&MainMenu::_exitBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
-    // _reg.addComponent<rtp::Button>(btn, rtp::Button(0, 0, 128 * 1.9, 32 * 1.5));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
-    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Quit Games", "assets/MetroidPrimeHunters.ttf"));
+    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Exit", "assets/MetroidPrimeHunters.ttf"));
     _reg.addComponent<eng::Position>(btntesxt, eng::Position(720, 700, 0));
 }
 
@@ -114,9 +114,9 @@ void rtp::MainMenu::_addButtonMultiplayer()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;    
 
-    // std::function<int(eng::RegistryManager &)> multi = std::bind(&MainMenu::_MultiBtn, this, _manager);
+    std::function<int()> multi = std::bind(&MainMenu::_multiBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
-    // _reg.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
@@ -130,9 +130,9 @@ void rtp::MainMenu::_addButtonSettings()
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    // std::function<int(eng::RegistryManager &)> exit = std::bind(&MainMenu::_exitBtn, this, _manager);
+    std::function<int()> settings = std::bind(&MainMenu::_settingBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(970, 700, 0));
-    // _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(settings, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
@@ -171,23 +171,35 @@ void rtp::MainMenu::_addEarth()
     draw[bg.getId()].value().protect = true;
 }
 
-int rtp::MainMenu::_exitBtn()
+int rtp::MainMenu::_exitBtnFunction()
 {
     _graphic.closeWindow();
     return (0);
 }
 
-int rtp::MainMenu::_chooseLvlBtn()
+int rtp::MainMenu::_chooseLvlBtnFunction()
 {
+    // Modify destination to Choose level menu
+    std::cout << "Choose Level Menu" << std::endl;
     _sceneEvent = 2;
     _sceneNumber = 3;
     return (0);
 }
 
-int rtp::MainMenu::_MultiBtn()
+int rtp::MainMenu::_multiBtnFunction()
 {
-    //MapVoter *mv = new MapVoter(_manager, _singlePlayerBtnFct, _texture);
+    // Modify destination to ??, menu
+    std::cout << "Multi Level Menu" << std::endl;
+    _sceneEvent = 2;
+    _sceneNumber = 3;
+    return (0);
+}
 
-    // _singlePlayerBtnFct(_manager, true, 1, 0);
+int rtp::MainMenu::_settingBtnFunction()
+{
+    // Modify destination to Choose level menu
+    std::cout << "Settings menu" << std::endl;
+    _sceneEvent = 2;
+    _sceneNumber = 3;
     return (0);
 }
