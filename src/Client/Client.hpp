@@ -11,6 +11,7 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
+#include "../System/ButtonSystem.hpp"
 #include "../Scene/AScene.hpp"
 #include "../Scene/MainMenu.hpp"
 #include "../Scene/Settings.hpp"
@@ -55,6 +56,8 @@ namespace rtp
             eng::AudioSystems _audio;
             rtp::Network _net;
             eng::TextureManager _textures;
+            rtp::ButtonSystem _buttonSystem;
+            eng::SceneManager _sceneManager;
             std::stack<rtp::IScene*> _scenes;
     };
 } // namespace rtp

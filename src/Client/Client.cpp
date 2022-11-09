@@ -8,7 +8,8 @@
 #include "Client.hpp"
 
 rtp::Client::Client(): _graphics(1920, 1080, "Super R-Type"),
-_inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds())
+_inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds()),
+_sceneManager(_registries)
 {
     std::cout << "Client has been created" << std::endl;
 }
@@ -21,7 +22,7 @@ rtp::Client::~Client()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _net, _inputs, _textures, _sceneEvent, _sceneNumber};
+        _net, _inputs, _textures, _buttonSystem, _sceneEvent, _sceneNumber};
 
     return (pkg);
 }
@@ -34,6 +35,7 @@ void rtp::Client::_setupInputEvents()
     _inputs.addAction("ui_right");
     _inputs.addAction("ui_accept");
     _inputs.addAction("ui_escape");
+    _inputs.addAction("ui_click");
 
     _inputs.addEvent("ui_up", eng::SuperInput::Key::up);
     _inputs.addEvent("ui_down", eng::SuperInput::Key::down);
@@ -41,6 +43,7 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_right", eng::SuperInput::Key::right);
     _inputs.addEvent("ui_accept", eng::SuperInput::Key::enter);
     _inputs.addEvent("ui_escape", eng::SuperInput::Key::escape);
+    _inputs.addEvent("ui_click", eng::SuperInput::MouseButton::left);
 
     _inputs.addEvent("ui_up", eng::SuperInput::JoyAnalog::leftStickX, 0);
     _inputs.addEvent("ui_left", eng::SuperInput::JoyAnalog::leftStickY, 0);
