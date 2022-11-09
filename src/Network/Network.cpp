@@ -7,12 +7,56 @@
 
 #include "Network.hpp"
 
-rtp::Network::Network() : _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303))
+rtp::Network::Network(std::string address, int port):
+_socketUDP(_ioContext, boost::asio::ip::udp::endpoint{
+    boost::asio::ip::make_address(address.c_str()),
+    static_cast<boost::asio::ip::port_type>(port)
+    })
+// _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303))
 {
 }
 
 rtp::Network::~Network()
 {
+}
+
+void rtp::Network::UDPaddEndpoint(std::string address, int port)
+{
+    _UDPendpoints.push_back({
+        boost::asio::ip::make_address(address),
+        static_cast<boost::asio::ip::port_type>(port)
+    });
+}
+
+void rtp::Network::UDPremoveEndpoint(int id)
+{
+    
+}
+
+void rtp::Network::UDPremoveEndpoint(std::string address, int port)
+{
+
+}
+
+void rtp::Network::UDPsendData(std::vector<int> &data)
+{
+    for (int i = 0; i < _UDPendpoints.size(); i++)
+        _socketUDP.send_to(boost::asio::buffer(data), _UDPendpoints[i]);
+}
+
+void rtp::Network::UDPsendDataTo(std::vector<int> &data, int to)
+{
+    _socketUDP.send_to(boost::asio::buffer(data), _UDPendpoints[to]);
+}
+
+std::vector<int> rtp::Network::UDPreceiveData()
+{
+    std::vector<int> res;
+
+    _socketUDP.wait(boost::asio::socket_base::wait_type::wait_read);
+    res.resize(_socketUDP.available() / 4);
+    _socketUDP.receive(boost::asio::buffer(res));
+    return (res);
 }
 
 int rtp::Network::_sendAfterConnectToServer(bool multiplayer, int lvl, int port)
@@ -107,7 +151,7 @@ void rtp::Network::connectToClient()
 {
     std::cout << "[Server][connect]: debug connect async" << std::endl;
 
-    //boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
+    /*boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
     _socketOptional.emplace(_ioContext);
     _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
     {
@@ -118,7 +162,7 @@ void rtp::Network::connectToClient()
             _afterConnectionToClient(std::move(*_socketOptional));
         }
         connectToClient();
-    });
+    });*/
 }
 
 void rtp::Network::runConnectToClient()
@@ -139,5 +183,5 @@ void rtp::Network::connect()
 
 void rtp::Network::_addEndpoint(std::string address, int port)
 {
-    _endpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
+    _UDPendpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
 }

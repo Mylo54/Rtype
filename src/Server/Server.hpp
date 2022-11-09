@@ -9,6 +9,7 @@
 #define SERVER_HPP_
 
 #include <iostream>
+#include "../Network/Network.hpp"
 
 namespace rtp
 {

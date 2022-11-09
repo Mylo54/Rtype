@@ -21,7 +21,7 @@ namespace rtp
         eng::GraphicSystems &graphic;
         eng::PhysicSystems &physic;
         eng::AudioSystems &audio;
-        rtp::Network &network;
+        // rtp::Network &network;
         eng::SuperInput &input;
         eng::TextureManager &texture;
         int &sceneEvent;
@@ -41,7 +41,7 @@ namespace rtp
             eng::GraphicSystems &_graphic;
             eng::PhysicSystems &_physic;
             eng::AudioSystems &_audio;
-            rtp::Network &_network;
+            // rtp::Network &_network;
             eng::SuperInput &_input;
             eng::TextureManager &_texture;
             rtp::ButtonSystem _buttonSystem;
