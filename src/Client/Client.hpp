@@ -57,6 +57,7 @@ namespace rtp
             rtp::Network _net;
             eng::TextureManager _textures;
             rtp::ButtonSystem _buttonSystem;
+            eng::SceneManager _sceneManager;
             std::stack<rtp::IScene*> _scenes;
     };
 } // namespace rtp
