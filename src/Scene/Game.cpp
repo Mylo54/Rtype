@@ -9,10 +9,6 @@
 
 rtp::Game::Game(rtp::scene_package_t pack): AScene(pack)
 {
-    setupRegistry();
-    _addBackgrounds();
-    _addScore();
-    _addMusic();
 }
 
 rtp::Game::~Game()
@@ -23,6 +19,8 @@ void rtp::Game::setupScene()
 {
     setupRegistry();
     _addBackgrounds();
+    _addScore();
+    _addMusic();
 }
 
 void rtp::Game::setupRegistry()
