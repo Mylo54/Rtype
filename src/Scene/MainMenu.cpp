@@ -19,7 +19,6 @@ void rtp::MainMenu::setupScene()
 {
     setupRegistry();
     _addButtons();
-    _addButtons();
     _addBackgrounds();
     _addEarth();
 }
