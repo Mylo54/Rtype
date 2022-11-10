@@ -182,7 +182,7 @@ void rtp::Network::listen()
     boost::asio::ip::tcp::socket currentSocket(_ioContext);
     _acceptor.async_accept(currentSocket, [this] (boost::system::error_code error) {
         if (!error)
-            this->_TCPsockets.push_back(this->_waitingSocket);
+            ;//this->_TCPsockets.push_back(this->_waitingSocket);
     });
 }
 

@@ -44,7 +44,8 @@ void rtp::Game::systemRun()
     _input.updateEvents();
 
     if (_input.isActionJustPressed("ui_escape"))
-        _sceneEvent = 1;
+        _sceneEvent = 2;
+        _sceneNumber = 2;
     // Animate buttons
     _buttonSystem.buttonStateSystem(_reg, _input);
     // Apply button actions

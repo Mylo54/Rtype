@@ -101,11 +101,11 @@ namespace rtp
 
         private:
             boost::asio::io_context _ioContext;
-            boost::asio::ip::udp::socket _socketUDP;
+            boost::asio::ip::udp::socket _socketUDP{_ioContext};
             boost::asio::ip::tcp::socket _socketTCP{_ioContext};
             boost::asio::ip::tcp::acceptor _acceptor;
 
-            boost::asio::ip::tcp::socket _waitingSocket;
+            boost::asio::ip::tcp::socket _waitingSocket{_ioContext};
             std::vector<boost::asio::ip::udp::endpoint> _UDPendpoints;
             std::vector<boost::asio::ip::tcp::socket> _TCPsockets;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
