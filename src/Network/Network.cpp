@@ -179,29 +179,28 @@ bool rtp::Network::connect(std::string host, std::string service)
 
 void rtp::Network::listen()
 {
-    boost::asio::ip::tcp::socket currentSocket(_ioContext);
-    _acceptor.async_accept(currentSocket, [this] (boost::system::error_code error) {
+    _acceptor.async_accept(this->_waitingSocket, [this] (boost::system::error_code error) {
         if (!error)
-            ;//this->_TCPsockets.push_back(this->_waitingSocket);
+            this->_socketList.push_back(&_waitingSocket);
     });
 }
 
 void rtp::Network::TCPsendData(std::string data)
 {
-    for (auto it = _TCPsockets.begin(); it != _TCPsockets.end(); it++)
-        it->send(boost::asio::buffer(data));
+    for (auto it = _socketList.begin(); it != _socketList.end(); it++)
+        (*it)->send(boost::asio::buffer(data));
 }
 
 void rtp::Network::TCPsendDataTo(std::string data, int to)
 {
-    _TCPsockets[to].send(boost::asio::buffer(data));
+    _socketList[to]->send(boost::asio::buffer(data));
 }
 
 std::string rtp::Network::TCPreceiveDataFrom(int from)
 {
     std::string res;
 
-    // get the string in _TCPsockets[from].receive
+    // get the string in _socketList[from].receive
     // put it in res
 
     return (res);

@@ -107,7 +107,6 @@ namespace rtp
 
             boost::asio::ip::tcp::socket _waitingSocket{_ioContext};
             std::vector<boost::asio::ip::udp::endpoint> _UDPendpoints;
-            std::vector<boost::asio::ip::tcp::socket> _TCPsockets;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
             std::vector<boost::asio::ip::tcp::socket *> _socketList;
             // boost::asio::ip::tcp::acceptor _acceptor;
