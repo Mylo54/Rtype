@@ -14,7 +14,7 @@
 #include "AScene.hpp"
 #include "../GameComponent/Button.hpp"
 #include "../GameComponent/Background.hpp"
-#include "../System/ButtonSystem.hpp"
+#include "../GameComponent/Controllable.hpp"
 
 namespace rtp {
     class Game : public AScene {

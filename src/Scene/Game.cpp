@@ -37,6 +37,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<eng::RigidBody>());
     _reg.registerComponents(eng::SparseArray<rtp::Background>());
     _reg.registerComponents(eng::SparseArray<rtp::Button>());
+    _reg.registerComponents(eng::SparseArray<rtp::Controllable>());
 }
 
 void rtp::Game::systemRun()
@@ -52,6 +53,9 @@ void rtp::Game::systemRun()
     _buttonSystem.buttonStateSystem(_reg, _input);
     // Apply button actions
     _buttonSystem.buttonClick(_reg, _input);
+
+    if (_graphic.isWindowFocused())
+        _playerSystem.control(_reg, _input);
 
     _physic.applyVelocities(_reg);
 
