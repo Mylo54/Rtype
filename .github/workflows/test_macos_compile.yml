@@ -7,8 +7,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Get Conan
-        run: |
-          turtlebrowser/get-conan@main
+        uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
         run: conan profile new default --detect
       - name: build
