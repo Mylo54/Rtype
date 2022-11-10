@@ -8,7 +8,13 @@
 #ifndef SETTINGS_HPP_
 #define SETTINGS_HPP_
 
+#include <iostream>
+#include <fstream>
+#include <memory>
 #include "AScene.hpp"
+#include "../GameComponent/Button.hpp"
+#include "../GameComponent/Background.hpp"
+#include "../System/ButtonSystem.hpp"
 
 namespace rtp
 {
@@ -23,8 +29,24 @@ namespace rtp
 
             /// @brief Add all elements in the settings scene
             void addElements();
-            void addFrameRateButton();
+            void addBackgrounds();
         protected:
+            void _addTitle();
+            void _addMusic();
+            void _addSfx();
+
+            void _addFrameRateButton();
+            void _addFrameRateText();
+            int _frameRateBtnFunction();
+
+            void _addMusicButton();
+            void _addMusicText();
+            int _musicBtnFunction();
+
+            void _addSfxButton();
+            void _addSfxText();
+            int _sfxBtnFunction();
+            void _soundTest();
         private:
     };
 } // namespace rtp
