@@ -77,6 +77,10 @@ void rtp::Client::_handleSceneEvents()
             _scenes.push(new rtp::MainMenu(_makePackage()));
             _scenes.top()->setupScene();
         }
+        if (_sceneNumber == rtp::sceneNumber::pause) {
+            _scenes.push(new rtp::Pause(_makePackage()));
+            _scenes.top()->setupScene();
+        }
     }
     if (_sceneEvent == rtp::sceneEvent::popScene) {
         _registries.popRegistry();

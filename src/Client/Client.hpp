@@ -15,6 +15,7 @@
 #include "../Scene/AScene.hpp"
 #include "../Scene/Settings.hpp"
 #include "../Scene/MainMenu.hpp"
+#include "../Scene/Pause.hpp"
 #include "../Scene/ChooseLvl.hpp"
 #include "../Scene/Game.hpp"
 
