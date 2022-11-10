@@ -12,6 +12,7 @@ _inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds()),
 _sceneManager(_registries)
 {
     std::cout << "Client has been created" << std::endl;
+    _graphics.setFrameRateLimit(60);
 }
 
 rtp::Client::~Client()
@@ -36,6 +37,7 @@ void rtp::Client::_setupInputEvents()
     _inputs.addAction("ui_accept");
     _inputs.addAction("ui_escape");
     _inputs.addAction("ui_click");
+    _inputs.addAction("ui_pause");
 
     _inputs.addEvent("ui_up", eng::SuperInput::Key::up);
     _inputs.addEvent("ui_down", eng::SuperInput::Key::down);
@@ -43,6 +45,9 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_right", eng::SuperInput::Key::right);
     _inputs.addEvent("ui_accept", eng::SuperInput::Key::enter);
     _inputs.addEvent("ui_escape", eng::SuperInput::Key::escape);
+    _inputs.addEvent("ui_pause", eng::SuperInput::Key::escape);
+    _inputs.addEvent("ui_pause", eng::SuperInput::Key::p);
+    _inputs.addEvent("ui_pause", eng::SuperInput::JoyButton::start, 0);
     _inputs.addEvent("ui_click", eng::SuperInput::MouseButton::left);
 
     _inputs.addEvent("ui_up", eng::SuperInput::JoyAnalog::leftStickX, 0);
@@ -57,7 +62,7 @@ void rtp::Client::_handleSceneEvents()
     if (_sceneEvent == rtp::sceneEvent::pushScene) {
         _registries.addRegistry("new");
         if (_sceneNumber == rtp::sceneNumber::option) {
-            _scenes.push(new rtp::Settings(_makePackage(), sf::Color(rand())));
+            _scenes.push(new rtp::Settings(_makePackage()));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::chooseLvl) {
@@ -77,7 +82,7 @@ int rtp::Client::run()
 {
     _setupInputEvents();
     _registries.addRegistry("start");
-    rtp::Settings *optionScene = new rtp::Settings(_makePackage(), sf::Color::Red);
+    rtp::Settings *optionScene = new rtp::Settings(_makePackage());
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
     rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
     // _scenes.push(optionScene);

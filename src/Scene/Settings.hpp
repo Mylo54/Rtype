@@ -14,13 +14,16 @@ namespace rtp
 {
     class Settings : public AScene {
         public:
-            Settings(scene_package_t pack, sf::Color c);
+            Settings(scene_package_t pack);
             ~Settings();
 
             void setupScene() override;
             void setupRegistry() override;
             void systemRun() override;
-            sf::Color color;
+
+            /// @brief Add all elements in the settings scene
+            void addElements();
+            void addFrameRateButton();
         protected:
         private:
     };

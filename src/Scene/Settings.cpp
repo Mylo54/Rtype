@@ -7,7 +7,7 @@
 
 #include "Settings.hpp"
 
-rtp::Settings::Settings(scene_package_t pack, sf::Color c): AScene(pack), color(c)
+rtp::Settings::Settings(scene_package_t pack): AScene(pack)
 {
 }
 
@@ -18,6 +18,7 @@ rtp::Settings::~Settings()
 void rtp::Settings::setupScene()
 {
     setupRegistry();
+    addElements();
 }
 
 void rtp::Settings::setupRegistry()
@@ -46,10 +47,20 @@ void rtp::Settings::systemRun()
     _audio.playSound(_reg);
 
     // clear, draw & display
-    _graphic.clear(color);
+    _graphic.clear();
     _graphic.animateSystem(_reg);
     _graphic.particleSystem(_reg);
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
     _graphic.display();
+}
+
+void rtp::Settings::addElements()
+{
+
+}
+
+void rtp::Settings::addFrameRateButton()
+{
+    
 }
