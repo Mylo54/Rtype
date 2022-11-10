@@ -21,6 +21,11 @@ namespace rtp
             /// @brief A system who handles inputs and stores actions
             /// @param reg The registry on which to apply the system
             void control(eng::Registry &reg, eng::SuperInput &input);
+            /// @brief 
+            /// @param reg 
+            /// @param input 
+            /// @param delta as seconds
+            void controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta);
         protected:
         private:
     };

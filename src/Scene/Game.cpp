@@ -56,7 +56,7 @@ void rtp::Game::systemRun()
 
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
-
+    _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
     _physic.applyVelocities(_reg);
 
     // Play sounds & music
@@ -88,7 +88,7 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
     // reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
-    // reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     // reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
