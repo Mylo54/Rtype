@@ -12,6 +12,7 @@ _inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds()),
 _sceneManager(_registries)
 {
     std::cout << "Client has been created" << std::endl;
+    _graphics.setFrameRateLimit(60);
 }
 
 rtp::Client::~Client()
