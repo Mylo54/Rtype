@@ -19,7 +19,7 @@ namespace rtp
 {
     class Network {
         public:
-            Network(std::string address, int port);
+            Network(int port);
             ~Network();
 
             /// @brief Sends the data in UDP to all endpoints
@@ -54,6 +54,10 @@ namespace rtp
             /// @param to id of the endpooint in the endpoints vector
             void TCPsendDataTo(std::string data, int to);
 
+            /// @brief receive the data from 'id' in sockets vector
+            /// @param from the id of the socket in the sockets vector
+            std::string TCPreceiveDataFrom(int from);
+
             /// @brief adds an endpoint to the vector of tcp endpoints
             /// @param address the address of the endpoint
             /// @param port the port of the endpoint
@@ -77,7 +81,14 @@ namespace rtp
             /// @return void
             void connectToClient();
 
-            void connect();
+            /// @brief connects a tcp socket to a host:service via a resolver
+            /// @param host localhost/127.0.0.1/0.0.0.0/etc...
+            /// @param service the 'port' or service name to port
+            /// @return true on success, false on failure
+            bool connect(std::string host, std::string service);
+
+            /// @brief listen to connections
+            void listen();
 
         protected:
             /// @brief send and receive info after TCP connection to the server
@@ -88,14 +99,15 @@ namespace rtp
             /// @param sckt : client socket
             boost::array<rtp::demandConnectPayload_s, 1> _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
 
-            void _addEndpoint(std::string address, int port);
-
         private:
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP;
             boost::asio::ip::tcp::socket _socketTCP{_ioContext};
+            boost::asio::ip::tcp::acceptor _acceptor;
 
+            boost::asio::ip::tcp::socket _waitingSocket;
             std::vector<boost::asio::ip::udp::endpoint> _UDPendpoints;
+            std::vector<boost::asio::ip::tcp::socket> _TCPsockets;
             std::optional<boost::asio::ip::tcp::socket> _socketOptional;
             std::vector<boost::asio::ip::tcp::socket *> _socketList;
             // boost::asio::ip::tcp::acceptor _acceptor;
