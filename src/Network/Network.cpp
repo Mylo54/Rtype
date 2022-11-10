@@ -7,12 +7,11 @@
 
 #include "Network.hpp"
 
-rtp::Network::Network(std::string address, int port):
+rtp::Network::Network(int port):
 _socketUDP(_ioContext, boost::asio::ip::udp::endpoint{
-    boost::asio::ip::make_address(address.c_str()),
-    static_cast<boost::asio::ip::port_type>(port)
-    })
-// _acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303))
+    boost::asio::ip::udp::v4(),static_cast<boost::asio::ip::port_type>(port)}),
+_waitingSocket(_ioContext), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint{
+    boost::asio::ip::tcp::v4(), static_cast<boost::asio::ip::port_type>(port)})
 {
 }
 
@@ -138,7 +137,7 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToCli
         std::cout << "[Server][connect]: Action receive number : " << dataRec[0].ACTION_NAME << std::endl;
         std::stringstream a;
         a << dataRec[0].addr1 << "." << dataRec[0].addr2 << "." << dataRec[0].addr3 << "." << dataRec[0].addr4;
-        _addEndpoint(a.str(), dataRec[0].port);
+        UDPaddEndpoint(a.str(), dataRec[0].port);
     } else {
         std::cout << "[Server][connect]: Wrong receive message" << dataRec[0].ACTION_NAME << std::endl;
     }
@@ -165,23 +164,45 @@ void rtp::Network::connectToClient()
     });*/
 }
 
-void rtp::Network::runConnectToClient()
+bool rtp::Network::connect(std::string host, std::string service)
 {
-    std::cout << "[Server][connect]: debug" << std::endl;
+    boost::asio::ip::tcp::resolver resolver(_ioContext);
+    boost::asio::ip::tcp::resolver::results_type endpoints =
+        resolver.resolve(host, service);
+    boost::system::error_code error;
 
-    std::thread connect(&rtp::Network::connect, this);
-    std::cout << "[Server][connect]: debug2" << std::endl;
-
+    boost::asio::connect(_socketTCP, endpoints, error);
+    if (error)
+        return false;
+    return true;
 }
 
-void rtp::Network::connect()
+void rtp::Network::listen()
 {
-    std::cout << "[Server][connect]: run" << std::endl;
-
-    _ioContext.run();
+    boost::asio::ip::tcp::socket currentSocket(_ioContext);
+    _acceptor.async_accept(currentSocket, [this] (boost::system::error_code error) {
+        if (!error)
+            this->_TCPsockets.push_back(this->_waitingSocket);
+    });
 }
 
-void rtp::Network::_addEndpoint(std::string address, int port)
+void rtp::Network::TCPsendData(std::string data)
 {
-    _UDPendpoints.push_back({boost::asio::ip::make_address(address), static_cast<boost::asio::ip::port_type>(port)});
+    for (auto it = _TCPsockets.begin(); it != _TCPsockets.end(); it++)
+        it->send(boost::asio::buffer(data));
+}
+
+void rtp::Network::TCPsendDataTo(std::string data, int to)
+{
+    _TCPsockets[to].send(boost::asio::buffer(data));
+}
+
+std::string rtp::Network::TCPreceiveDataFrom(int from)
+{
+    std::string res;
+
+    // get the string in _TCPsockets[from].receive
+    // put it in res
+
+    return (res);
 }
