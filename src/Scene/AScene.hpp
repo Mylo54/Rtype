@@ -13,6 +13,7 @@
 #include "IScene.hpp"
 #include "../Network/Network.hpp"
 #include "../System/ButtonSystem.hpp"
+#include "../System/PlayerSystem.hpp"
 
 namespace rtp
 {
@@ -45,6 +46,7 @@ namespace rtp
             eng::SuperInput &_input;
             eng::TextureManager &_texture;
             rtp::ButtonSystem _buttonSystem;
+            rtp::PlayerSystem _playerSystem;
         private:
     };
 } // namespace rtp
