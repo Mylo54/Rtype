@@ -61,7 +61,7 @@ void rtp::Client::_handleSceneEvents()
     if (_sceneEvent == rtp::sceneEvent::pushScene) {
         _registries.addRegistry("new");
         if (_sceneNumber == rtp::sceneNumber::option) {
-            _scenes.push(new rtp::Settings(_makePackage(), sf::Color(rand())));
+            _scenes.push(new rtp::Settings(_makePackage()));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::chooseLvl) {
@@ -81,7 +81,7 @@ int rtp::Client::run()
 {
     _setupInputEvents();
     _registries.addRegistry("start");
-    rtp::Settings *optionScene = new rtp::Settings(_makePackage(), sf::Color::Red);
+    rtp::Settings *optionScene = new rtp::Settings(_makePackage());
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
     rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
     // _scenes.push(optionScene);
