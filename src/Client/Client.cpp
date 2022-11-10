@@ -81,8 +81,8 @@ int rtp::Client::run()
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
     rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
     // _scenes.push(optionScene);
-    // _scenes.push(mainMenuScene);
-    _scenes.push(chooseLvl);
+    _scenes.push(mainMenuScene);
+    // _scenes.push(chooseLvl);
 
     std::cout << "Client is up!" << std::endl;
     _scenes.top()->setupScene();
