@@ -51,6 +51,8 @@ void rtp::MainMenu::systemRun()
     // Apply button actions
     _buttonSystem.buttonClick(_reg, _input);
 
+    _physic.applyVelocities(_reg);
+
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);

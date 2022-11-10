@@ -22,7 +22,7 @@ rtp::Client::~Client()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _net, _inputs, _textures, _sceneEvent, _sceneNumber};
+        _inputs, _textures, _sceneEvent, _sceneNumber};
 
     return (pkg);
 }
@@ -81,8 +81,8 @@ int rtp::Client::run()
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
     rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
     // _scenes.push(optionScene);
+    // _scenes.push(mainMenuScene);
     _scenes.push(mainMenuScene);
-    // _scenes.push(chooseLvl);
 
     std::cout << "Client is up!" << std::endl;
     _scenes.top()->setupScene();

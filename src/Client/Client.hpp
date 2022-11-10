@@ -56,7 +56,7 @@ namespace rtp
             eng::PhysicSystems _physics;
             eng::GraphicSystems _graphics;
             eng::AudioSystems _audio;
-            rtp::Network _net;
+            // rtp::Network _net;
             eng::TextureManager _textures;
             rtp::ButtonSystem _buttonSystem;
             eng::SceneManager _sceneManager;
