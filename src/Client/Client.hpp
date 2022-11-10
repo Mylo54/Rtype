@@ -16,6 +16,7 @@
 #include "../Scene/Settings.hpp"
 #include "../Scene/MainMenu.hpp"
 #include "../Scene/ChooseLvl.hpp"
+#include "../Scene/Game.hpp"
 
 namespace rtp
 {

@@ -69,6 +69,14 @@ void rtp::Client::_handleSceneEvents()
             _scenes.push(new rtp::ChooseLvl(_makePackage()));
             _scenes.top()->setupScene();
         }
+        if (_sceneNumber == rtp::sceneNumber::game) {
+            _scenes.push(new rtp::Game(_makePackage()));
+            _scenes.top()->setupScene();
+        }
+        if (_sceneNumber == rtp::sceneNumber::menu) {
+            _scenes.push(new rtp::MainMenu(_makePackage()));
+            _scenes.top()->setupScene();
+        }
     }
     if (_sceneEvent == rtp::sceneEvent::popScene) {
         _registries.popRegistry();
@@ -85,6 +93,7 @@ int rtp::Client::run()
     rtp::Settings *optionScene = new rtp::Settings(_makePackage());
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
     rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
+    rtp::Game *game = new rtp::Game(_makePackage());
     // _scenes.push(optionScene);
     // _scenes.push(mainMenuScene);
     _scenes.push(mainMenuScene);

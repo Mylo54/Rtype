@@ -172,7 +172,7 @@ void rtp::ChooseLvl::_addButtonLvlFinal()
 int rtp::ChooseLvl::_btnFctlvl1()
 {
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 0;
     return (0);
 }
 
@@ -180,7 +180,7 @@ int rtp::ChooseLvl::_btnFctlvl2()
 {
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 0;
     return (0);
 }
 
@@ -188,7 +188,7 @@ int rtp::ChooseLvl::_btnFctlvl3()
 {
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 0;
     return (0);
 }
 
@@ -196,7 +196,7 @@ int rtp::ChooseLvl::_btnFctlvl4()
 {
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 0;
     return (0);
 }
 
@@ -204,6 +204,6 @@ int rtp::ChooseLvl::_btnFctlvlB()
 {
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
-    _sceneNumber = 3;
+    _sceneNumber = 0;
     return (0);
 }

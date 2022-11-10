@@ -271,14 +271,3 @@ int rtp::Settings::_sfxBtnFunction()
     }
     return (0);
 }
-
-// void rtp::Settings::_soundTest()
-// {
-//     auto &sounds = _reg.getComponents<eng::Sound>();
-
-//     for (int i = 0; i < sounds.size(); i++) {
-//         if (sounds[i].has_value()) {
-//             _audio.playSound(_reg)
-//         }
-//     }
-// }
