@@ -21,6 +21,7 @@ void rtp::Game::setupScene()
     _addBackgrounds();
     _addScore();
     _addMusic();
+    addPlayer(1, 0);
 }
 
 void rtp::Game::setupRegistry()
@@ -43,9 +44,10 @@ void rtp::Game::systemRun()
     // Update input events
     _input.updateEvents();
 
-    if (_input.isActionJustPressed("ui_escape"))
+    if (_input.isActionJustPressed("ui_escape")) {
         _sceneEvent = 2;
         _sceneNumber = 2;
+    }
     // Animate buttons
     _buttonSystem.buttonStateSystem(_reg, _input);
     // Apply button actions
