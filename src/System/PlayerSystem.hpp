@@ -26,6 +26,7 @@ namespace rtp
             /// @param input 
             /// @param delta as seconds
             void controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta);
+            void limitPlayer(eng::Registry &r);
         protected:
         private:
     };

@@ -49,22 +49,18 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
-    if (_input.isActionJustPressed("ui_left")) {
-        _sceneEvent = 2;
-        _sceneNumber = 6;
-    }
-    if (_input.isActionJustPressed("ui_right")) {
-        _sceneEvent = 2;
-        _sceneNumber = 7;
-    }
-    // Animate buttons
-    _buttonSystem.buttonStateSystem(_reg, _input);
-    // Apply button actions
-    _buttonSystem.buttonClick(_reg, _input);
-
+    // if (_input.isActionJustPressed("ui_left")) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 6;
+    // }
+    // if (_input.isActionJustPressed("ui_right")) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 7;
+    // }
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
     _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
+    _physic.applyGravity(_reg);
     _physic.applyVelocities(_reg);
 
     // Play sounds & music
@@ -100,7 +96,7 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
     // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
     // reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
-    _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
+    _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 0.5f));
     _reg.addComponent<eng::Writable>(player, eng::Writable("score", "P1", "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
     auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
 
