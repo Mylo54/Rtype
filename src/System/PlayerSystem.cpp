@@ -63,8 +63,8 @@ void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &inp
 
 void rtp::PlayerSystem::controlFireSystem(eng::Registry &reg, float delta)
 {
-    auto &shooters = reg.getComponents<Shooter>();
-    auto &controllables = reg.getComponents<Controllable>();
+    auto &shooters = reg.getComponents<rtp::Shooter>();
+    auto &controllables = reg.getComponents<rtp::Controllable>();
 
     for (int i = 0; i < controllables.size() && i < shooters.size(); i++) {
         auto &sht = shooters[i];
@@ -77,6 +77,32 @@ void rtp::PlayerSystem::controlFireSystem(eng::Registry &reg, float delta)
             if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
                 sht.value().shoot = true;
                 sht.value().nextFire = sht.value().fireRate / 1;
+            }
+        }
+    }
+}
+
+void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
+{
+    auto &positions = reg.getComponents<eng::Position>();
+    auto &shooters = reg.getComponents<rtp::Shooter>();
+
+    for (int i = 0; i < positions.size() && i < shooters.size(); i++) {
+        auto &pos = positions[i];
+        auto &sht = shooters[i];
+        
+        if (pos.has_value() && sht.has_value()) {
+            if (sht.value().shoot) {
+                float x = pos.value().x + sht.value().shootPoint[0];
+                float y = pos.value().y + sht.value().shootPoint[1];
+                float z = pos.value().z;
+                sht.value().shoot = false;
+                eng::Entity bullet = reg.spawnEntity();
+                reg.addComponent(bullet, eng::Velocity(300, 0));
+                reg.addComponent(bullet, eng::Position(x, y, z));
+                reg.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
+                reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));
+                reg.addComponent(bullet, rtp::Bullet(2));
             }
         }
     }

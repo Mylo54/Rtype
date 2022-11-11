@@ -26,7 +26,6 @@ namespace rtp
             int yAxis = 0;
             bool shoot = false;
             bool hasShot = false;
-            bool chat = false;
             bool event = false;
             char count = 'a';
         protected:

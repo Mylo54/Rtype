@@ -11,6 +11,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Controllable.hpp"
 #include "../GameComponent/Shooter.hpp"
+#include "../GameComponent/Bullet.hpp"
 
 namespace rtp
 {
@@ -28,6 +29,7 @@ namespace rtp
             /// @param delta as seconds
             void controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta);
             void controlFireSystem(eng::Registry &reg, float delta);
+            void shootSystem(eng::Registry &reg);
         protected:
         private:
     };
