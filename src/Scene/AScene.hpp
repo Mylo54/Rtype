@@ -14,6 +14,7 @@
 #include "../Network/Network.hpp"
 #include "../System/ButtonSystem.hpp"
 #include "../System/PlayerSystem.hpp"
+#include "../System/KillSystem.hpp"
 
 namespace rtp
 {
@@ -47,6 +48,7 @@ namespace rtp
             eng::TextureManager &_texture;
             rtp::ButtonSystem _buttonSystem;
             rtp::PlayerSystem _playerSystem;
+            rtp::KillSystem _killSystem;
         private:
     };
 } // namespace rtp

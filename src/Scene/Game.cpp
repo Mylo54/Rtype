@@ -52,6 +52,7 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
+    // Debug pour end screen
     // if (_input.isActionJustPressed("ui_left")) {
     //     _sceneEvent = 2;
     //     _sceneNumber = 6;
@@ -60,13 +61,20 @@ void rtp::Game::systemRun()
     //     _sceneEvent = 2;
     //     _sceneNumber = 7;
     // }
+
+    //Controls
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
     _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
     _physic.applyGravity(_reg);
+
     _physic.applyVelocities(_reg);
+    // Shooting
     _playerSystem.controlFireSystem(_reg, _graphic.getDeltaSeconds());
     _playerSystem.shootSystem(_reg);
+
+    _killSystem.killOutOfBounds(_reg);
+    _killSystem.killBullets(_reg);
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
