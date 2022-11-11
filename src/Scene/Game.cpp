@@ -38,6 +38,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Background>());
     _reg.registerComponents(eng::SparseArray<rtp::Button>());
     _reg.registerComponents(eng::SparseArray<rtp::Controllable>());
+    _reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
 }
 
 void rtp::Game::systemRun()
@@ -86,6 +87,8 @@ void rtp::Game::_addMusic()
 eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
 {
     eng::Entity player = _reg.spawnEntity();
+    std::stringstream name;
+    name << "P" << playerId;
 
     _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
     _reg.addComponent<eng::Velocity>(player, eng::Velocity());
@@ -94,10 +97,10 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
     _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
     _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
     // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    // reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    _reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
     _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
-    _reg.addComponent<eng::Writable>(player, eng::Writable("score", "P1", "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
+    _reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
     auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
 
     smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");

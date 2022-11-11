@@ -15,6 +15,7 @@
 #include "../GameComponent/Button.hpp"
 #include "../GameComponent/Background.hpp"
 #include "../GameComponent/Controllable.hpp"
+#include "../GameComponent/PlayerStats.hpp"
 
 namespace rtp {
     class Game : public AScene {

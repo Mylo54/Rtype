@@ -34,7 +34,7 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
             // ctrl.value().xAxis -= input.getActionStrength("ui_left");
             // ctrl.value().yAxis -= input.getActionStrength("ui_up");
             // // Shoot
-            // ctrl.value().shoot = input.isActionPressed("Fire");
+            ctrl.value().shoot = input.isActionPressed("ui_fire");
 
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : ctrl.value().yAxis;
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : 0.0f;
