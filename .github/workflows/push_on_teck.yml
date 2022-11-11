@@ -9,8 +9,10 @@ jobs:
     uses: ./.github/workflows/test_windows_compile.yml
   build_macos:
     uses: ./.github/workflows/test_macos_compile.yml
-#  #Code_analysis:
-#  #  uses: ./.github/workflows/code_analysis.yml
+##  codeql:
+##    uses: ./.github/workflows/codeql.yml
+  Code_analysis:
+    uses: ./.github/workflows/code_analysis.yml
   to_Epitech:
     needs: [build_linux, build_windows]
     runs-on: ubuntu-latest
