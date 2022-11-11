@@ -1,3 +1,8 @@
+env:
+  # Path to the CMake build directory.
+  build: '${{ github.workspace }}/build'
+  config: 'Debug'
+
 name: CODE ANALYSIS
 on: [workflow_call]
 jobs:
