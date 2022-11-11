@@ -150,6 +150,9 @@ void rtp::MainMenu::_addBackgrounds()
     _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
     _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
     _reg.addComponent<rtp::Background>(bg3, rtp::Background());
+    eng::Entity bg1 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg1, eng::Position(0, 0, 0));
+    _reg.addComponent<eng::Drawable>(bg1, eng::Drawable(_texture.getTextureFromFile("assets/PM_bckgrd.png")));
 }
 
 void rtp::MainMenu::_addEarth()

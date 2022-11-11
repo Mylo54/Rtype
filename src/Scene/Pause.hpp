@@ -9,6 +9,12 @@
 #define PAUSE_HPP_
 
 #include "AScene.hpp"
+#include <iostream>
+#include <fstream>
+#include <memory>
+#include "../GameComponent/Button.hpp"
+#include "../GameComponent/Background.hpp"
+#include "../System/ButtonSystem.hpp"
 
 namespace rtp {
     class Pause : public AScene {

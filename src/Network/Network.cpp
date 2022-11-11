@@ -187,6 +187,8 @@ void rtp::Network::listen()
 
 void rtp::Network::TCPsendData(std::string data)
 {
+    std::vector<int> a = {1, 2, 3};
+    
     for (auto it = _socketList.begin(); it != _socketList.end(); it++)
         (*it)->send(boost::asio::buffer(data));
 }
@@ -196,12 +198,34 @@ void rtp::Network::TCPsendDataTo(std::string data, int to)
     _socketList[to]->send(boost::asio::buffer(data));
 }
 
+void rtp::Network::TCPwriteData(std::string data)
+{
+    _socketTCP.send(boost::asio::buffer(data));
+}
+
+std::string rtp::Network::TCPreadData()
+{
+    std::string res;
+
+    
+    res.reserve(_socketTCP.available() + 20);
+    _socketTCP.receive(boost::asio::buffer(res));
+
+    return (res);
+}
+
 std::string rtp::Network::TCPreceiveDataFrom(int from)
 {
     std::string res;
 
     // get the string in _socketList[from].receive
     // put it in res
+
+    // reserve available bytes in 'res' string (+ 20 for good measure)
+    res.reserve(_socketList[from]->available() + 20);
+
+    // read the socket and place data in res;
+    _socketList[from]->receive(boost::asio::buffer(res));
 
     return (res);
 }
