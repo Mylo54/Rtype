@@ -58,6 +58,10 @@ namespace rtp
             /// @param from the id of the socket in the sockets vector
             std::string TCPreceiveDataFrom(int from);
 
+            std::string TCPreadData();
+            
+            void TCPwriteData(std::string data);
+
             /// @brief adds an endpoint to the vector of tcp endpoints
             /// @param address the address of the endpoint
             /// @param port the port of the endpoint
@@ -90,6 +94,7 @@ namespace rtp
             /// @brief listen to connections
             void listen();
 
+
         protected:
             /// @brief send and receive info after TCP connection to the server
             /// @return 0 if connect succesfuly, 1 if failed
@@ -101,7 +106,7 @@ namespace rtp
 
         private:
             boost::asio::io_context _ioContext;
-            boost::asio::ip::udp::socket _socketUDP{_ioContext};
+            boost::asio::ip::udp::socket _socketUDP;
             boost::asio::ip::tcp::socket _socketTCP{_ioContext};
             boost::asio::ip::tcp::acceptor _acceptor;
 
