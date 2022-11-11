@@ -18,6 +18,8 @@
 #include "../Scene/Pause.hpp"
 #include "../Scene/ChooseLvl.hpp"
 #include "../Scene/Game.hpp"
+#include "../Scene/WaitingRoom.hpp"
+#include "../Scene/End.hpp"
 
 namespace rtp
 {
@@ -32,7 +34,9 @@ namespace rtp
         menu,
         pause,
         option,
-        chooseLvl
+        chooseLvl,
+        waiting,
+        end
         // ...others
     };
 

@@ -2,20 +2,20 @@
 ** EPITECH PROJECT, 2022
 ** rtype
 ** File description:
-** MainMenu
+** End
 */
 
-#include "MainMenu.hpp"
+#include "End.hpp"
 
-rtp::MainMenu::MainMenu(rtp::scene_package_t pack): AScene(pack)
+rtp::End::End(rtp::scene_package_t pack): AScene(pack)
 {
 }
 
-rtp::MainMenu::~MainMenu()
+rtp::End::~End()
 {
 }
 
-void rtp::MainMenu::setupScene()
+void rtp::End::setupScene()
 {
     setupRegistry();
     _addButtons();
@@ -23,7 +23,7 @@ void rtp::MainMenu::setupScene()
     _addEarth();
 }
 
-void rtp::MainMenu::setupRegistry()
+void rtp::End::setupRegistry()
 {
     _reg.registerComponents(eng::SparseArray<eng::Velocity>());
     _reg.registerComponents(eng::SparseArray<eng::Position>());
@@ -38,7 +38,7 @@ void rtp::MainMenu::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Button>());
 }
 
-void rtp::MainMenu::systemRun()
+void rtp::End::systemRun()
 {
     // Update input events
     _input.updateEvents();
@@ -65,7 +65,7 @@ void rtp::MainMenu::systemRun()
     _graphic.display();
 }
 
-void rtp::MainMenu::_addButtons()
+void rtp::End::_addButtons()
 {
     _addSinglePlayerButton();
     _addButtonExit();
@@ -73,29 +73,29 @@ void rtp::MainMenu::_addButtons()
     _addButtonSettings();
 }
 
-void rtp::MainMenu::_addSinglePlayerButton()
+void rtp::End::_addSinglePlayerButton()
 {
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 2;
-    std::function<int()> chooseLvl = std::bind(&MainMenu::_chooseLvlBtnFunction, this);
+    std::function<int()> chooseLvl = std::bind(&End::_chooseLvlBtnFunction, this);
 
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 500, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(chooseLvl, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
 
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
-    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Singleplayer", "assets/MetroidPrimeHunters.ttf"));
+    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "End", "assets/MetroidPrimeHunters.ttf"));
     _reg.addComponent<eng::Position>(btntesxt, eng::Position(720, 500, 0));
 }
 
-void rtp::MainMenu::_addButtonExit()
+void rtp::End::_addButtonExit()
 {
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    std::function<int()> exit = std::bind(&MainMenu::_exitBtnFunction, this);
+    std::function<int()> exit = std::bind(&End::_exitBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 700, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(exit, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -104,13 +104,13 @@ void rtp::MainMenu::_addButtonExit()
     _reg.addComponent<eng::Position>(btntesxt, eng::Position(720, 700, 0));
 }
 
-void rtp::MainMenu::_addButtonMultiplayer()
+void rtp::End::_addButtonMultiplayer()
 {
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;    
 
-    std::function<int()> multi = std::bind(&MainMenu::_multiBtnFunction, this);
+    std::function<int()> multi = std::bind(&End::_multiBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(700, 600, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(multi, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -120,13 +120,13 @@ void rtp::MainMenu::_addButtonMultiplayer()
     _reg.addComponent<eng::Position>(btntesxt, eng::Position(720, 600, 0));
 }
 
-void rtp::MainMenu::_addButtonSettings()
+void rtp::End::_addButtonSettings()
 {
     eng::Entity btn = _reg.spawnEntity();
     eng::Entity btntesxt = _reg.spawnEntity();
     int scale = 4;
 
-    std::function<int()> settings = std::bind(&MainMenu::_settingBtnFunction, this);
+    std::function<int()> settings = std::bind(&End::_settingBtnFunction, this);
     _reg.addComponent<eng::Position>(btn, eng::Position(970, 700, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(settings, 0, 0, 128 * 1.9, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
@@ -136,7 +136,7 @@ void rtp::MainMenu::_addButtonSettings()
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
 }
 
-void rtp::MainMenu::_addBackgrounds()
+void rtp::End::_addBackgrounds()
 {
     eng::Entity bg = _reg.spawnEntity();
     _reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
@@ -152,7 +152,7 @@ void rtp::MainMenu::_addBackgrounds()
     _reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
-void rtp::MainMenu::_addEarth()
+void rtp::End::_addEarth()
 {
     eng::Entity bg = _reg.spawnEntity();
     _reg.addComponent<eng::Velocity>(bg, eng::Velocity(0, 0, 35));
@@ -167,13 +167,13 @@ void rtp::MainMenu::_addEarth()
     draw[bg.getId()].value().protect = true;
 }
 
-int rtp::MainMenu::_exitBtnFunction()
+int rtp::End::_exitBtnFunction()
 {
     _graphic.closeWindow();
     return (0);
 }
 
-int rtp::MainMenu::_chooseLvlBtnFunction()
+int rtp::End::_chooseLvlBtnFunction()
 {
     // TODO: Modify destination to Choose level menu
     _sceneEvent = 2;
@@ -181,7 +181,7 @@ int rtp::MainMenu::_chooseLvlBtnFunction()
     return (0);
 }
 
-int rtp::MainMenu::_multiBtnFunction()
+int rtp::End::_multiBtnFunction()
 {
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
@@ -189,7 +189,7 @@ int rtp::MainMenu::_multiBtnFunction()
     return (0);
 }
 
-int rtp::MainMenu::_settingBtnFunction()
+int rtp::End::_settingBtnFunction()
 {
     // TODO: Modify destination to Choose level menu
     _sceneEvent = 2;
