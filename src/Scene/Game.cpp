@@ -69,6 +69,7 @@ void rtp::Game::systemRun()
     _physic.applyGravity(_reg);
 
     _physic.applyVelocities(_reg);
+    _playerSystem.limitPlayer(_reg);
     // Shooting
     _playerSystem.controlFireSystem(_reg, _graphic.getDeltaSeconds());
     _playerSystem.shootSystem(_reg);

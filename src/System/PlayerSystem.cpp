@@ -107,3 +107,23 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
         }
     }
 }
+
+void rtp::PlayerSystem::limitPlayer(eng::Registry &r)
+{
+    auto &pos = r.getComponents<eng::Position>();
+    auto &ves = r.getComponents<eng::Velocity>();
+    auto &pls = r.getComponents<PlayerStats>();
+
+    for (int i = 0; i < pos.size() && i < ves.size() && i < pls.size(); i++) {
+        if (pos[i].has_value() && ves[i].has_value() && pls[i].has_value()) {
+            auto &position = pos[i].value();
+            auto &velocity = ves[i].value();
+            auto &playerSt = pls[i].value();
+
+            position.x = (position.x >= 1860) ? 1860 : position.x;
+            position.x = (position.x < 0) ? 0 : position.x;
+            position.y = (position.y >= 982) ? 982 : position.y;
+            position.y = (position.y < 0) ? 0 : position.y;
+        }
+    }
+}
