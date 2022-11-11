@@ -94,6 +94,7 @@ namespace rtp
             /// @brief listen to connections
             void listen();
 
+            boost::asio::io_context _ioContext;
 
         protected:
             /// @brief send and receive info after TCP connection to the server
@@ -105,7 +106,6 @@ namespace rtp
             boost::array<rtp::demandConnectPayload_s, 1> _afterConnectionToClient(boost::asio::ip::tcp::socket sckt);
 
         private:
-            boost::asio::io_context _ioContext;
             boost::asio::ip::udp::socket _socketUDP;
             boost::asio::ip::tcp::socket _socketTCP{_ioContext};
             boost::asio::ip::tcp::acceptor _acceptor;

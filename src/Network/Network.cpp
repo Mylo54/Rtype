@@ -88,14 +88,16 @@ int rtp::Network::connectionToServer(bool multiplayer, int lvl, int port)
 {
     boost::system::error_code error;
     boost::asio::ip::tcp::resolver resolver(_ioContext);
-    boost::asio::ip::tcp::resolver::query query("0.0.0.0", "3303");
-    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-    boost::asio::ip::tcp::resolver::iterator end;
+    //boost::asio::ip::tcp::resolver::query query("localhost", "4050");
+    //boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::results_type endpoints =
+        resolver.resolve("localhost", "4050");
 
     try {
 
         boost::system::error_code error = boost::asio::error::host_not_found;
-        _socketTCP.connect(*(resolver.resolve(query)), error);
+        boost::asio::connect(_socketTCP, endpoints, error);
+        //_socketTCP.connect(*(resolver.resolve(query)), error);
         if (error) {
             std::cout << "[Client][Connect]: fail to connect " << error << std::endl;
             return (1);
@@ -109,17 +111,17 @@ int rtp::Network::connectionToServer(bool multiplayer, int lvl, int port)
         std::cerr << e.what() << std::endl;
         return (1);
     }
-
+    //return (0);
     return (_sendAfterConnectToServer(multiplayer, lvl, port));
 }
 
 boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToClient(boost::asio::ip::tcp::socket sckt)
 {
+    _socketList.push_back(&sckt);
+    boost::array<demandConnectPayload_s, 1> dataRec;
     boost::array<connectPayload_t, 1> dataTbs = {OK};
     boost::system::error_code error;
-    boost::array<demandConnectPayload_s, 1> dataRec;
     connectPayload_t clientIds;
-    _socketList.push_back(&sckt);
 
     /*dataTbs[0].playerId = _nPlayer;
     _askNewPlayer = true;
@@ -143,6 +145,8 @@ boost::array<rtp::demandConnectPayload_s, 1> rtp::Network::_afterConnectionToCli
     }
     // write operation
     sckt.send(boost::asio::buffer(dataTbs));
+    //TCPsendData("Hello client!");
+    //TCPsendData("Hello client!");
     return dataRec;
 }
 
@@ -150,7 +154,6 @@ void rtp::Network::connectToClient()
 {
     std::cout << "[Server][connect]: debug connect async" << std::endl;
 
-    /*boost::asio::ip::tcp::acceptor acceptor(_ioContext, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address("0.0.0.0"), 3303));
     _socketOptional.emplace(_ioContext);
     _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
     {
@@ -158,10 +161,11 @@ void rtp::Network::connectToClient()
             std::cout << "[Server][connect]: connect failed" << std::endl;
         } else {
             std::cout << "[Server][connect]: connect success" << std::endl;
+
             _afterConnectionToClient(std::move(*_socketOptional));
         }
         connectToClient();
-    });*/
+    });
 }
 
 bool rtp::Network::connect(std::string host, std::string service)
@@ -180,17 +184,23 @@ bool rtp::Network::connect(std::string host, std::string service)
 void rtp::Network::listen()
 {
     _acceptor.async_accept(this->_waitingSocket, [this] (boost::system::error_code error) {
-        if (!error)
+        if (!error) {
             this->_socketList.push_back(&_waitingSocket);
+            std::cout << "[Server][connect]: connect ok" << std::endl;
+            
+        } else 
+            std::cout << "[Server][connect]: connect failed" << std::endl;
+        listen();
     });
 }
 
 void rtp::Network::TCPsendData(std::string data)
-{
-    std::vector<int> a = {1, 2, 3};
-    
-    for (auto it = _socketList.begin(); it != _socketList.end(); it++)
+{   
+    for (auto it = _socketList.begin(); it != _socketList.end(); it++) {
+        std::cout << "try send : " << data << std::endl;
+        //boost::asio::write((*it), boost::asio::buffer(data));
         (*it)->send(boost::asio::buffer(data));
+    }
 }
 
 void rtp::Network::TCPsendDataTo(std::string data, int to)
@@ -207,9 +217,11 @@ std::string rtp::Network::TCPreadData()
 {
     std::string res;
 
-    
-    res.reserve(_socketTCP.available() + 20);
-    _socketTCP.receive(boost::asio::buffer(res));
+    res.reserve(100);
+    boost::asio::read(_socketTCP, boost::asio::buffer(res), boost::asio::transfer_all());
+    //std::cout << "res = " << res << std::endl;
+    //res.reserve(_socketTCP.available() + 100);
+    //_socketTCP.receive(boost::asio::buffer(res));
 
     return (res);
 }
