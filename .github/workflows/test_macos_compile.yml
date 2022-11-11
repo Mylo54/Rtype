@@ -7,9 +7,14 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Get Conan
-        uses: turtlebrowser/get-conan@v1.0
+        run: |
+          brew install conan
       - name: Create default profile
         run: conan profile new default --detect
+      - name: pull EngineCoreSuper submodule
+        run:  |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
       - name: build
         run: |
           mkdir build

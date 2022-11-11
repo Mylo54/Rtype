@@ -11,7 +11,15 @@
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/Network.hpp"
+#include "../System/ButtonSystem.hpp"
 #include "../Scene/AScene.hpp"
+#include "../Scene/Settings.hpp"
+#include "../Scene/MainMenu.hpp"
+#include "../Scene/Pause.hpp"
+#include "../Scene/ChooseLvl.hpp"
+#include "../Scene/Game.hpp"
+#include "../Scene/WaitingRoom.hpp"
+#include "../Scene/End.hpp"
 
 namespace rtp
 {
@@ -24,7 +32,12 @@ namespace rtp
     enum sceneNumber{
         game,
         menu,
-        pause
+        pause,
+        option,
+        chooseLvl,
+        waiting,
+        win,
+        loose
         // ...others
     };
 
@@ -36,20 +49,26 @@ namespace rtp
             /// @brief run the Client
             /// @return 0 on success, 84 on program failure
             int run();
+            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map);
         protected:
         private:
             scene_package_t _makePackage();
+            void _setupInputEvents();
+            void _handleSceneEvents();
 
-            int _sceneEvent;
-            int _sceneNumber;
+            int _sceneEvent = sceneEvent::none;
+            int _sceneNumber = sceneNumber::menu;
             eng::RegistryManager _registries;
             eng::SuperInput _inputs;
             eng::PhysicSystems _physics;
             eng::GraphicSystems _graphics;
             eng::AudioSystems _audio;
-            rtp::Network _net;
+            // rtp::Network _net;
             eng::TextureManager _textures;
+            rtp::ButtonSystem _buttonSystem;
+            eng::SceneManager _sceneManager;
             std::stack<rtp::IScene*> _scenes;
+
     };
 } // namespace rtp
 

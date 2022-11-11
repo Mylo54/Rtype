@@ -10,36 +10,28 @@
 
 #include <iostream>
 #include <fstream>
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
-// #include "../Components/Components.hpp"
-// #include "../ClientSystems/ClientSystems.hpp"
-// #include "../ClientSystems/NetworkSystems.hpp"
-// #include "../NetworkStructs.hpp"
-// #include "ChooseLvl.hpp"
 #include <memory>
-// #include "MapVoter.hpp"
 #include "AScene.hpp"
+#include "../GameComponent/Button.hpp"
+#include "../GameComponent/Background.hpp"
+#include "../System/ButtonSystem.hpp"
 
 namespace rtp {
     class MainMenu : public AScene {
         public:
-
             /// @brief MainMenu object constructor
-            /// @param manager reference to registry manager
-            /// @param co function connect
-            MainMenu(rtp::scene_package_t &pack,
-            eng::RegistryManager &manager,
-            std::function<int(eng::RegistryManager&, bool, int, int)> &co);
+            MainMenu(rtp::scene_package_t pack);
             ~MainMenu();
+            void setupScene() override;
             void setupRegistry() override;
+            void systemRun() override;
         protected:
 
             /// @brief Adds all buttons to the scene
             void _addButtons();
 
             /// @brief Adds button singleplayer to the scene
-            void _addButtonStartLocal();
+            void _addSinglePlayerButton();
 
             /// @brief Adds button Exit to the scene
             void _addButtonExit();
@@ -56,23 +48,15 @@ namespace rtp {
             /// @brief Add sprite earth to the scene
             void _addEarth();
 
+            /// @brief fct for button settings
+            int _settingBtnFunction();
             /// @brief fct for button exit
-            /// @param reg The RegistryManager
-            int _exitBtn(eng::RegistryManager &regMan);
-
+            int _exitBtnFunction();
             /// @brief fct for button choose lvl
-            /// @param regMan The RegistryManager
-            int _chooseLvlBtn(eng::RegistryManager &regMan);
-
+            int _chooseLvlBtnFunction();
             /// @brief fct for button multiplayer
-            /// @param regMan The RegistryManager
-            int _MultiBtn(eng::RegistryManager &regMan);
-
+            int _multiBtnFunction();
         private:
-            eng::RegistryManager &_manager;
-            
-            /// @brief fct which is used in btn to connect to the server
-            std::function<int(eng::RegistryManager &, bool, int, int)> &_singlePlayerBtnFct;
     };
 }
 
