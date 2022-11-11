@@ -53,10 +53,10 @@ void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &inp
 
         if (vel.has_value() && ctrl.has_value()) {
             // Left & Right
-            vel.value().x += ctrl.value().xAxis * delta * 20 * 2;
+            vel.value().x += ctrl.value().xAxis * delta * 200 * 2;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * delta * 20 * 2;
+            vel.value().y += ctrl.value().yAxis * delta * 200 * 2;
         }
     }
 }
