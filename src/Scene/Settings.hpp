@@ -47,6 +47,9 @@ namespace rtp
             void _addSfxText();
             int _sfxBtnFunction();
             void _soundTest();
+            
+            void _addButtonMainMenu();
+            int _mainMenuBtnFunction();
         private:
     };
 } // namespace rtp

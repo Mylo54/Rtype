@@ -49,22 +49,18 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
-    if (_input.isActionJustPressed("ui_left")) {
-        _sceneEvent = 2;
-        _sceneNumber = 6;
-    }
-    if (_input.isActionJustPressed("ui_right")) {
-        _sceneEvent = 2;
-        _sceneNumber = 7;
-    }
-    // Animate buttons
-    _buttonSystem.buttonStateSystem(_reg, _input);
-    // Apply button actions
-    _buttonSystem.buttonClick(_reg, _input);
-
+    // if (_input.isActionJustPressed("ui_left")) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 6;
+    // }
+    // if (_input.isActionJustPressed("ui_right")) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 7;
+    // }
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
     _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
+    _physic.applyGravity(_reg);
     _physic.applyVelocities(_reg);
 
     // Play sounds & music

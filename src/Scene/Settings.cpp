@@ -75,6 +75,7 @@ void rtp::Settings::addElements()
     _addSfxButton();
     _addSfxText();
     _addSfx();
+    _addButtonMainMenu();
 }
 
 void rtp::Settings::_addMusic()
@@ -115,7 +116,7 @@ void rtp::Settings::_addTitle()
     int scale = 5;
 
     _reg.addComponent<eng::Writable>(text, eng::Writable("Title", "Settings", "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(text, eng::Position(850, 200, 0));
+    _reg.addComponent<eng::Position>(text, eng::Position(890, 200, 0));
 }
 
 void rtp::Settings::_addFrameRateButton()
@@ -125,7 +126,7 @@ void rtp::Settings::_addFrameRateButton()
     int scale = 2;
     std::function<int()> frameRate = std::bind(&Settings::_frameRateBtnFunction, this);
 
-    _reg.addComponent<eng::Position>(btn, eng::Position(950, 400, 0));
+    _reg.addComponent<eng::Position>(btn, eng::Position(980, 400, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(frameRate, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 28, 32}));
 
@@ -134,7 +135,7 @@ void rtp::Settings::_addFrameRateButton()
     ss << fpsValue;
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("FPSButtonText", ss.str(), "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(btntesxt, eng::Position(985, 403, 0));
+    _reg.addComponent<eng::Position>(btntesxt, eng::Position(1015, 403, 0));
 }
 
 void rtp::Settings::_addFrameRateText()
@@ -143,7 +144,7 @@ void rtp::Settings::_addFrameRateText()
     int scale = 2;
 
     _reg.addComponent<eng::Writable>(text, eng::Writable("FPSText", "FPS   :", "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(text, eng::Position(800, 403, 0));
+    _reg.addComponent<eng::Position>(text, eng::Position(830, 403, 0));
 }
 
 int rtp::Settings::_frameRateBtnFunction()
@@ -176,7 +177,7 @@ void rtp::Settings::_addMusicButton()
     int scale = 2;
     std::function<int()> music = std::bind(&Settings::_musicBtnFunction, this);
 
-    _reg.addComponent<eng::Position>(btn, eng::Position(950, 500, 0));
+    _reg.addComponent<eng::Position>(btn, eng::Position(980, 500, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(music, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 28, 32}));
 
@@ -185,7 +186,7 @@ void rtp::Settings::_addMusicButton()
     ss << musicVolume;
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("MusicButtonText", ss.str(), "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(btntesxt, eng::Position(985, 503, 0));
+    _reg.addComponent<eng::Position>(btntesxt, eng::Position(1015, 503, 0));
 }
 
 void rtp::Settings::_addMusicText()
@@ -194,7 +195,7 @@ void rtp::Settings::_addMusicText()
     int scale = 2;
 
     _reg.addComponent<eng::Writable>(text, eng::Writable("Text", "Music   :", "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(text, eng::Position(800, 503, 0));
+    _reg.addComponent<eng::Position>(text, eng::Position(830, 503, 0));
 }
 
 int rtp::Settings::_musicBtnFunction()
@@ -227,7 +228,7 @@ void rtp::Settings::_addSfxButton()
     int scale = 2;
     std::function<int()> music = std::bind(&Settings::_sfxBtnFunction, this);
 
-    _reg.addComponent<eng::Position>(btn, eng::Position(950, 600, 0));
+    _reg.addComponent<eng::Position>(btn, eng::Position(980, 600, 0));
     _reg.addComponent<rtp::Button>(btn, rtp::Button(music, 0, 0, 128 * 4, 32 * 1.5));
     _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 28, 32}));
 
@@ -236,7 +237,7 @@ void rtp::Settings::_addSfxButton()
     ss << musicVolume;
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(4, 1.5);
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("SfxButtonText", ss.str(), "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(btntesxt, eng::Position(985, 603, 0));
+    _reg.addComponent<eng::Position>(btntesxt, eng::Position(1015, 603, 0));
 }
 
 void rtp::Settings::_addSfxText()
@@ -245,7 +246,7 @@ void rtp::Settings::_addSfxText()
     int scale = 2;
 
     _reg.addComponent<eng::Writable>(text, eng::Writable("Text", "Sfx   :", "assets/MetroidPrimeHunters.ttf"));
-    _reg.addComponent<eng::Position>(text, eng::Position(800, 603, 0));
+    _reg.addComponent<eng::Position>(text, eng::Position(830, 603, 0));
 }
 
 int rtp::Settings::_sfxBtnFunction()
@@ -270,4 +271,25 @@ int rtp::Settings::_sfxBtnFunction()
         }
     }
     return (0);
+}
+
+void rtp::Settings::_addButtonMainMenu()
+{
+    eng::Entity btn = _reg.spawnEntity();
+    eng::Entity btntesxt = _reg.spawnEntity();
+    int scale = 4;
+
+    std::function<int()> menu = std::bind(&Settings::_mainMenuBtnFunction, this);
+    _reg.addComponent<eng::Position>(btn, eng::Position(842, 700, 0));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(menu, 0, 0, 128 * 1.9, 32 * 1.5));
+    _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
+    _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
+    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Return", "assets/MetroidPrimeHunters.ttf"));
+    _reg.addComponent<eng::Position>(btntesxt, eng::Position(917, 703, 0));
+}
+
+int rtp::Settings::_mainMenuBtnFunction()
+{
+    _sceneEvent = 1;
+    return 0;
 }
