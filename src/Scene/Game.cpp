@@ -39,6 +39,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Button>());
     _reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     _reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
+    _reg.registerComponents(eng::SparseArray<rtp::Shooter>());
 }
 
 void rtp::Game::systemRun()
@@ -92,7 +93,7 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
 
     _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
     _reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    // reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
+    _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
     _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
