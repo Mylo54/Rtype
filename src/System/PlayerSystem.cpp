@@ -39,7 +39,7 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : ctrl.value().yAxis;
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : 0.0f;
         }
-    }
+    }   
 }
 
 void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta)
@@ -61,27 +61,23 @@ void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &inp
     }
 }
 
-// // Max speed should be defined elsewhere...
-// void rtp::PlayerSystem::limitPlayer(eng::Registry &r)
-// {
-//     auto &pos = r.getComponents<eng::Position>();
-//     auto &ves = r.getComponents<eng::Velocity>();
-//     float maxSpeed = 15;
+void rtp::PlayerSystem::controlFireSystem(eng::Registry &reg, float delta)
+{
+    auto &shooters = reg.getComponents<Shooter>();
+    auto &controllables = reg.getComponents<Controllable>();
 
-//     for (int i = 0; i < pos.size() && i < ves.size(); i++) {
-//         if (pos[i].has_value() && ves[i].has_value()) {
-//             auto &position = pos[i].value();
-//             auto &velocity = ves[i].value();
+    for (int i = 0; i < controllables.size() && i < shooters.size(); i++) {
+        auto &sht = shooters[i];
+        auto &ctrl = controllables[i];
 
-//             position.x = (position.x >= 1860) ? 1860 : position.x;
-//             position.x = (position.x < 0) ? 0 : position.x;
-//             position.y = (position.y >= 982) ? 982 : position.y;
-//             position.y = (position.y < 0) ? 0 : position.y;
-
-//             velocity.x = (velocity.x >= maxSpeed) ? maxSpeed : velocity.x;
-//             velocity.x = (velocity.x <= -maxSpeed) ? -maxSpeed : velocity.x;
-//             velocity.y = (velocity.y >= maxSpeed) ? maxSpeed : velocity.y;
-//             velocity.y = (velocity.y <= -maxSpeed) ? -maxSpeed : velocity.y;
-//         }
-//     }
-// }
+        if (sht.has_value() && ctrl.has_value()) {
+            if (sht.value().nextFire > 0) {
+                sht.value().nextFire -= delta;
+            }
+            if (ctrl.value().shoot && sht.value().nextFire <= 0)  {
+                sht.value().shoot = true;
+                sht.value().nextFire = sht.value().fireRate / 1;
+            }
+        }
+    }
+}

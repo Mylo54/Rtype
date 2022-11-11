@@ -64,6 +64,7 @@ void rtp::Game::systemRun()
     _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
     _physic.applyGravity(_reg);
     _physic.applyVelocities(_reg);
+    _playerSystem.controlFireSystem(_reg, _graphic.getDeltaSeconds());
 
     // Play sounds & music
     _audio.playMusic(_reg);
