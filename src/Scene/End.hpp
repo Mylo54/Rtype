@@ -20,12 +20,13 @@ namespace rtp {
     class End : public AScene {
         public:
             /// @brief End object constructor
-            End(rtp::scene_package_t pack);
+            End(rtp::scene_package_t pack, bool win);
             ~End();
             void setupScene() override;
             void setupRegistry() override;
             void systemRun() override;
         protected:
+            void _addResult();
 
             /// @brief Adds all buttons to the scene
             void _addButtons();
@@ -43,6 +44,7 @@ namespace rtp {
             int _mainMenuBtnFunction();
             int _restartBtnFunction();
         private:
+            bool _win;
     };
 }
 

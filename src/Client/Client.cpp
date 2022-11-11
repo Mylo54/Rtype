@@ -87,8 +87,12 @@ void rtp::Client::_handleSceneEvents()
             _scenes.push(new rtp::WaitingRoom(_makePackage()));
             _scenes.top()->setupScene();
         }
-        if (_sceneNumber == rtp::sceneNumber::end) {
-            _scenes.push(new rtp::End(_makePackage()));
+        if (_sceneNumber == rtp::sceneNumber::win) {
+            _scenes.push(new rtp::End(_makePackage(), true));
+            _scenes.top()->setupScene();
+        }
+        if (_sceneNumber == rtp::sceneNumber::loose) {
+            _scenes.push(new rtp::End(_makePackage(), false));
             _scenes.top()->setupScene();
         }
     }

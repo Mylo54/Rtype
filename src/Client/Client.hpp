@@ -36,7 +36,8 @@ namespace rtp
         option,
         chooseLvl,
         waiting,
-        end
+        win,
+        loose
         // ...others
     };
 

@@ -7,7 +7,7 @@
 
 #include "End.hpp"
 
-rtp::End::End(rtp::scene_package_t pack): AScene(pack)
+rtp::End::End(rtp::scene_package_t pack, bool win): AScene(pack), _win(win)
 {
 }
 
@@ -18,6 +18,7 @@ rtp::End::~End()
 void rtp::End::setupScene()
 {
     setupRegistry();
+    _addResult();
     _addButtons();
     _addBackgrounds();
 }
@@ -64,6 +65,17 @@ void rtp::End::systemRun()
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
     _graphic.display();
+}
+
+void rtp::End::_addResult()
+{
+    eng::Entity text = _reg.spawnEntity();
+    std::string result = _win ? "You win !" : "You lose";
+    sf::Color color = _win ? sf::Color::Green : sf::Color::Red;
+    sf::Text::Style style = _win ? sf::Text::Style::Italic : sf::Text::Style::Underlined;
+
+    _reg.addComponent<eng::Writable>(text, eng::Writable("Result", result, "assets/MetroidPrimeHunters.ttf", 200, color, style));
+    _reg.addComponent<eng::Position>(text, eng::Position(600, 150, 0));
 }
 
 void rtp::End::_addButtons()

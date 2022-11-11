@@ -53,6 +53,10 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 6;
     }
+    if (_input.isActionJustPressed("ui_right")) {
+        _sceneEvent = 2;
+        _sceneNumber = 7;
+    }
     // Animate buttons
     _buttonSystem.buttonStateSystem(_reg, _input);
     // Apply button actions
