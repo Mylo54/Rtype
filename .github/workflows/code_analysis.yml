@@ -12,6 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Get Conan
+        uses: turtlebrowser/get-conan@v1.0
+      - name: Create default profile
+        run: conan profile new default --detect
+
       - name: Configure CMake
         run: cmake -B ${{ env.build }} -DCMAKE_BUILD_TYPE=${{ env.config }}
 
