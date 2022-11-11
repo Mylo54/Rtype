@@ -77,7 +77,7 @@ void rtp::WaitingRoom::_addBackgrounds()
     _reg.addComponent<rtp::Background>(bg2, rtp::Background());
     eng::Entity bg3 = _reg.spawnEntity();
     _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/fo_reground.png")));
+    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
     _reg.addComponent<rtp::Background>(bg3, rtp::Background());
 }
 
@@ -100,7 +100,7 @@ void rtp::WaitingRoom::_addButtonStart()
 int rtp::WaitingRoom::_btnFctStart()
 {
     _sceneEvent = 2;
-    _sceneNumber = 0;
+    _sceneNumber = 4;
     return (0);
 }
 
