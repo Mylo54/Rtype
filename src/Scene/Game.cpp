@@ -101,6 +101,7 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
     // reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
     _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
+    _reg.addComponent<eng::Writable>(player, eng::Writable("score", "P1", "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
     auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
 
     smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
