@@ -11,6 +11,10 @@ jobs:
           brew install conan
       - name: Create default profile
         run: conan profile new default --detect
+      - name: pull EngineCoreSuper submodule
+        run:  |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
       - name: build
         run: |
           mkdir build
