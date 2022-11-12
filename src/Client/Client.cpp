@@ -44,6 +44,10 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_down", eng::SuperInput::Key::down);
     _inputs.addEvent("ui_left", eng::SuperInput::Key::left);
     _inputs.addEvent("ui_right", eng::SuperInput::Key::right);
+    _inputs.addEvent("ui_up", eng::SuperInput::Key::z);
+    _inputs.addEvent("ui_down", eng::SuperInput::Key::s);
+    _inputs.addEvent("ui_left", eng::SuperInput::Key::q);
+    _inputs.addEvent("ui_right", eng::SuperInput::Key::d);
     _inputs.addEvent("ui_accept", eng::SuperInput::Key::enter);
     _inputs.addEvent("ui_escape", eng::SuperInput::Key::escape);
     _inputs.addEvent("ui_pause", eng::SuperInput::Key::escape);
@@ -93,6 +97,10 @@ void rtp::Client::_handleSceneEvents()
         }
         if (_sceneNumber == rtp::sceneNumber::loose) {
             _scenes.push(new rtp::End(_makePackage(), false));
+            _scenes.top()->setupScene();
+        }
+        if (_sceneNumber == rtp::sceneNumber::credits) {
+            _scenes.push(new rtp::Credits(_makePackage()));
             _scenes.top()->setupScene();
         }
     }

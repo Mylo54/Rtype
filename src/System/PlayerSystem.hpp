@@ -10,6 +10,9 @@
 
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Controllable.hpp"
+#include "../GameComponent/Shooter.hpp"
+#include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/PlayerStats.hpp"
 
 namespace rtp
 {
@@ -26,6 +29,9 @@ namespace rtp
             /// @param input 
             /// @param delta as seconds
             void controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta);
+            void controlFireSystem(eng::Registry &reg, float delta);
+            void shootSystem(eng::Registry &reg);
+            void limitPlayer(eng::Registry &reg);
         protected:
         private:
     };

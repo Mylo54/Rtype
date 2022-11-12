@@ -20,6 +20,7 @@
 #include "../Scene/Game.hpp"
 #include "../Scene/WaitingRoom.hpp"
 #include "../Scene/End.hpp"
+#include "../Scene/Credits.hpp"
 
 namespace rtp
 {
@@ -37,7 +38,8 @@ namespace rtp
         chooseLvl,
         waiting,
         win,
-        loose
+        loose,
+        credits
         // ...others
     };
 
@@ -46,14 +48,21 @@ namespace rtp
             Client();
             ~Client();
 
-            /// @brief run the Client
+            /// @brief Run the Client
             /// @return 0 on success, 84 on program failure
             int run();
             int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map);
         protected:
         private:
+            /// @brief Create a package with all necessity for AScene constructor
+            /// @return The package
             scene_package_t _makePackage();
+            /// @brief Set the inputEvent and action associated
+            /// If you want to add an action :
+            /// _inputs.addAction("action_name");
+            /// _inputs.addEvent("action_name", eng::SuperInput::AssociatedInput);
             void _setupInputEvents();
+            /// @brief A function handling scene events : poping or pushing specific scene
             void _handleSceneEvents();
 
             int _sceneEvent = sceneEvent::none;

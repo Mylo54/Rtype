@@ -29,7 +29,7 @@ namespace rtp
 
             /// @brief Add all elements in the settings scene
             void addElements();
-            void addBackgrounds();
+            void _addBackgrounds();
         protected:
             void _addTitle();
             void _addMusic();
@@ -47,6 +47,9 @@ namespace rtp
             void _addSfxText();
             int _sfxBtnFunction();
             void _soundTest();
+            
+            void _addButtonMainMenu();
+            int _mainMenuBtnFunction();
         private:
     };
 } // namespace rtp
