@@ -29,6 +29,11 @@ jobs:
         run: |
           ls ${{ github.workspace }}/build
 
+      - name: setup NDK
+        - uses: nttld/setup-ndk@v1
+          with:
+            ndk-version: r25b
+        - runs: ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk
 
 
           
