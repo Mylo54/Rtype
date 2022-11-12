@@ -25,6 +25,7 @@ namespace rtp
             int xAxis = 0;
             int yAxis = 0;
             bool shoot = false;
+            bool canonShoot = false;
             bool hasShot = false;
             bool event = false;
             char count = 'a';

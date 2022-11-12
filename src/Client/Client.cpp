@@ -39,6 +39,7 @@ void rtp::Client::_setupInputEvents()
     _inputs.addAction("ui_click");
     _inputs.addAction("ui_pause");
     _inputs.addAction("ui_fire");
+    _inputs.addAction("ui_missile");
 
     _inputs.addEvent("ui_up", eng::SuperInput::Key::up);
     _inputs.addEvent("ui_down", eng::SuperInput::Key::down);
@@ -53,6 +54,7 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_pause", eng::SuperInput::Key::escape);
     _inputs.addEvent("ui_pause", eng::SuperInput::Key::p);
     _inputs.addEvent("ui_fire", eng::SuperInput::Key::space);
+    _inputs.addEvent("ui_missile", eng::SuperInput::Key::m);
     _inputs.addEvent("ui_pause", eng::SuperInput::JoyButton::start, 0);
     _inputs.addEvent("ui_click", eng::SuperInput::MouseButton::left);
 

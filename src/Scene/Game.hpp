@@ -17,6 +17,7 @@
 #include "../GameComponent/Controllable.hpp"
 #include "../GameComponent/PlayerStats.hpp"
 #include "../GameComponent/Shooter.hpp"
+#include "../GameComponent/Canon.hpp"
 #include "../GameComponent/Bullet.hpp"
 
 namespace rtp {

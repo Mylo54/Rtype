@@ -35,6 +35,7 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
             // ctrl.value().yAxis -= input.getActionStrength("ui_up");
             // // Shoot
             ctrl.value().shoot = input.isActionPressed("ui_fire");
+            ctrl.value().canonShoot = input.isActionPressed("ui_missile");
 
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : ctrl.value().yAxis;
             // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : 0.0f;
@@ -64,10 +65,12 @@ void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &inp
 void rtp::PlayerSystem::controlFireSystem(eng::Registry &reg, float delta)
 {
     auto &shooters = reg.getComponents<rtp::Shooter>();
+    auto &canons = reg.getComponents<rtp::Canon>();
     auto &controllables = reg.getComponents<rtp::Controllable>();
 
     for (int i = 0; i < controllables.size() && i < shooters.size(); i++) {
         auto &sht = shooters[i];
+        auto &cnn = canons[i];
         auto &ctrl = controllables[i];
 
         if (sht.has_value() && ctrl.has_value()) {
@@ -79,6 +82,15 @@ void rtp::PlayerSystem::controlFireSystem(eng::Registry &reg, float delta)
                 sht.value().nextFire = sht.value().fireRate / 1;
             }
         }
+        if (cnn.has_value() && ctrl.has_value()) {
+            if (cnn.value().nextFire > 0) {
+                cnn.value().nextFire -= delta;
+            }
+            if (ctrl.value().canonShoot && cnn.value().nextFire <= 0)  {
+                cnn.value().shoot = true;
+                cnn.value().nextFire = cnn.value().fireRate / 1;
+            }
+        }
     }
 }
 
@@ -86,10 +98,12 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
 {
     auto &positions = reg.getComponents<eng::Position>();
     auto &shooters = reg.getComponents<rtp::Shooter>();
+    auto &canons = reg.getComponents<rtp::Canon>();
 
     for (int i = 0; i < positions.size() && i < shooters.size(); i++) {
         auto &pos = positions[i];
         auto &sht = shooters[i];
+        auto &cnn = canons[i];
         
         if (pos.has_value() && sht.has_value()) {
             if (sht.value().shoot) {
@@ -98,9 +112,23 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
                 float z = pos.value().z;
                 sht.value().shoot = false;
                 eng::Entity bullet = reg.spawnEntity();
-                reg.addComponent(bullet, eng::Velocity(300, 0));
+                reg.addComponent(bullet, eng::Velocity(sht.value().speed));
                 reg.addComponent(bullet, eng::Position(x, y, z));
                 reg.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
+                reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));
+                reg.addComponent(bullet, rtp::Bullet(2));
+            }
+        }
+        if (pos.has_value() && cnn.has_value()) {
+            if (cnn.value().shoot) {
+                float x = pos.value().x + cnn.value().shootPoint[0];
+                float y = pos.value().y + cnn.value().shootPoint[1];
+                float z = pos.value().z;
+                cnn.value().shoot = false;
+                eng::Entity bullet = reg.spawnEntity();
+                reg.addComponent(bullet, eng::Velocity(cnn.value().speed));
+                reg.addComponent(bullet, eng::Position(x, y, z));
+                reg.addComponent(bullet, eng::Drawable(cnn.value().bulletSpritePath));
                 reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));
                 reg.addComponent(bullet, rtp::Bullet(2));
             }
