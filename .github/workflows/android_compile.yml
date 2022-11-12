@@ -8,6 +8,12 @@ jobs:
         uses: actions/checkout@v3
       - name: install deps
         run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev
+      - name: Setup Android NDK R23
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: false
       - name: Get Conan
         uses: turtlebrowser/get-conan@v1.0
       - name: Create default profile
@@ -23,16 +29,11 @@ jobs:
           mkdir -p build
           cd build
           conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
-          cmake .. -G "Unix Makefiles"
+          cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeavi-v7a 
           cmake --build .
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
-      - name: setup NDK
-        - uses: nttld/setup-ndk@v1
-          with:
-            ndk-version: r25b
-        - runs: ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk
 
 
           
