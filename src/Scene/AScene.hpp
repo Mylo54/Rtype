@@ -17,6 +17,7 @@
 #include "../System/KillSystem.hpp"
 #include "../System/BackgroundSystem.hpp"
 #include "../System/EnemySystem.hpp"
+#include "../System/TextSystem.hpp"
 
 namespace rtp
 {
@@ -30,6 +31,7 @@ namespace rtp
         eng::TextureManager &texture;
         int &sceneEvent;
         int &sceneNumber;
+        int &score;
     };
     class AScene : public IScene {
         public:
@@ -41,6 +43,7 @@ namespace rtp
         protected:
             int &_sceneEvent;
             int &_sceneNumber;
+            int &_score;
             eng::Registry &_reg;
             eng::GraphicSystems &_graphic;
             eng::PhysicSystems &_physic;
@@ -53,6 +56,7 @@ namespace rtp
             rtp::KillSystem _killSystem;
             rtp::BackgroundSystem _backgroundSystem;
             rtp::EnemySystem _enemySystem;
+            rtp::TextSystem _textSystem;
         private:
     };
 } // namespace rtp

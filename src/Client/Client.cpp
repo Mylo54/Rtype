@@ -23,7 +23,7 @@ rtp::Client::~Client()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _inputs, _textures, _sceneEvent, _sceneNumber};
+        _inputs, _textures, _sceneEvent, _sceneNumber, _score};
 
     return (pkg);
 }

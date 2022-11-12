@@ -81,7 +81,7 @@ void rtp::Game::systemRun()
 
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
-    _killSystem.killDeadEnemies(_reg);
+    _killSystem.killDeadEnemies(_reg, _score, _textSystem);
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
