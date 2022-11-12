@@ -153,7 +153,7 @@ void rtp::Game::_addScore()
 
 void rtp::Game::_addBackgrounds()
 {
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 10; i++) {
         eng::Entity bg = _reg.spawnEntity();
         if (i >= 0 && i < 2) {
             _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 10));
@@ -179,11 +179,6 @@ void rtp::Game::_addBackgrounds()
             _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 6));
             _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-500, 0));
             _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/rotaryStar2.png")));
-            _reg.addComponent<rtp::Background>(bg, rtp::Background());
-        } if (i >= 10 && i < 12) {
-            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 6));
-            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
-            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/blueStar.png")));
             _reg.addComponent<rtp::Background>(bg, rtp::Background());
         }
     }

@@ -75,18 +75,21 @@ void rtp::ChooseLvl::_addButtons()
 
 void rtp::ChooseLvl::_addBackgrounds()
 {
-    eng::Entity bg = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
-    _reg.addComponent<rtp::Background>(bg, rtp::Background());
+    eng::Entity bg1 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg1, eng::Position(0, 0, 10));
+    _reg.addComponent<eng::Drawable>(bg1, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
     eng::Entity bg2 = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_texture.getTextureFromFile("assets/middleground.png")));
-    _reg.addComponent<rtp::Background>(bg2, rtp::Background());
+    _reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 9));
+    _reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_texture.getTextureFromFile("assets/fog1.png")));
     eng::Entity bg3 = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
-    _reg.addComponent<rtp::Background>(bg3, rtp::Background());
+    _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 8));
+    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/stars1.png")));
+    eng::Entity bg4 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg4, eng::Position(0, 0, 7));
+    _reg.addComponent<eng::Drawable>(bg4, eng::Drawable(_texture.getTextureFromFile("assets/stars2.png")));
+    eng::Entity bg5 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg5, eng::Position(0, 0, 6));
+    _reg.addComponent<eng::Drawable>(bg5, eng::Drawable(_texture.getTextureFromFile("assets/rotaryStar2.png")));
 }
 
 void rtp::ChooseLvl::_addButtonLvl1()

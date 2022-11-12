@@ -74,16 +74,25 @@ void rtp::Pause::_addButtons()
 
 void rtp::Pause::_addBackgrounds()
 {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 10; i++) {
         eng::Entity bg = _reg.spawnEntity();
-        _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
-        _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-30, 0));
-        _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
-        _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        if (i >= 0 && i < 2) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 10));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 2 && i < 4) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 9));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/fog1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 4 && i < 6) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 8));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/stars1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        }
     }
-    eng::Entity bg1 = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg1, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg1, eng::Drawable(_texture.getTextureFromFile("assets/PM_bckgrd.png")));
 }
 
 void rtp::Pause::_addResumeButton()

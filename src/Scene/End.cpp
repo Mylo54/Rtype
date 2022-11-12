@@ -87,13 +87,15 @@ void rtp::End::_addButtons()
 
 void rtp::End::_addBackgrounds()
 {
-    for (int i = 0; i < 2; i++) {
-        eng::Entity bg = _reg.spawnEntity();
-        _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
-        _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-30, 0));
-        _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
-        _reg.addComponent<rtp::Background>(bg, rtp::Background());
-    }
+    eng::Entity bg1 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg1, eng::Position(0, 0, 10));
+    _reg.addComponent<eng::Drawable>(bg1, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
+    eng::Entity bg2 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 9));
+    _reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_texture.getTextureFromFile("assets/fog1.png")));
+    eng::Entity bg3 = _reg.spawnEntity();
+    _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 8));
+    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/stars1.png")));
 }
 
 void rtp::End::_addButtonMainMenu()
