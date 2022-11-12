@@ -1,14 +1,34 @@
-name: android_compilation
+name: android compile
 on: [workflow_call]
 jobs:
-  test:
-    runs-on: macos-latest
+  Android-Compile:
+    runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Check out repository code
         uses: actions/checkout@v3
+      - name: install deps
+        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev
+      - name: Get Conan
+        uses: turtlebrowser/get-conan@v1.0
+      - name: Create default profile
+        run: conan profile new default --detect
+      - name: set compiler to libstdc++11
+        run: conan profile update settings.compiler.libcxx=libstdc++11 default
+      - name: pull EngineCoreSuper submodule
+        run:  |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
+      - name: build
+        run: |
+          mkdir -p build
+          cd build
+          conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+          cmake .. -G "Unix Makefiles"
+          cmake --build .
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/build
 
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: gradle connectedCheck
+
+
+          
