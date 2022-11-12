@@ -112,7 +112,7 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
                 float z = pos.value().z;
                 sht.value().shoot = false;
                 eng::Entity bullet = reg.spawnEntity();
-                reg.addComponent(bullet, eng::Velocity(300, 0));
+                reg.addComponent(bullet, eng::Velocity(sht.value().speed));
                 reg.addComponent(bullet, eng::Position(x, y, z));
                 reg.addComponent(bullet, eng::Drawable(sht.value().bulletSpritePath));
                 reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));
@@ -126,7 +126,7 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
                 float z = pos.value().z;
                 cnn.value().shoot = false;
                 eng::Entity bullet = reg.spawnEntity();
-                reg.addComponent(bullet, eng::Velocity(300, 0));
+                reg.addComponent(bullet, eng::Velocity(cnn.value().speed));
                 reg.addComponent(bullet, eng::Position(x, y, z));
                 reg.addComponent(bullet, eng::Drawable(cnn.value().bulletSpritePath));
                 reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));

@@ -108,8 +108,8 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
 
     _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
     _reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {50, 15}));
-    _reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 25, 4, {10, -20}));
+    _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
+    _reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
     _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
