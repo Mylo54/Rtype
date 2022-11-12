@@ -11,6 +11,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Controllable.hpp"
 #include "../GameComponent/Shooter.hpp"
+#include "../GameComponent/Canon.hpp"
 #include "../GameComponent/Bullet.hpp"
 #include "../GameComponent/PlayerStats.hpp"
 

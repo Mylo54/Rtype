@@ -34,6 +34,7 @@ void rtp::AScene::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     _reg.registerComponents(eng::SparseArray<rtp::Controllable>());
     _reg.registerComponents(eng::SparseArray<rtp::Shooter>());
+    _reg.registerComponents(eng::SparseArray<rtp::Canon>());
     _reg.registerComponents(eng::SparseArray<rtp::Background>());
     _reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
     // _reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
