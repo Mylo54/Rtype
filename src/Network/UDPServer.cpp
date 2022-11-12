@@ -59,3 +59,15 @@ void rtp::UDPServer::removeEndpoint(std::string address, int port)
     }
 }
 
+std::vector<int> rtp::UDPServer::listen()
+{
+    boost::asio::ip::udp::endpoint remoteEndpoint;
+    std::vector<int> buffer;
+
+    _socket.wait(boost::asio::socket_base::wait_read);
+    buffer.resize(_socket.available() / 4);
+    _socket.receive_from(boost::asio::buffer(buffer), remoteEndpoint);
+    if (std::find(_endpoints.begin(), _endpoints.end(), remoteEndpoint) == _endpoints.end())
+        _endpoints.push_back(remoteEndpoint);
+    return (buffer);
+}
