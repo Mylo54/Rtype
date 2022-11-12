@@ -153,20 +153,37 @@ void rtp::Game::_addScore()
 
 void rtp::Game::_addBackgrounds()
 {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 12; i++) {
         eng::Entity bg = _reg.spawnEntity();
-        _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 0));
-        if (i < 2) {
-            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-400, 0));
-            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
-            _reg.addComponent<rtp::Background>(bg, rtp::Background());
-        } else if (i < 4) {
-            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
-            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/middleground.png")));
-            _reg.addComponent<rtp::Background>(bg, rtp::Background());
-        } else {
+        if (i >= 0 && i < 2) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 10));
             _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
             _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 2 && i < 4) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 9));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/fog1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 4 && i < 6) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 8));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-300, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/stars1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 6 && i < 8) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 7));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-400, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/stars2.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 8 && i < 10) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 6));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-500, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/rotaryStar2.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 10 && i < 12) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 6));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/blueStar.png")));
             _reg.addComponent<rtp::Background>(bg, rtp::Background());
         }
     }
