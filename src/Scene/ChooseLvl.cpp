@@ -18,8 +18,8 @@ rtp::ChooseLvl::~ChooseLvl()
 void rtp::ChooseLvl::setupScene()
 {
     setupRegistry();
-    _addButtons();
     _addBackgrounds();
+    _addButtons();
     // _addEarth();
 }
 

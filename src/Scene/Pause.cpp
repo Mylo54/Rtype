@@ -18,8 +18,8 @@ rtp::Pause::~Pause()
 void rtp::Pause::setupScene()
 {
     setupRegistry();
-    _addButtons();
     _addBackgrounds();
+    _addButtons();
 }
 
 void rtp::Pause::setupRegistry()

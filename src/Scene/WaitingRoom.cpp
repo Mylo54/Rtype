@@ -18,8 +18,8 @@ rtp::WaitingRoom::~WaitingRoom()
 void rtp::WaitingRoom::setupScene()
 {
     setupRegistry();
-    _addButtonStart();
     _addBackgrounds();
+    _addButtonStart();
 }
 
 void rtp::WaitingRoom::setupRegistry()

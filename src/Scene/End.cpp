@@ -18,9 +18,9 @@ rtp::End::~End()
 void rtp::End::setupScene()
 {
     setupRegistry();
+    _addBackgrounds();
     _addResult();
     _addButtons();
-    _addBackgrounds();
 }
 
 void rtp::End::setupRegistry()

@@ -18,10 +18,10 @@ rtp::Credits::~Credits()
 void rtp::Credits::setupScene()
 {
     setupRegistry();
+    _addBackgrounds();
     _addTitle();
     _addTeamText();
     _addButtons();
-    _addBackgrounds();
 }
 
 void rtp::Credits::setupRegistry()
