@@ -7,12 +7,25 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server()
+rtp::Server::Server(int port): _udp(port), _tcp(port)
 {
 }
 
 rtp::Server::~Server()
 {
+    // set all lobbies to die
+    for (int i = 0; i < _lobbies.size(); i++)
+        _lobbies[i]->isRunning = false;
+
+    // join & delete all threads
+    for (int i = 0; i < _lobbyThreads.size(); i++) {
+        _lobbyThreads[i]->join();
+        delete _lobbyThreads[i];
+    }
+
+    // destroy all data pointers
+    for (int i = 0; i  < _lobbies.size(); i++)
+        delete _lobbies[i];
 }
 
 void rtp::Server::run()
@@ -26,4 +39,66 @@ void rtp::Server::run()
     //  -   create a thread with a room
     //  JoinRoomRequest:
     //  -   redirect the player into a room
+}
+
+void rtp::Server::init()
+{
+    _tcp.connect();
+    _tcp.runContext();
+}
+
+void rtp::Server::listenRequests()
+{
+    std::vector<std::string> requests = _tcp.receive();
+
+    for (int i = 0; i != requests.size(); i++) {
+        if (requests[i] == "Create room, multiplayer")
+            this->_makeLobby(true);
+        if (requests[i] == "create_room, solo")
+            this->_makeLobby(false);
+        if (requests[i].compare(0, 11, "join_room, ") == 0)
+            _joinLobby(i, atoi(requests[i].c_str()));
+        if (requests[i] == "list_lobbies")
+            _listLobbies(i);
+    }
+}
+
+void rtp::Server::_joinLobby(int player, int lobbyId)
+{
+
+}
+
+void rtp::Server::_makeLobby(bool isMulti)
+{
+    lobby_data_t *newLobby = new lobby_data_t;
+
+    int id = _lobbies.size();
+    newLobby->id = id;
+    newLobby->isMulti = isMulti;
+    newLobby->isRunning = true;
+    newLobby->numberOfPlayers = 0;
+    _lobbies.push_back(newLobby);
+    _lobbyThreads.push_back(new std::thread(&rtp::Server::_lobbyRun, this, id));
+}
+
+void rtp::Server::_listLobbies(int dest)
+{
+    std::stringstream msg;
+
+    for (int i = 0; i < _lobbies.size(); i++) {
+        if (_lobbies[i]->isMulti) {
+            msg << "lobby " << _lobbies[i]->id << ", ";
+            msg << _lobbies[i]->numberOfPlayers;
+            msg << "\n";
+        }
+    }
+    _tcp.sendTo(msg.str(), dest);
+}
+
+void rtp::Server::_lobbyRun(int id)
+{
+    auto &myData = this->_lobbies[id];
+    while (myData->isRunning) {
+        // do things here
+    }
 }
