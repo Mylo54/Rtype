@@ -11,7 +11,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <iostream>
-#include <threads.h>
+#include <thread>
 #include <optional>
 
 
@@ -22,7 +22,7 @@ namespace rtp
             TCPServer(int port);
             ~TCPServer();
 
-            bool connect();
+            void connect();
 
             void send(std::string msg);
             

@@ -30,7 +30,7 @@ void rtp::TCPServer::runContext()
     _runContext = std::thread(&rtp::TCPServer::_blockFct, this);
 }
 
-bool rtp::TCPServer::connect()
+void rtp::TCPServer::connect()
 {
     _socketOptional.emplace(_ioContext);
     _acceptor.async_accept(*_socketOptional, [this] (boost::system::error_code error)
