@@ -46,16 +46,20 @@ add_subdirectory(external/EngineCoreSuper)
 
 #####   Files
 
-FILE(GLOB_RECURSE SRCS_NETWORK src/Network/*.cpp)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
 FILE(GLOB_RECURSE SRCS_SYSTEM src/System/*.cpp)
-FILE(GLOB_RECURSE SRCS_GAMECOMPONENT src/GameComponent/*.cpp)
 
 #####   CLIENT
 
-add_executable(Client-Rtype ${SRCS_CLIENT} ${SRCS_SCENE} ${SRCS_NETWORK} ${SRCS_SYSTEM} ${SRCS_GAMECOMPONENT})
+add_executable(Client-Rtype
+  ${SRCS_CLIENT}
+  ${SRCS_SCENE}
+  ${SRCS_SYSTEM}
+  src/Network/UDPClient.cpp
+  src/Network/TCPClient.cpp
+)
 
 target_include_directories(
   Client-Rtype PUBLIC
@@ -83,7 +87,12 @@ target_link_libraries(
 
 #####    SERVER
 
-add_executable(Server-Rtype ${SRCS_SERVER} ${SRCS_NETWORK})
+add_executable(Server-Rtype
+  ${SRCS_SERVER}
+  ${SRCS_NETWORK}
+  src/Network/UDPServer.cpp
+  src/Network/TCPServer.cpp
+)
 
 target_include_directories(
   Server-Rtype PUBLIC
