@@ -69,6 +69,5 @@ void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSys
                 text.setText(r, s.str(), "score", rtp::TextSystem::CHAT);
             }
         }
-
     }
 }
