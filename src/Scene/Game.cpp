@@ -42,6 +42,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Shooter>());
     _reg.registerComponents(eng::SparseArray<rtp::Canon>());
     _reg.registerComponents(eng::SparseArray<rtp::Bullet>());
+    _reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
 }
 
 void rtp::Game::systemRun()
@@ -80,10 +81,16 @@ void rtp::Game::systemRun()
 
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
+    _killSystem.killDeadEnemies(_reg);
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
 
+    // Enemy
+    if (_input.isActionJustPressed("ui_up")) {
+        _enemySystem._addEnemy(_reg, _texture);
+    }
+    _enemySystem.playerBullets(_reg);
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);

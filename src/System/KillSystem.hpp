@@ -10,6 +10,7 @@
 
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/EnemyStats.hpp"
 
 namespace rtp
 {
@@ -19,6 +20,7 @@ namespace rtp
             ~KillSystem();
         void killOutOfBounds(eng::Registry &reg);
         void killBullets(eng::Registry &reg);
+        void killDeadEnemies(eng::Registry &r);
         protected:
         private:
     };
