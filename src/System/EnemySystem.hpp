@@ -10,6 +10,8 @@
 
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Background.hpp"
+#include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/EnemyStats.hpp"
 
 namespace rtp
 {
@@ -18,6 +20,8 @@ namespace rtp
             EnemySystem();
             ~EnemySystem();
             eng::Entity _addEnemy(eng::Registry &reg, eng::TextureManager &texture);
+            void playerBullets(eng::Registry &r);
+            void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
         protected:
         private:
     }; 

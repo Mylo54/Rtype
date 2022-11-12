@@ -51,3 +51,23 @@ void rtp::KillSystem::killBullets(eng::Registry &r)
         }
     }
 }
+
+void rtp::KillSystem::killDeadEnemies(eng::Registry &r)
+{
+    auto &ennemies = r.getComponents<EnemyStats>();
+
+    for (int i = 0; i < ennemies.size(); i++) {
+        if (ennemies[i].has_value()) {
+            if (ennemies[i].value().health <= 0) {
+                r.killEntity(eng::Entity(i));
+                // _score += 10;
+                // std::stringstream s;
+                // s << "score:";
+                // s << ((_score / 100 > 10) ? "0" : "00") <<  _score / 100 << " ";
+                // s << ((_score % 100 > 10) ? "0" : "00") << _score % 100;
+                // setText(r, s.str(), "score", CHAT);
+            }
+        }
+
+    }
+}
