@@ -28,7 +28,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
-
       - name: setup NDK
         - uses: nttld/setup-ndk@v1
           with:
