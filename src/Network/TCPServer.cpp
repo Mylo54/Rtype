@@ -65,7 +65,6 @@ std::string rtp::TCPServer::receiveFrom(int i)
 
     size_t len = _socketList[i]->receive(boost::asio::buffer(buf));
     res = buf.data();
-    std::cout << res;
     return res;
 }
 
@@ -80,7 +79,6 @@ std::vector<std::string> rtp::TCPServer::receive()
         size_t len = _socketList[i]->read_some(boost::asio::buffer(buf), errors);
         if (!errors) {
             std::string r = buf.data();
-            std::cout << r;
             res.push_back(r);
         }
     }
