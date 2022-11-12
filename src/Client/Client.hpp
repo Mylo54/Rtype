@@ -20,6 +20,7 @@
 #include "../Scene/Game.hpp"
 #include "../Scene/WaitingRoom.hpp"
 #include "../Scene/End.hpp"
+#include "../Scene/Credits.hpp"
 
 namespace rtp
 {
@@ -37,7 +38,8 @@ namespace rtp
         chooseLvl,
         waiting,
         win,
-        loose
+        loose,
+        credits
         // ...others
     };
 

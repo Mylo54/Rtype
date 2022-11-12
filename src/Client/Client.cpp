@@ -99,6 +99,10 @@ void rtp::Client::_handleSceneEvents()
             _scenes.push(new rtp::End(_makePackage(), false));
             _scenes.top()->setupScene();
         }
+        if (_sceneNumber == rtp::sceneNumber::credits) {
+            _scenes.push(new rtp::Credits(_makePackage()));
+            _scenes.top()->setupScene();
+        }
     }
     if (_sceneEvent == rtp::sceneEvent::popScene) {
         _registries.popRegistry();
