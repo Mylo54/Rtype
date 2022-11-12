@@ -16,6 +16,7 @@
 #include "../System/PlayerSystem.hpp"
 #include "../System/KillSystem.hpp"
 #include "../System/BackgroundSystem.hpp"
+#include "../System/EnemySystem.hpp"
 
 namespace rtp
 {
@@ -51,6 +52,7 @@ namespace rtp
             rtp::PlayerSystem _playerSystem;
             rtp::KillSystem _killSystem;
             rtp::BackgroundSystem _backgroundSystem;
+            rtp::EnemySystem _enemySystem;
         private:
     };
 } // namespace rtp

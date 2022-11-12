@@ -84,6 +84,10 @@ void rtp::Game::systemRun()
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
 
+    // Enemy
+    if (_input.isActionJustPressed("ui_up")) {
+        _enemySystem._addEnemy(_reg, _texture);
+    }
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
