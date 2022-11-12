@@ -51,6 +51,9 @@ void rtp::ChooseLvl::systemRun()
     // Apply button actions
     _buttonSystem.buttonClick(_reg, _input);
 
+    // Backgrounds
+    _backgroundSystem.loop(_reg);
+
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);

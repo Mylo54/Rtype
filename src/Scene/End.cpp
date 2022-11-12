@@ -54,6 +54,9 @@ void rtp::End::systemRun()
 
     _physic.applyVelocities(_reg);
 
+    // Backgrounds
+    _backgroundSystem.loop(_reg);
+
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
