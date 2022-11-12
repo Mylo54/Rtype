@@ -50,8 +50,6 @@ void rtp::TCPServer::connect()
 void rtp::TCPServer::send(std::string msg)
 {
     for (auto it = _socketList.begin(); it != _socketList.end(); it++) {
-        std::cout << "try send : " << msg << std::endl;
-        //boost::asio::write((*it), boost::asio::buffer(data));
         (*it)->send(boost::asio::buffer(msg));
     }
 }
@@ -66,13 +64,8 @@ std::string rtp::TCPServer::receiveFrom(int i)
         return "\0";
 
     size_t len = _socketList[i]->receive(boost::asio::buffer(buf));
-
-        res = buf.data();
-        std::cout << res;
-    /*if (!errors) {
-    } else {
-        std::cout << errors.message();
-    }*/
+    res = buf.data();
+    std::cout << res;
     return res;
 }
 
@@ -90,7 +83,6 @@ std::vector<std::string> rtp::TCPServer::receive()
             std::cout << r;
             res.push_back(r);
         }
-
     }
     return res;
 }
