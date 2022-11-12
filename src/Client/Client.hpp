@@ -65,6 +65,9 @@ namespace rtp
             /// @brief A function handling scene events : poping or pushing specific scene
             void _handleSceneEvents();
 
+            /// @brief Client score
+            int _score = 0;
+
             int _sceneEvent = sceneEvent::none;
             int _sceneNumber = sceneNumber::menu;
             eng::RegistryManager _registries;
