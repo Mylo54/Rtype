@@ -28,17 +28,16 @@ rtp::Server::~Server()
         delete _lobbies[i];
 }
 
-void rtp::Server::run()
+int rtp::Server::run()
 {
+    _isRunning = true;
     std::cout << "Server is up!" << std::endl;
 
-    // Wait for request
+    std::thread serverIO(&rtp::Server::_serverIO, this);
 
-    // On TCP request, either
-    //  CreateRoomRequest:
-    //  -   create a thread with a room
-    //  JoinRoomRequest:
-    //  -   redirect the player into a room
+    while (_isRunning)
+        listenRequests();
+    return (0);
 }
 
 void rtp::Server::init()
@@ -63,9 +62,20 @@ void rtp::Server::listenRequests()
     }
 }
 
+void rtp::Server::_serverIO()
+{
+    std::string input;
+
+    while (_isRunning) {
+        std::cin >> input;
+        if (input == "exit")
+            _isRunning = false;
+    }
+}
+
 void rtp::Server::_joinLobby(int player, int lobbyId)
 {
-
+    
 }
 
 void rtp::Server::_makeLobby(bool isMulti)
