@@ -29,7 +29,7 @@ namespace rtp
 
             /// @brief Add all elements in the settings scene
             void addElements();
-            void addBackgrounds();
+            void _addBackgrounds();
         protected:
             void _addTitle();
             void _addMusic();

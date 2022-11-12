@@ -15,6 +15,7 @@
 #include "../System/ButtonSystem.hpp"
 #include "../System/PlayerSystem.hpp"
 #include "../System/KillSystem.hpp"
+#include "../System/BackgroundSystem.hpp"
 
 namespace rtp
 {
@@ -49,6 +50,7 @@ namespace rtp
             rtp::ButtonSystem _buttonSystem;
             rtp::PlayerSystem _playerSystem;
             rtp::KillSystem _killSystem;
+            rtp::BackgroundSystem _backgroundSystem;
         private:
     };
 } // namespace rtp

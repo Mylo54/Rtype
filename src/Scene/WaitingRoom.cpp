@@ -67,18 +67,24 @@ void rtp::WaitingRoom::systemRun()
 
 void rtp::WaitingRoom::_addBackgrounds()
 {
-    eng::Entity bg = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
-    _reg.addComponent<rtp::Background>(bg, rtp::Background());
-    eng::Entity bg2 = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg2, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg2, eng::Drawable(_texture.getTextureFromFile("assets/middleground.png")));
-    _reg.addComponent<rtp::Background>(bg2, rtp::Background());
-    eng::Entity bg3 = _reg.spawnEntity();
-    _reg.addComponent<eng::Position>(bg3, eng::Position(0, 0, 0));
-    _reg.addComponent<eng::Drawable>(bg3, eng::Drawable(_texture.getTextureFromFile("assets/foreground.png")));
-    _reg.addComponent<rtp::Background>(bg3, rtp::Background());
+    for (int i = 0; i < 10; i++) {
+        eng::Entity bg = _reg.spawnEntity();
+        if (i >= 0 && i < 2) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 10));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/background.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 2 && i < 4) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 9));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-100, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/fog1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        } if (i >= 4 && i < 6) {
+            _reg.addComponent<eng::Position>(bg, eng::Position((i % 2) * 1920, 0, 8));
+            _reg.addComponent<eng::Velocity>(bg, eng::Velocity(-200, 0));
+            _reg.addComponent<eng::Drawable>(bg, eng::Drawable(_texture.getTextureFromFile("assets/stars1.png")));
+            _reg.addComponent<rtp::Background>(bg, rtp::Background());
+        }
+    }
 }
 
 void rtp::WaitingRoom::_addButtonStart()
