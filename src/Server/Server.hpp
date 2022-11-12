@@ -37,6 +37,7 @@ namespace rtp
             void _joinLobby(int player, int lobbyId);
             void _listLobbies(int dest);
             void _lobbyRun(int id);
+            void _destroyLobbies();
 
             bool _isRunning = false;
             rtp::UDPServer _udp;

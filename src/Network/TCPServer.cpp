@@ -6,6 +6,7 @@
 */
 
 #include "TCPServer.hpp"
+#include <iostream>
 
 rtp::TCPServer::TCPServer(int port) :
 _waitingSocket(_ioContext), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint{
@@ -15,9 +16,9 @@ _waitingSocket(_ioContext), _acceptor(_ioContext, boost::asio::ip::tcp::endpoint
 
 rtp::TCPServer::~TCPServer()
 {
+    _ioContext.stop();
     if (this->_runContext.joinable())
         this->_runContext.join();
-    _ioContext.stop();
 }
 
 void rtp::TCPServer::_blockFct()

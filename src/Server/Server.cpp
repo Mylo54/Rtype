@@ -13,19 +13,6 @@ rtp::Server::Server(int port): _udp(port), _tcp(port)
 
 rtp::Server::~Server()
 {
-    // set all lobbies to die
-    for (int i = 0; i < _lobbies.size(); i++)
-        _lobbies[i]->isRunning = false;
-
-    // join & delete all threads
-    for (int i = 0; i < _lobbyThreads.size(); i++) {
-        _lobbyThreads[i]->join();
-        delete _lobbyThreads[i];
-    }
-
-    // destroy all data pointers
-    for (int i = 0; i  < _lobbies.size(); i++)
-        delete _lobbies[i];
 }
 
 int rtp::Server::run()
@@ -37,6 +24,8 @@ int rtp::Server::run()
 
     while (_isRunning)
         listenRequests();
+    serverIO.join();
+    _destroyLobbies();
     return (0);
 }
 
@@ -111,4 +100,23 @@ void rtp::Server::_lobbyRun(int id)
     while (myData->isRunning) {
         // do things here
     }
+}
+
+void rtp::Server::_destroyLobbies()
+{
+    std::cout << "Closing all lobbies..." << std::endl;
+    // set all lobbies to die
+    for (int i = 0; i < _lobbies.size(); i++)
+        _lobbies[i]->isRunning = false;
+
+    // join & delete all threads
+    for (int i = 0; i < _lobbyThreads.size(); i++) {
+        _lobbyThreads[i]->join();
+        delete _lobbyThreads[i];
+    }
+
+    // destroy all data pointers
+    for (int i = 0; i  < _lobbies.size(); i++)
+        delete _lobbies[i];
+    std::cout << "Done!" << std::endl;
 }
