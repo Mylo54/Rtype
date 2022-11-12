@@ -19,7 +19,10 @@ rtp::UDPClient::~UDPClient()
 
 bool rtp::UDPClient::connect(std::string host, std::string service)
 {
-    _receiver(boost::asio::ip::make_address(host))
+    boost::asio::ip::udp::resolver resolver(_ioContext);
+    boost::asio::ip::udp::resolver::results_type endpoints =
+        resolver.resolve(boost::asio::ip::udp::v4(), host, service);
+    _receiver = *endpoints.begin();
     return true;
 }
 
@@ -33,7 +36,7 @@ std::vector<int> rtp::UDPClient::receive()
     std::vector<int> buffer;
 
     _socket.wait(boost::asio::socket_base::wait_type::wait_read);
-    buffer.resize(_socket.available());
+    buffer.resize(_socket.available() / 4);
     _socket.receive(boost::asio::buffer(buffer));
     return (buffer);
 }
