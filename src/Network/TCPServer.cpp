@@ -47,6 +47,11 @@ void rtp::TCPServer::connect()
     });
 }
 
+void rtp::TCPServer::sendTo(std::string msg, int dest)
+{
+    _socketList[dest]->send(boost::asio::buffer(msg));
+}
+
 void rtp::TCPServer::send(std::string msg)
 {
     for (auto it = _socketList.begin(); it != _socketList.end(); it++) {

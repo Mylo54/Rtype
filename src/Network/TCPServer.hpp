@@ -25,6 +25,7 @@ namespace rtp
             void connect();
 
             void send(std::string msg);
+            void sendTo(std::string msg, int dest);
             
             std::vector<std::string> receive();
 
