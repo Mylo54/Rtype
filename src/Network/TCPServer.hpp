@@ -22,7 +22,7 @@ namespace rtp
             TCPServer(int port);
             ~TCPServer();
 
-            bool connect();
+            void connect();
 
             void send(std::string msg);
             
