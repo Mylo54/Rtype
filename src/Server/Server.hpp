@@ -27,17 +27,18 @@ namespace rtp
             ~Server();
 
             void init();
-            void run();
+            int run();
 
             void listenRequests();
         protected:
         private:
-
+            void _serverIO();
             void _makeLobby(bool isMulti);
             void _joinLobby(int player, int lobbyId);
             void _listLobbies(int dest);
             void _lobbyRun(int id);
 
+            bool _isRunning = false;
             rtp::UDPServer _udp;
             rtp::TCPServer _tcp;
             std::vector<lobby_data_t *> _lobbies;
