@@ -7,9 +7,9 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(): _graphics(1920, 1080, "Super R-Type"),
+rtp::Client::Client(int port): _graphics(1920, 1080, "Super R-Type"),
 _inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds()),
-_sceneManager(_registries)
+_sceneManager(_registries), _udp(port)
 {
     std::cout << "Client has been created" << std::endl;
     _graphics.setFrameRateLimit(60);

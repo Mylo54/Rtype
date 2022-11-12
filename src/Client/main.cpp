@@ -10,7 +10,8 @@
 
 int main(int argc, char **argv)
 {
-    rtp::Client client;
+    srand(time(NULL));
+    rtp::Client client(4000 + (rand() % 1000));
     int success = 0;
 
     success = client.run();

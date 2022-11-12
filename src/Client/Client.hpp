@@ -10,7 +10,8 @@
 
 #include <stack>
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
-#include "../Network/Network.hpp"
+#include "../Network/TCPClient.hpp"
+#include "../Network/UDPClient.hpp"
 #include "../System/ButtonSystem.hpp"
 #include "../Scene/AScene.hpp"
 #include "../Scene/Settings.hpp"
@@ -45,7 +46,7 @@ namespace rtp
 
     class Client {
         public:
-            Client();
+            Client(int port);
             ~Client();
 
             /// @brief Run the Client
@@ -75,7 +76,8 @@ namespace rtp
             eng::PhysicSystems _physics;
             eng::GraphicSystems _graphics;
             eng::AudioSystems _audio;
-            // rtp::Network _net;
+            rtp::TCPClient _tcp;
+            rtp::UDPClient _udp;
             eng::TextureManager _textures;
             rtp::ButtonSystem _buttonSystem;
             eng::SceneManager _sceneManager;
