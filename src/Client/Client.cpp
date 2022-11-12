@@ -17,7 +17,10 @@ _sceneManager(_registries), _udp(port)
 
 rtp::Client::~Client()
 {
-    //TODO: clear scene stack
+    while (!_scenes.empty()) {
+        delete _scenes.top();
+        _scenes.pop();
+    }
 }
 
 rtp::scene_package_t rtp::Client::_makePackage()
