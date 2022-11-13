@@ -30,12 +30,12 @@ jobs:
           mkdir -p build
           cd build
           conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
-          cmake .. -G "gcc" -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake -DCMAKE_CXX_COMPILER=gcc
+          cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake
           cmake --build .
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/build
-## force edit end
+## force edit end -DCMAKE_CXX_COMPILER=gcc
 
 
           
