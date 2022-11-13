@@ -18,7 +18,7 @@
 #include "../System/BackgroundSystem.hpp"
 #include "../System/EnemySystem.hpp"
 #include "../System/TextSystem.hpp"
-
+#include "../Network/TCPClient.hpp"
 namespace rtp
 {
     struct scene_package_t {
@@ -29,6 +29,7 @@ namespace rtp
         // rtp::Network &network;
         eng::SuperInput &input;
         eng::TextureManager &texture;
+        rtp::TCPClient &tcpClient;
         int &sceneEvent;
         int &sceneNumber;
         int &score;
@@ -53,6 +54,7 @@ namespace rtp
             // rtp::Network &_network;
             eng::SuperInput &_input;
             eng::TextureManager &_texture;
+            rtp::TCPClient &_tcpClient;
             rtp::ButtonSystem _buttonSystem;
             rtp::PlayerSystem _playerSystem;
             rtp::KillSystem _killSystem;

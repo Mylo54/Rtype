@@ -17,6 +17,8 @@ rtp::WaitingRoom::~WaitingRoom()
 
 void rtp::WaitingRoom::setupScene()
 {
+    // lancer la connection ici
+    _tcpClient.connect("127.0.0.1", "4000");
     setupRegistry();
     _addBackgrounds();
     _addButtonStart();
