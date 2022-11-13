@@ -35,10 +35,21 @@ void rtp::TCPClient::send(std::string msg)
 std::string rtp::TCPClient::receive()
 {
     std::string res;
-    std::array<char, 128> buffer;
-    boost::system::error_code errors;
+    std::array<char, 1> numBuf;
+    std::vector<char> buf;
 
-    size_t len = _socket.read_some(boost::asio::buffer(buffer), errors);
-    res.append(buffer.data(), len);
+    // get msg size
+    while (true) {
+        boost::asio::read(_socket, boost::asio::buffer(numBuf));
+        if (numBuf[0] == ':')   // end of size header
+            break;
+        res.append(1, numBuf[0]);
+    }
+    buf.resize(atoi(res.c_str()));
+
+    // get msg
+    boost::asio::read(_socket, boost::asio::buffer(buf));
+    res.clear();
+    res.append(buf.data());
     return (res);
 }

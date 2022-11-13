@@ -52,7 +52,8 @@ namespace rtp
             /// @brief Run the Client
             /// @return 0 on success, 84 on program failure
             int run();
-            int connect(eng::RegistryManager &manager, bool multiplayer, int lvl, int map);
+            bool connect(std::string host, std::string service);
+            std::string listLobbies();
         protected:
         private:
             /// @brief Create a package with all necessity for AScene constructor

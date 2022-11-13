@@ -23,6 +23,20 @@ rtp::Client::~Client()
     }
 }
 
+bool rtp::Client::connect(std::string host, std::string service)
+{
+    return _tcp.connect(host, service);
+}
+
+std::string rtp::Client::listLobbies()
+{
+    std::string res;
+
+    _tcp.send("list_lobbies");
+    res = _tcp.receive();
+    return (res);
+}
+
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,

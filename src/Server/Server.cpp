@@ -91,6 +91,7 @@ void rtp::Server::_listLobbies(int dest)
             msg << "\n";
         }
     }
+    std::cout << "Listing lobbies..." << std::endl;
     _tcp.sendTo(msg.str(), dest);
 }
 
