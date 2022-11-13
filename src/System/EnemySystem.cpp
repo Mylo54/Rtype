@@ -64,8 +64,8 @@ void rtp::EnemySystem::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
             auto &enm = enms[i].value();
             auto &pos = poss[i].value();
             auto &rct = rcts[i].value();
-            if (p.x >= pos.x && p.y >= pos.y) {
-                if (p.x <= pos.x + rct.width && p.y <= pos.y + rct.height) {
+            if (p.x >= pos.x + rct.offsetX && p.y >= pos.y + rct.offsetY) {
+                if (p.x <= pos.x + rct.width + rct.offsetX && p.y <= pos.y + rct.height + rct.offsetY) {
                     enm.health -= b.damage;
                     r.killEntity(blt);
                 }
@@ -90,8 +90,14 @@ void rtp::EnemySystem::enemyCollision(eng::Registry &r, eng::PhysicSystems &phys
                     auto &enemyRect = colliders[i].value();
                     // if (isColliding(enemyPos, enemyRect, positions[entity].value(), colliders[entity].value())) {
                     if (physic.areRectColliding(enemyPos, enemyRect, positions[j].value(), colliders[j].value())) {
-                        stats[j].value().lives -= 1;
-                        r.killEntity(i);
+                        if (enemy.enemyType == 3) {
+                            r.killEntity(j);
+                            enemy.health -= 50;
+                        }
+                        else {
+                            stats[j].value().lives -= 1;
+                            r.killEntity(i);
+                        }
                     }
                 }
             }
@@ -118,7 +124,7 @@ void rtp::EnemySystem::updateTrajectories(eng::Registry &r)
     for (int i = 0; i < enemies.size() && i < vels.size(); i++) {
         if (enemies[i].has_value() && vels[i].has_value()) {
             if (enemies[i].value().enemyType == 2) {
-                vels[i].value().y = 80 * ((rand() % 3) - 1);
+                vels[i].value().y = 160 * ((rand() % 3) - 1);
             }
         }
     }
@@ -133,7 +139,7 @@ eng::Entity rtp::EnemySystem::_addBoss(eng::Registry &reg, eng::TextureManager &
     reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-40, 0));
     reg.addComponent<eng::Drawable>(enemy, eng::Drawable(texture.getTextureFromFile("assets/boss.png"), 0, sf::IntRect(0, 0, 107, 207), 0.10));
     reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(100, 3));
-    reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
+    reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(30*scale, 20*scale, 0, 250));
 
     reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
     return enemy;
