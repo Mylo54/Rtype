@@ -7,7 +7,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: install deps
-        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev
+        run: sudo apt update && sudo apt install -y cmake && sudo apt-get install xorg-dev libudev-dev g++
       - name: Setup Android NDK R23
         uses: nttld/setup-ndk@v1
         id: setup-ndk
