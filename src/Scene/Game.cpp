@@ -9,6 +9,8 @@
 
 rtp::Game::Game(rtp::scene_package_t pack): AScene(pack)
 {
+    _enemyTimer = 2;
+    _level = 1;
 }
 
 rtp::Game::~Game()
@@ -97,6 +99,7 @@ void rtp::Game::systemRun()
     }
     _enemySystem.playerBullets(_reg);
     _enemySystem.enemyCollision(_reg, _physic);
+    _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
@@ -144,21 +147,6 @@ eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
 
     std::cout << "You are player " << playerId << std::endl;
     return player;
-}
-
-eng::Entity rtp::Game::_addEnemy()
-{
-    eng::Entity enemy = _reg.spawnEntity();
-    float scale = (rand() % 10) + 1;
-
-    _reg.addComponent<eng::Position>(enemy, eng::Position(1920 + (rand() % 2000), rand() % 1080, 0));
-    _reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-100, 0));
-    _reg.addComponent<eng::Drawable>(enemy, eng::Drawable(_texture.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
-    // reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
-    _reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
-
-    _reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
-    return enemy;
 }
 
 void rtp::Game::_addScore()

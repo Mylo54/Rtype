@@ -56,6 +56,8 @@ namespace rtp {
             /// @param reg The registry on which to add the text
             void _addScore();
         private:
+            float _enemyTimer;
+            int _level;
     };
 }
 

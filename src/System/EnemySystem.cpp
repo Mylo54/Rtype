@@ -89,3 +89,14 @@ void rtp::EnemySystem::enemyCollision(eng::Registry &r, eng::PhysicSystems &phys
             }
     }
 }
+
+void rtp::EnemySystem::spawnEnemies(eng::Registry &reg, float &enemyTimer, int level, float delta, eng::TextureManager &texture)
+{
+    enemyTimer -= delta;
+
+    if (enemyTimer <= 0) {
+        _addEnemy(reg, texture);
+        enemyTimer = 4.5 - level;
+    }
+}
+
