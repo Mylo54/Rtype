@@ -25,8 +25,8 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True -s compiler=clang -s compiler.version=3.8  -s compiler.libcxx=libstdc++11
-          cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake  -DCMAKE_CXX_COMPILER=clang++
+          conan install .. --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True -s compiler=gcc -s compiler.version=9  -s compiler.libcxx=libstdc++11
+          cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake  -DCMAKE_CXX_COMPILER=g++
           cmake --build .
       - name: List files in the repository
         run: |
