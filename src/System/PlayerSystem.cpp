@@ -130,7 +130,7 @@ void rtp::PlayerSystem::shootSystem(eng::Registry &reg)
                 reg.addComponent(bullet, eng::Position(x, y, z));
                 reg.addComponent(bullet, eng::Drawable(cnn.value().bulletSpritePath));
                 reg.addComponent(bullet, eng::Sound("assets/fire.wav", true));
-                reg.addComponent(bullet, rtp::Bullet(2));
+                reg.addComponent(bullet, rtp::Bullet(20));
             }
         }
     }

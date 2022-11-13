@@ -71,3 +71,29 @@ void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSys
         }
     }
 }
+
+void rtp::KillSystem::killDeadPlayers(eng::Registry &r, rtp::TextSystem &text)
+{
+    auto &players = r.getComponents<rtp::PlayerStats>();
+
+    for (int i = 0; i < players.size(); i++) {
+        if (players[i].has_value()) {
+            if (players[i].value().lives <= 0) {
+                r.killEntity(eng::Entity(i));
+            }
+        }
+    }
+}
+
+bool rtp::KillSystem::allPlayerKilled(eng::Registry &r)
+{
+    bool allDead = true;
+    auto &players = r.getComponents<rtp::PlayerStats>();
+
+    for (int i = 0; i < players.size(); i++) {
+        if (players[i].has_value())
+            if (players[i].value().lives > 0)
+                allDead = false;
+    }
+    return allDead;
+}

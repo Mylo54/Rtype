@@ -65,3 +65,27 @@ void rtp::EnemySystem::_bulletAgainstEnemy(eng::Registry &r, eng::Entity blt)
         }
     }
 }
+
+void rtp::EnemySystem::enemyCollision(eng::Registry &r, eng::PhysicSystems &physic)
+{
+    auto &enemies = r.getComponents<rtp::EnemyStats>();
+    auto &positions = r.getComponents<eng::Position>();
+    auto &colliders = r.getComponents<eng::RectCollider>();
+    auto &stats = r.getComponents<rtp::PlayerStats>();
+
+    for (int j = 0; j < stats.size() && j < positions.size() && j < colliders.size(); j++) {
+        if (stats[j].has_value() && positions[j].has_value() && colliders[j].has_value())
+            for (int i = 0; i < enemies.size() && i < positions.size() && i < colliders.size(); i++) {
+                if (enemies[i].has_value() && positions[i].has_value() && colliders[i].has_value()) {
+                    auto &enemy = enemies[i].value();
+                    auto &enemyPos = positions[i].value();
+                    auto &enemyRect = colliders[i].value();
+                    // if (isColliding(enemyPos, enemyRect, positions[entity].value(), colliders[entity].value())) {
+                    if (physic.areRectColliding(enemyPos, enemyRect, positions[j].value(), colliders[j].value())) {
+                        stats[j].value().lives -= 1;
+                        r.killEntity(i);
+                    }
+                }
+            }
+    }
+}

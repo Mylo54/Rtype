@@ -11,6 +11,7 @@
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../GameComponent/Bullet.hpp"
 #include "../GameComponent/EnemyStats.hpp"
+#include "../GameComponent/PlayerStats.hpp"
 #include "../System/TextSystem.hpp"
 #include <sstream>
 
@@ -23,6 +24,8 @@ namespace rtp
         void killOutOfBounds(eng::Registry &reg);
         void killBullets(eng::Registry &reg);
         void killDeadEnemies(eng::Registry &r, int &score, rtp::TextSystem &text);
+        void killDeadPlayers(eng::Registry &r, rtp::TextSystem &text);
+        bool allPlayerKilled(eng::Registry &r);
         protected:
         private:
     };

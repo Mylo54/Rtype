@@ -12,6 +12,7 @@
 #include "../GameComponent/Background.hpp"
 #include "../GameComponent/Bullet.hpp"
 #include "../GameComponent/EnemyStats.hpp"
+#include "../GameComponent/PlayerStats.hpp"
 
 namespace rtp
 {
@@ -22,6 +23,7 @@ namespace rtp
             eng::Entity _addEnemy(eng::Registry &reg, eng::TextureManager &texture);
             void playerBullets(eng::Registry &r);
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
+            void enemyCollision(eng::Registry &r, eng::PhysicSystems &physic);
         protected:
         private:
     }; 

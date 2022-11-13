@@ -82,6 +82,11 @@ void rtp::Game::systemRun()
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
     _killSystem.killDeadEnemies(_reg, _score, _textSystem);
+    _killSystem.killDeadPlayers(_reg, _textSystem);
+    if (_killSystem.allPlayerKilled(_reg)) {
+        _sceneEvent = 2;
+        _sceneNumber = 7;
+    }
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
@@ -91,6 +96,7 @@ void rtp::Game::systemRun()
         _enemySystem._addEnemy(_reg, _texture);
     }
     _enemySystem.playerBullets(_reg);
+    _enemySystem.enemyCollision(_reg, _physic);
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
