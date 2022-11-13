@@ -76,9 +76,14 @@ void rtp::Game::systemRun()
     _killSystem.killBullets(_reg);
     _killSystem.killDeadEnemies(_reg, _score, _textSystem);
     _killSystem.killDeadPlayers(_reg, _textSystem);
+    // Victory / defeat
     if (_killSystem.allPlayerKilled(_reg)) {
         _sceneEvent = 2;
         _sceneNumber = 7;
+    }
+    if (_level >= 1 && _level <= 4 && _score >= _level * 100) {
+        _sceneEvent = 2;
+        _sceneNumber = 6;
     }
     // Play sounds & music
     _audio.playMusic(_reg);
@@ -144,7 +149,7 @@ void rtp::Game::_addScore()
     eng::Entity score = _reg.spawnEntity();
 
     _reg.addComponent<eng::Position>(score, eng::Position(850, 0, 0));
-    _reg.addComponent<eng::Writable>(score, eng::Writable("score", "SCORE:000 000", "assets/MetroidPrimeHunters.ttf"));
+    _reg.addComponent<eng::Writable>(score, eng::Writable("score", "SCORE : 0", "assets/MetroidPrimeHunters.ttf"));
 }
 
 void rtp::Game::_addBackgrounds()

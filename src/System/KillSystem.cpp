@@ -59,13 +59,18 @@ void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSys
     for (int i = 0; i < ennemies.size(); i++) {
         if (ennemies[i].has_value()) {
             if (ennemies[i].value().health <= 0) {
+                if (ennemies[i].value().enemyType == 2)
+                    score += 30;
+                if (ennemies[i].value().enemyType == 3)
+                    score += 1000;
+                if (ennemies[i].value().enemyType <= 1)
+                    score += 10;
                 r.killEntity(eng::Entity(i));
-                score += 10;
                 std::stringstream s;
-                s << "score:";
-                s << ((score / 100 > 10) ? "0" : "00") <<  score / 100 << " ";
-                s << ((score % 100 > 10) ? "0" : "00") << score % 100;
-                // std::cout << "Score : " << s.str() << std::endl;
+                s << "SCORE : ";
+                // s << ((score / 1000 > 10) ? "0" : "00") <<  score / 100 << " ";
+                // s << ((score % 1000 > 10) ? "0" : "00") << score % 100;
+                s << score;
                 text.setText(r, s.str(), "score", rtp::TextSystem::CHAT);
             }
         }
