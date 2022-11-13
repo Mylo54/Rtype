@@ -69,7 +69,7 @@ namespace rtp
 
             /// @brief Client score
             int _score = 0;
-
+            int _level = 0;
             int _sceneEvent = sceneEvent::none;
             int _sceneNumber = sceneNumber::menu;
             eng::RegistryManager _registries;

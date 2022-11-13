@@ -97,6 +97,6 @@ void rtp::EnemySystem::spawnEnemies(eng::Registry &reg, float &enemyTimer, int l
     if (enemyTimer <= 0) {
         _addEnemy(reg, texture);
         enemyTimer = 4.5 - level;
+        std::cout << "Level " << level << std::endl;
     }
 }
-

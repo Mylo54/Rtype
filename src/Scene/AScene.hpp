@@ -32,6 +32,7 @@ namespace rtp
         int &sceneEvent;
         int &sceneNumber;
         int &score;
+        int &level;
     };
     class AScene : public IScene {
         public:
@@ -44,6 +45,7 @@ namespace rtp
             int &_sceneEvent;
             int &_sceneNumber;
             int &_score;
+            int &_level;
             eng::Registry &_reg;
             eng::GraphicSystems &_graphic;
             eng::PhysicSystems &_physic;

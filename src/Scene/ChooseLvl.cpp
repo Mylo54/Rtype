@@ -179,6 +179,7 @@ int rtp::ChooseLvl::_btnFctlvl1()
 {
     _sceneEvent = 2;
     _sceneNumber = 0;
+    _level = 1;
     return (0);
 }
 
@@ -187,6 +188,7 @@ int rtp::ChooseLvl::_btnFctlvl2()
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
     _sceneNumber = 0;
+    _level = 2;
     return (0);
 }
 
@@ -195,6 +197,7 @@ int rtp::ChooseLvl::_btnFctlvl3()
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
     _sceneNumber = 0;
+    _level = 3;
     return (0);
 }
 
@@ -203,6 +206,7 @@ int rtp::ChooseLvl::_btnFctlvl4()
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
     _sceneNumber = 0;
+    _level = 4;
     return (0);
 }
 
@@ -211,5 +215,6 @@ int rtp::ChooseLvl::_btnFctlvlB()
     // TODO: Modify destination to ??, menu
     _sceneEvent = 2;
     _sceneNumber = 0;
+    _level = 5;
     return (0);
 }

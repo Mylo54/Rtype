@@ -10,7 +10,6 @@
 rtp::Game::Game(rtp::scene_package_t pack): AScene(pack)
 {
     _enemyTimer = 2;
-    _level = 1;
 }
 
 rtp::Game::~Game()
@@ -56,15 +55,6 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
-    // Debug pour end screen
-    // if (_input.isActionJustPressed("ui_left")) {
-    //     _sceneEvent = 2;
-    //     _sceneNumber = 6;
-    // }
-    // if (_input.isActionJustPressed("ui_right")) {
-    //     _sceneEvent = 2;
-    //     _sceneNumber = 7;
-    // }
 
     //Controls
     if (_graphic.isWindowFocused())
@@ -92,11 +82,7 @@ void rtp::Game::systemRun()
     // Play sounds & music
     _audio.playMusic(_reg);
     _audio.playSound(_reg);
-
     // Enemy
-    if (_input.isActionJustPressed("ui_up")) {
-        _enemySystem._addEnemy(_reg, _texture);
-    }
     _enemySystem.playerBullets(_reg);
     _enemySystem.enemyCollision(_reg, _physic);
     _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);

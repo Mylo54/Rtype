@@ -57,7 +57,6 @@ namespace rtp {
             void _addScore();
         private:
             float _enemyTimer;
-            int _level;
     };
 }
 
