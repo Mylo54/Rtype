@@ -11,8 +11,10 @@ jobs:
     uses: ./.github/workflows/test_macos_compile.yml
   Code_analysis:
     uses: ./.github/workflows/code_analysis.yml
-  build_android:
-    uses: ./.github/workflows/android_compile.yml
+  build_android_linux:
+    uses: ./.github/workflows/android_compile_linux.yml
+  build_android_windows:
+    uses: ./.github/workflows/android_compile_windows.yml
   to_Epitech:
     needs: [build_linux, build_windows]
     runs-on: ubuntu-latest
