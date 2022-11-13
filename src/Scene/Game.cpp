@@ -23,6 +23,7 @@ void rtp::Game::setupScene()
     _addScore();
     _addMusic();
     addPlayer(1, 0);
+    if (_level == 5) _enemySystem._addBoss(_reg, _texture);
 }
 
 void rtp::Game::setupRegistry()
@@ -85,7 +86,10 @@ void rtp::Game::systemRun()
     // Enemy
     _enemySystem.playerBullets(_reg);
     _enemySystem.enemyCollision(_reg, _physic);
-    _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
+    if (_level == 5)
+        _enemySystem.bossAnimation(_reg);
+    else
+        _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);

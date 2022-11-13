@@ -119,7 +119,36 @@ void rtp::EnemySystem::updateTrajectories(eng::Registry &r)
         if (enemies[i].has_value() && vels[i].has_value()) {
             if (enemies[i].value().enemyType == 2) {
                 vels[i].value().y = 80 * ((rand() % 3) - 1);
-                std::cout << vels[i].value().y << std::endl;
+            }
+        }
+    }
+}
+
+eng::Entity rtp::EnemySystem::_addBoss(eng::Registry &reg, eng::TextureManager &texture)
+{
+    eng::Entity enemy = reg.spawnEntity();
+    float scale = 5;
+
+    reg.addComponent<eng::Position>(enemy, eng::Position(1920, 0, 5));
+    reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-40, 0));
+    reg.addComponent<eng::Drawable>(enemy, eng::Drawable(texture.getTextureFromFile("assets/boss.png"), 0, sf::IntRect(0, 0, 107, 207), 0.10));
+    reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(100, 3));
+    reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
+
+    reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
+    return enemy;
+}
+
+void rtp::EnemySystem::bossAnimation(eng::Registry &r)
+{
+    auto &enemies = r.getComponents<rtp::EnemyStats>();
+    auto &vels = r.getComponents<eng::Velocity>();
+    auto &poss = r.getComponents<eng::Position>();
+
+    for (int i = 0; i < enemies.size() && i < vels.size() && i < poss.size(); i++) {
+        if (enemies[i].has_value() && vels[i].has_value() && poss[i].has_value()) {
+            if (enemies[i].value().enemyType == 3 && poss[i].value().x <= 1400) {
+                vels[i].value().x = 0;
             }
         }
     }
