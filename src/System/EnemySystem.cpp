@@ -15,17 +15,25 @@ rtp::EnemySystem::~EnemySystem()
 {
 }
 
-eng::Entity rtp::EnemySystem::_addEnemy(eng::Registry &reg, eng::TextureManager &texture)
+eng::Entity rtp::EnemySystem::_addEnemy(eng::Registry &reg, eng::TextureManager &texture, int enemyType)
 {
     eng::Entity enemy = reg.spawnEntity();
-    float scale = (rand() % 10) + 1;
+    float scale = (rand() % 7) + 3;
 
-    reg.addComponent<eng::Position>(enemy, eng::Position(1920, rand() % 1080, 5));
-    reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-100, 0));
-    reg.addComponent<eng::Drawable>(enemy, eng::Drawable(texture.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
-    reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5));
-    reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
-
+    if (enemyType == 1) {
+        reg.addComponent<eng::Position>(enemy, eng::Position(1920, rand() % 1080, 5));
+        reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-(50 + rand() % 100), 0));
+        reg.addComponent<eng::Drawable>(enemy, eng::Drawable(texture.getTextureFromFile("assets/flyers.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
+        reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(5, 1));
+        reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));
+    }
+    if (enemyType == 2) {
+        reg.addComponent<eng::Position>(enemy, eng::Position(1920, 80 + rand() % 920, 5));
+        reg.addComponent<eng::Velocity>(enemy, eng::Velocity(-(50 + rand() % 100), 0));
+        reg.addComponent<eng::Drawable>(enemy, eng::Drawable(texture.getTextureFromFile("assets/flyers2.png"), 3, sf::IntRect(0, 0, 40, 16), 0.10));
+        reg.addComponent<rtp::EnemyStats>(enemy, rtp::EnemyStats(2, 2));
+        reg.addComponent<eng::RectCollider>(enemy, eng::RectCollider(40*scale, 16*scale));   
+    }
     reg.getComponents<eng::Drawable>()[enemy.getId()].value().sprite.setScale(scale, scale);
     return enemy;
 }
@@ -93,10 +101,26 @@ void rtp::EnemySystem::enemyCollision(eng::Registry &r, eng::PhysicSystems &phys
 void rtp::EnemySystem::spawnEnemies(eng::Registry &reg, float &enemyTimer, int level, float delta, eng::TextureManager &texture)
 {
     enemyTimer -= delta;
-
+    int enemyType = 1;
     if (enemyTimer <= 0) {
-        _addEnemy(reg, texture);
+        if (rand() % 4 == 1) enemyType = 2;
+        _addEnemy(reg, texture, enemyType);
+        updateTrajectories(reg);
         enemyTimer = 4.5 - level;
-        std::cout << "Level " << level << std::endl;
+    }
+}
+
+void rtp::EnemySystem::updateTrajectories(eng::Registry &r)
+{
+    auto &enemies = r.getComponents<rtp::EnemyStats>();
+    auto &vels = r.getComponents<eng::Velocity>();
+
+    for (int i = 0; i < enemies.size() && i < vels.size(); i++) {
+        if (enemies[i].has_value() && vels[i].has_value()) {
+            if (enemies[i].value().enemyType == 2) {
+                vels[i].value().y = 80 * ((rand() % 3) - 1);
+                std::cout << vels[i].value().y << std::endl;
+            }
+        }
     }
 }

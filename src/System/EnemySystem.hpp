@@ -20,11 +20,12 @@ namespace rtp
         public:
             EnemySystem();
             ~EnemySystem();
-            eng::Entity _addEnemy(eng::Registry &reg, eng::TextureManager &texture);
+            eng::Entity _addEnemy(eng::Registry &reg, eng::TextureManager &texture, int enemyType);
             void playerBullets(eng::Registry &r);
             void _bulletAgainstEnemy(eng::Registry &r, eng::Entity blt);
             void enemyCollision(eng::Registry &r, eng::PhysicSystems &physic);
             void spawnEnemies(eng::Registry &r, float &enemyTimer, int level, float delta, eng::TextureManager &texture);
+            void updateTrajectories(eng::Registry &r);
         protected:
         private:
     }; 
