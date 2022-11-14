@@ -66,9 +66,9 @@ void rtp::WaitingRoom::systemRun()
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
-    _graphic.particleSystem(_reg);
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
+    _graphic.particleSystem(_reg);
     _graphic.display();
     std::vector<int> vec = {504};
     _udpClient.send(vec);
@@ -138,7 +138,7 @@ eng::Entity rtp::WaitingRoom::addPlayer(int playerId, int syncId)
 {
     eng::Entity player = _reg.spawnEntity();
 
-    _reg.addComponent<eng::Position>(player, eng::Position(200, 180 * (playerId), 0));
+    _reg.addComponent<eng::Position>(player, eng::Position(350, 180 * (playerId), 0));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
     auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
