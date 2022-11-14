@@ -140,6 +140,28 @@ if (MSVC)
       DESTINATION bin
       COMPONENT applications
   )
-endif (MSVC)
+else()
+  set(CPACK_GENERATOR "DEB")
+  set(CPACK_START_MENU_SHORTCUTS "R-Type")
+  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Damien Demontis")
+  set(CPACK_PACKAGE_CONTACT "Damien Demontis")
+  set(CPACK_PACKAGE_EXECUTABLES "Client_RTYPE" "Serveur_RTYPE")
+  set(CPACK_PACKAGE_NAME "R-Type")
+  set(CPACK_PACKAGE_VENDOR "SUPA")
+  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Shoot them up game")
+  configure_file("${CMAKE_SOURCE_DIR}/LICENSE" "${CMAKE_BINARY_DIR}/license.txt" COPYONLY)
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/license.txt")
+  install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION bin)
+  install(TARGETS Client-Rtype
+      RUNTIME
+      DESTINATION bin
+      COMPONENT applications
+  )
+  install(TARGETS Server-Rtype
+      RUNTIME
+      DESTINATION bin
+      COMPONENT applications
+  )
+endif ()
 
 include(CPack)
