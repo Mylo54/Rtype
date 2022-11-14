@@ -24,12 +24,6 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
         auto &ctrl = controllables[i];
 
         if (ctrl.has_value()) {
-            // Move analog & button (round to integer because )
-            // ctrl.value().xAxis = input.getActionStrength("ui_right") > 0.1f ? 1.0f : 0.0f;
-            // ctrl.value().xAxis = input.getActionStrength("ui_left") > 0.1f ? -1.0f : ctrl.value().xAxis;
-            // ctrl.value().yAxis = input.getActionStrength("ui_down") > 0.1f ? 1.0f : 0.0f;
-            // ctrl.value().yAxis = input.getActionStrength("ui_up") > 0.1f ? -1.0f : ctrl.value().yAxis;
-
             ctrl.value().xAxis = input.getActionStrength("ui_right");
             ctrl.value().yAxis = input.getActionStrength("ui_up");
             // Move -button

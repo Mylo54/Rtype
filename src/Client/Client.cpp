@@ -72,6 +72,13 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_pause", eng::SuperInput::Key::p);
     _inputs.addEvent("ui_fire", eng::SuperInput::Key::space);
     _inputs.addEvent("ui_missile", eng::SuperInput::Key::m);
+    _inputs.addEvent("ui_fire", eng::SuperInput::JoyButton::a, 0);
+    _inputs.addEvent("ui_fire", eng::SuperInput::JoyButton::r2, 0);
+    _inputs.addEvent("ui_fire", eng::SuperInput::JoyButton::l2, 0);
+    _inputs.addEvent("ui_missile", eng::SuperInput::JoyButton::x, 0);
+    _inputs.addEvent("ui_missile", eng::SuperInput::JoyButton::r1, 0);
+    _inputs.addEvent("ui_missile", eng::SuperInput::JoyButton::l1, 0);
+
     _inputs.addEvent("ui_pause", eng::SuperInput::JoyButton::start, 0);
     _inputs.addEvent("ui_click", eng::SuperInput::MouseButton::left);
 
