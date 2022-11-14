@@ -52,6 +52,20 @@ void rtp::KillSystem::killBullets(eng::Registry &r)
     }
 }
 
+void rtp::KillSystem::killDeadEnemiesServer(eng::Registry &r)
+{
+    auto &ennemies = r.getComponents<EnemyStats>();
+    auto &positions = r.getComponents<eng::Position>();
+
+    for (int i = 0; i < ennemies.size() && i < positions.size(); i++) {
+        if (ennemies[i].has_value() && positions[i].has_value()) {
+            if (ennemies[i].value().health <= 0 || ennemies[i].value().lifeTime <= 0) {
+                r.killEntity(eng::Entity(i));
+            }
+        }
+    }
+}
+
 void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSystem &text, float delta, eng::TextureManager &texture)
 {
     auto &ennemies = r.getComponents<EnemyStats>();
@@ -90,7 +104,7 @@ void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSys
     }
 }
 
-void rtp::KillSystem::killDeadPlayers(eng::Registry &r, rtp::TextSystem &text)
+void rtp::KillSystem::killDeadPlayers(eng::Registry &r)
 {
     auto &players = r.getComponents<rtp::PlayerStats>();
 

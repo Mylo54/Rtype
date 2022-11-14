@@ -29,7 +29,7 @@ namespace rtp
             /// @param reg 
             /// @param input 
             /// @param delta as seconds
-            void controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta);
+            void controlMovement(eng::Registry &reg, float delta);
             void controlFireSystem(eng::Registry &reg, float delta);
             void shootSystem(eng::Registry &reg);
             void limitPlayer(eng::Registry &reg);

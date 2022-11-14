@@ -60,7 +60,7 @@ void rtp::Game::systemRun()
     //Controls
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
-    _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
+    _playerSystem.controlMovement(_reg, _graphic.getDeltaSeconds());
     _physic.applyGravity(_reg);
 
     _physic.applyVelocities(_reg);
@@ -75,7 +75,7 @@ void rtp::Game::systemRun()
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
     _killSystem.killDeadEnemies(_reg, _score, _textSystem, _graphic.getDeltaSeconds(), _texture);
-    _killSystem.killDeadPlayers(_reg, _textSystem);
+    _killSystem.killDeadPlayers(_reg);
     // Victory / defeat
     if (_killSystem.allPlayerKilled(_reg)) {
         _sceneEvent = 2;

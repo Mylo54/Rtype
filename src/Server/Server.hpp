@@ -20,6 +20,8 @@
 #include "../GameComponent/EnemyStats.hpp"
 #include "../Network/TCPServer.hpp"
 #include "../System/ServerSystem.hpp"
+#include "../System/PlayerSystem.hpp"
+#include "../System/KillSystem.hpp"
 
 namespace rtp
 {
@@ -59,8 +61,12 @@ namespace rtp
             std::vector<lobby_data_t *> _lobbies;
             std::vector<std::thread *> _lobbyThreads;
             rtp::ServerSystem _serverSystem;
+            rtp::PlayerSystem _playerSystem;
+            eng::PhysicSystems _physicSystem;
+            rtp::KillSystem _killSystem;
             eng::Registry _registry;
             bool _waitingRoom;
+            int _score = 0;
     };
 } // namespace rtp
 

@@ -7,7 +7,7 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(int port): _udp(port), _tcp(port), _serverSystem(_udp)
+rtp::Server::Server(int port): _udp(port), _tcp(port), _serverSystem(_udp), _physicSystem(_serverSystem.getDelta())
 {
     _isRunning = true;
     _waitingRoom = true;
@@ -45,6 +45,7 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     reg.registerComponents(eng::SparseArray<eng::RigidBody>());
     reg.registerComponents(eng::SparseArray<rtp::Canon>());
+    reg.registerComponents(eng::SparseArray<eng::Drawable>());
 }
 
 int rtp::Server::run()
@@ -190,6 +191,44 @@ void rtp::Server::runGame()
 {
     _serverSystem.receiveData(_registry);
 
+    _playerSystem.controlMovement(_registry, _serverSystem.getDelta());
+    _physicSystem.applyGravity(_registry);
+
+    _physicSystem.applyVelocities(_registry);
+    _playerSystem.limitPlayer(_registry);
+    // Shooting
+    _playerSystem.controlFireSystem(_registry, _serverSystem.getDelta());
+    _playerSystem.shootSystem(_registry);
+    // Kill
+    _killSystem.killOutOfBounds(_registry);
+    _killSystem.killBullets(_registry);
+    _killSystem.killDeadEnemiesServer(_registry);
+    _killSystem.killDeadPlayers(_registry);
+    // // Victory / defeat
+    // if (_killSystem.allPlayerKilled(_reg)) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 7;
+    // }
+    // if ((_level >= 1 && _level <= 4 && _score >= _level * 100) || _level == 5 && _score >= 10000) {
+    //     _sceneEvent = 2;
+    //     _sceneNumber = 6;
+    // }
+    // // Play sounds & music
+    // _audio.playMusic(_reg);
+    // _audio.playSound(_reg);
+    // // Enemy
+    // _enemySystem.playerBullets(_reg);
+    // _enemySystem.enemyCollision(_reg, _physic);
+    // if (_level == 5)
+    //     _enemySystem.bossAnimation(_reg);
+    // _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
+    // // clear, draw & display
+    // _graphic.clear();
+    // _graphic.animateSystem(_reg);
+    // _graphic.drawSystem(_reg);
+    // _graphic.particleSystem(_reg);
+    // _graphic.writeSystem(_reg);
+    // _graphic.display();
 
     _serverSystem.sendData(_registry);
 }

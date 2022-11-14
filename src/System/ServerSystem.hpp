@@ -26,8 +26,21 @@ namespace rtp
 
             void sendData(eng::Registry &r);
             void receiveData(eng::Registry &r);
+            void limitTickRate();
+            void setTickRate(unsigned int tps);
+            float &getDelta();
         protected:
         private:
+            /// @brief The delta time since last frame in microseconds
+            float _delta = 0;
+
+            std::clock_t _lastClockTime = std::clock();
+
+            /// @brief Tick per seconds of the server
+            float _tps = 0;
+
+            /// @brief Saved value to update the delta time
+            std::chrono::steady_clock::time_point _lastUpdate;
             rtp::UDPServer &_udp;
     };
 } // namespace rtp

@@ -37,7 +37,7 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
     }   
 }
 
-void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta)
+void rtp::PlayerSystem::controlMovement(eng::Registry &reg, float delta)
 {
     auto &velocities = reg.getComponents<eng::Velocity>();
     auto &controllables = reg.getComponents<Controllable>();
