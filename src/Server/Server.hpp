@@ -22,6 +22,7 @@
 #include "../System/ServerSystem.hpp"
 #include "../System/PlayerSystem.hpp"
 #include "../System/KillSystem.hpp"
+#include "../System/EnemySystem.hpp"
 
 namespace rtp
 {
@@ -64,6 +65,7 @@ namespace rtp
             rtp::PlayerSystem _playerSystem;
             eng::PhysicSystems _physicSystem;
             rtp::KillSystem _killSystem;
+            rtp::EnemySystem _enemySystem;
             eng::Registry _registry;
             bool _waitingRoom;
             int _score = 0;

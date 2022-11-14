@@ -204,21 +204,12 @@ void rtp::Server::runGame()
     _killSystem.killBullets(_registry);
     _killSystem.killDeadEnemiesServer(_registry);
     _killSystem.killDeadPlayers(_registry);
-    // // Victory / defeat
-    // if (_killSystem.allPlayerKilled(_reg)) {
-    //     _sceneEvent = 2;
-    //     _sceneNumber = 7;
-    // }
-    // if ((_level >= 1 && _level <= 4 && _score >= _level * 100) || _level == 5 && _score >= 10000) {
-    //     _sceneEvent = 2;
-    //     _sceneNumber = 6;
-    // }
-    // // Play sounds & music
-    // _audio.playMusic(_reg);
-    // _audio.playSound(_reg);
-    // // Enemy
-    // _enemySystem.playerBullets(_reg);
-    // _enemySystem.enemyCollision(_reg, _physic);
+    // Victory / defeat
+    _waitingRoom = _killSystem.allPlayerKilled(_registry) || (_score >= 10000);
+
+    // Enemy
+    _enemySystem.playerBullets(_registry);
+    _enemySystem.enemyCollision(_registry, _physicSystem);
     // if (_level == 5)
     //     _enemySystem.bossAnimation(_reg);
     // _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
