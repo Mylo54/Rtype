@@ -90,13 +90,14 @@ void rtp::EnemySystem::enemyCollision(eng::Registry &r, eng::PhysicSystems &phys
                     auto &enemyRect = colliders[i].value();
                     // if (isColliding(enemyPos, enemyRect, positions[entity].value(), colliders[entity].value())) {
                     if (physic.areRectColliding(enemyPos, enemyRect, positions[j].value(), colliders[j].value())) {
-                        if (enemy.enemyType == 3) {
-                            r.killEntity(j);
-                            enemy.health -= 50;
-                        }
-                        else {
+                        if (enemy.enemyType != 3) {
                             stats[j].value().lives -= 1;
                             r.killEntity(i);
+                        }
+                        else {
+                            enemy.health -= 50;
+                            stats[j].value().lives -= 800;
+                            // r.killEntity(j);
                         }
                     }
                 }
