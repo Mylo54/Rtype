@@ -11,7 +11,7 @@ void rtp::ServerSystem::limitTickRate()
 {
     if (_tps != 0) {
         float elapsed = (std::clock() - _lastClockTime) / CLOCKS_PER_SEC;
-        usleep((_tps - elapsed) * CLOCKS_PER_SEC);
+        std::this_thread::sleep_for(std::chrono::microseconds((int)((_tps - elapsed) * CLOCKS_PER_SEC)));
         _delta = _tps - elapsed;
         _lastClockTime = std::clock();
     }

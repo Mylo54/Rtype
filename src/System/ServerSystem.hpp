@@ -10,6 +10,8 @@
 
 #include <EngineCoreSuper/EngineCoreSuper.hpp>
 #include "../Network/UDPServer.hpp"
+#include <thread>
+#include <chrono>
 
 namespace rtp
 {
