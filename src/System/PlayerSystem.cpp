@@ -25,20 +25,20 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
 
         if (ctrl.has_value()) {
             // Move analog & button (round to integer because )
-            ctrl.value().xAxis = input.getActionStrength("ui_right") > 0.1f ? 1.0f : 0.0f;
-            ctrl.value().xAxis = input.getActionStrength("ui_left") > 0.1f ? -1.0f : ctrl.value().xAxis;
-            ctrl.value().yAxis = input.getActionStrength("ui_down") > 0.1f ? 1.0f : 0.0f;
-            ctrl.value().yAxis = input.getActionStrength("ui_up") > 0.1f ? -1.0f : ctrl.value().yAxis;
+            // ctrl.value().xAxis = input.getActionStrength("ui_right") > 0.1f ? 1.0f : 0.0f;
+            // ctrl.value().xAxis = input.getActionStrength("ui_left") > 0.1f ? -1.0f : ctrl.value().xAxis;
+            // ctrl.value().yAxis = input.getActionStrength("ui_down") > 0.1f ? 1.0f : 0.0f;
+            // ctrl.value().yAxis = input.getActionStrength("ui_up") > 0.1f ? -1.0f : ctrl.value().yAxis;
 
+            ctrl.value().xAxis = input.getActionStrength("ui_right");
+            ctrl.value().yAxis = input.getActionStrength("ui_up");
             // Move -button
-            // ctrl.value().xAxis -= input.getActionStrength("ui_left");
-            // ctrl.value().yAxis -= input.getActionStrength("ui_up");
+            ctrl.value().xAxis -= input.getActionStrength("ui_left");
+            ctrl.value().yAxis -= input.getActionStrength("ui_down");
             // // Shoot
             ctrl.value().shoot = input.isActionPressed("ui_fire");
             ctrl.value().canonShoot = input.isActionPressed("ui_missile");
 
-            // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : ctrl.value().yAxis;
-            // ctrl.value().yAxis = input.isActionPressed("ui_up") ? -1.0f : 0.0f;
         }
     }   
 }
@@ -57,7 +57,7 @@ void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &inp
             vel.value().x += ctrl.value().xAxis * delta * 200 * 2;
 
             // Up & Down
-            vel.value().y += ctrl.value().yAxis * delta * 200 * 2;
+            vel.value().y -= ctrl.value().yAxis * delta * 200 * 2;
         }
     }
 }

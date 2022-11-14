@@ -75,8 +75,8 @@ void rtp::Client::_setupInputEvents()
     _inputs.addEvent("ui_pause", eng::SuperInput::JoyButton::start, 0);
     _inputs.addEvent("ui_click", eng::SuperInput::MouseButton::left);
 
-    _inputs.addEvent("ui_up", eng::SuperInput::JoyAnalog::leftStickX, 0);
-    _inputs.addEvent("ui_left", eng::SuperInput::JoyAnalog::leftStickY, 0);
+    _inputs.addEvent("ui_down", eng::SuperInput::JoyAnalog::leftStickY, 0);
+    _inputs.addEvent("ui_right", eng::SuperInput::JoyAnalog::leftStickX, 0);
     _inputs.addEvent("ui_accept", eng::SuperInput::JoyButton::a, 0);
 }
 
@@ -137,12 +137,7 @@ int rtp::Client::run()
 {
     _setupInputEvents();
     _registries.addRegistry("start");
-    rtp::Settings *optionScene = new rtp::Settings(_makePackage());
     rtp::MainMenu *mainMenuScene = new rtp::MainMenu(_makePackage());
-    rtp::ChooseLvl *chooseLvl = new rtp::ChooseLvl(_makePackage());
-    rtp::Game *game = new rtp::Game(_makePackage());
-    // _scenes.push(optionScene);
-    // _scenes.push(mainMenuScene);
     _scenes.push(mainMenuScene);
 
     std::cout << "Client is up!" << std::endl;
