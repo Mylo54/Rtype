@@ -34,7 +34,7 @@ std::vector<int> rtp::UDPServer::receive()
     std::vector<int> res;
 
     _socket.wait(boost::asio::socket_base::wait_read);
-    res.resize(_socket.available());
+    res.resize(_socket.available() / 4);
     _socket.receive(boost::asio::buffer(res));
     return (res);
 }
@@ -45,6 +45,7 @@ void rtp::UDPServer::addEndpoint(std::string address, int port)
         boost::asio::ip::make_address(address),
         static_cast<boost::asio::ip::port_type>(port)
     });
+    _numberOfClients++;
 }
 
 void rtp::UDPServer::removeEndpoint(std::string address, int port)
@@ -55,6 +56,7 @@ void rtp::UDPServer::removeEndpoint(std::string address, int port)
         if (current.address() == boost::asio::ip::make_address(address)
         && current.port() == static_cast<boost::asio::ip::port_type>(port)) {
             _endpoints.erase(_endpoints.begin() + i);
+            _numberOfClients--;
             return;
         }
     }
@@ -68,7 +70,14 @@ std::vector<int> rtp::UDPServer::listen()
     _socket.wait(boost::asio::socket_base::wait_read);
     buffer.resize(_socket.available() / 4);
     _socket.receive_from(boost::asio::buffer(buffer), remoteEndpoint);
-    if (std::find(_endpoints.begin(), _endpoints.end(), remoteEndpoint) == _endpoints.end())
+    if (std::find(_endpoints.begin(), _endpoints.end(), remoteEndpoint) == _endpoints.end()) {
+        _numberOfClients++;
         _endpoints.push_back(remoteEndpoint);
+    }
     return (buffer);
+}
+
+int &rtp::UDPServer::getNumberOfClients()
+{
+    return _numberOfClients;
 }

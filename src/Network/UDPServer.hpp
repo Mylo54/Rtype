@@ -44,8 +44,11 @@ namespace rtp
             /// @param address the address
             /// @param port the port
             void removeEndpoint(std::string address, int port);
+
+            int &getNumberOfClients();
         protected:
         private:
+            int _numberOfClients = 0;
             boost::asio::io_context _ioContext;
             boost::asio::ip::udp::endpoint _endpoint;
             boost::asio::ip::udp::socket _socket;
