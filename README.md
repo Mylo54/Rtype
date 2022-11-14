@@ -41,12 +41,27 @@ $ ./comp_linux.sh
 $ ./comp_windows.sh
 ```
 
-### Binary Packagin
+### Binary Packaging
 
 After having compiled on your OS, you can generate the binary package by executing :
 
 ``` bash
 $ cmake --build build --target package
+```
+### INSTALLERS
+
+After having compiled on your OS, you can generate the installer by executing :
+
+1. Windows (.msi)
+
+``` bash
+$ ./windows_installer.sh
+```
+
+2. Linux (.deb)
+
+``` bash
+$ ./linux_installer.sh
 ```
 
 ## Execution :
