@@ -113,6 +113,7 @@ void rtp::EnemySystem::spawnEnemies(eng::Registry &reg, float &enemyTimer, int l
         _addEnemy(reg, texture, enemyType);
         updateTrajectories(reg);
         enemyTimer = 4.5 - level;
+        if (enemyTimer <= 0.5) enemyTimer = 0.5;
     }
 }
 
@@ -124,7 +125,7 @@ void rtp::EnemySystem::updateTrajectories(eng::Registry &r)
     for (int i = 0; i < enemies.size() && i < vels.size(); i++) {
         if (enemies[i].has_value() && vels[i].has_value()) {
             if (enemies[i].value().enemyType == 2) {
-                vels[i].value().y = 160 * ((rand() % 3) - 1);
+                vels[i].value().y = 100 * ((rand() % 3) - 1);
             }
         }
     }

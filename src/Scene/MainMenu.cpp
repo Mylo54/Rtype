@@ -76,6 +76,7 @@ void rtp::MainMenu::_addButtons()
     _addButtonExit();
     _addButtonMultiplayer();
     _addButtonSettings();
+    _addButtonCredits();
 }
 
 void rtp::MainMenu::_addSinglePlayerButton()
@@ -139,6 +140,22 @@ void rtp::MainMenu::_addButtonSettings()
     _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
     _reg.addComponent<eng::Position>(btntesxt, eng::Position(990, 700, 0));
     _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Options", "assets/MetroidPrimeHunters.ttf"));
+}
+
+void rtp::MainMenu::_addButtonCredits()
+{
+    eng::Entity btn = _reg.spawnEntity();
+    eng::Entity btntesxt = _reg.spawnEntity();
+    int scale = 4;
+
+    std::function<int()> credits = std::bind(&MainMenu::_creditsBtnFunction, this);
+    _reg.addComponent<eng::Position>(btn, eng::Position(1632, 891, 0));
+    _reg.addComponent<rtp::Button>(btn, rtp::Button(credits, 0, 0, 128 * 1.9, 32 * 1.5));
+    _reg.addComponent<eng::Drawable>(btn, eng::Drawable(_texture.getTextureFromFile("assets/button.png"), 3, {0, 0, 128, 32}));
+
+    _reg.getComponents<eng::Drawable>()[btn.getId()].value().sprite.setScale(1.9, 1.5);
+    _reg.addComponent<eng::Position>(btntesxt, eng::Position(1697, 894, 0));
+    _reg.addComponent<eng::Writable>(btntesxt, eng::Writable("Button", "Credits", "assets/MetroidPrimeHunters.ttf"));
 }
 
 void rtp::MainMenu::_addBackgrounds()
@@ -205,5 +222,13 @@ int rtp::MainMenu::_settingBtnFunction()
     // TODO: Modify destination to Choose level menu
     _sceneEvent = 2;
     _sceneNumber = 3;
+    return (0);
+}
+
+int rtp::MainMenu::_creditsBtnFunction()
+{
+    // TODO: Modify destination to Choose level menu
+    _sceneEvent = 2;
+    _sceneNumber = 8;
     return (0);
 }

@@ -7,7 +7,7 @@
 
 #include "End.hpp"
 
-rtp::End::End(rtp::scene_package_t pack, bool win): AScene(pack), _win(win)
+rtp::End::End(rtp::scene_package_t pack, bool win, int &score): AScene(pack), _win(win), _score(score)
 {
 }
 
@@ -21,6 +21,7 @@ void rtp::End::setupScene()
     _addBackgrounds();
     _addResult();
     _addButtons();
+    _addScore();
 }
 
 void rtp::End::setupRegistry()
@@ -164,4 +165,15 @@ int rtp::End::_exitBtnFunction()
 {
     _graphic.closeWindow();
     return (0);
+}
+
+void rtp::End::_addScore()
+{
+    eng::Entity score = _reg.spawnEntity();
+    std::stringstream s;
+
+    s << "FINAL SCORE : ";
+    s << _score;
+    _reg.addComponent<eng::Position>(score, eng::Position(850, 0, 0));
+    _reg.addComponent<eng::Writable>(score, eng::Writable("score", s.str(), "assets/MetroidPrimeHunters.ttf"));
 }

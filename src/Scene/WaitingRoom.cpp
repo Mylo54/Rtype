@@ -108,8 +108,9 @@ void rtp::WaitingRoom::_addButtonStart()
 
 int rtp::WaitingRoom::_btnFctStart()
 {
+    _level = 5;
     _sceneEvent = 2;
-    _sceneNumber = 4;
+    _sceneNumber = 0;
     return (0);
 }
 

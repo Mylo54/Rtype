@@ -62,7 +62,7 @@ void rtp::KillSystem::killDeadEnemies(eng::Registry &r, int &score, rtp::TextSys
                 if (ennemies[i].value().enemyType == 2)
                     score += 30;
                 if (ennemies[i].value().enemyType == 3)
-                    score += 1000;
+                    score += 10000;
                 if (ennemies[i].value().enemyType <= 1)
                     score += 10;
                 r.killEntity(eng::Entity(i));

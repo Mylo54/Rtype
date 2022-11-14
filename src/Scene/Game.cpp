@@ -81,7 +81,7 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 7;
     }
-    if (_level >= 1 && _level <= 4 && _score >= _level * 100) {
+    if ((_level >= 1 && _level <= 4 && _score >= _level * 100) || _level == 5 && _score >= 10000) {
         _sceneEvent = 2;
         _sceneNumber = 6;
     }
@@ -93,8 +93,7 @@ void rtp::Game::systemRun()
     _enemySystem.enemyCollision(_reg, _physic);
     if (_level == 5)
         _enemySystem.bossAnimation(_reg);
-    else
-        _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
+    _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);

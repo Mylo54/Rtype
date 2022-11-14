@@ -111,12 +111,14 @@ void rtp::Client::_handleSceneEvents()
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::win) {
-            _scenes.push(new rtp::End(_makePackage(), true));
+            _scenes.push(new rtp::End(_makePackage(), true, _score));
             _scenes.top()->setupScene();
+            _score = 0;
         }
         if (_sceneNumber == rtp::sceneNumber::loose) {
-            _scenes.push(new rtp::End(_makePackage(), false));
+            _scenes.push(new rtp::End(_makePackage(), false, _score));
             _scenes.top()->setupScene();
+            _score = 0;
         }
         if (_sceneNumber == rtp::sceneNumber::credits) {
             _scenes.push(new rtp::Credits(_makePackage()));

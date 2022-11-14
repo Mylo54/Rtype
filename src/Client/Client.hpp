@@ -28,7 +28,7 @@ namespace rtp
     enum sceneEvent{
         none,
         popScene,
-        pushScene,
+        pushScene
     };
 
     enum sceneNumber{

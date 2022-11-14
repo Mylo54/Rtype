@@ -42,6 +42,9 @@ namespace rtp {
             /// @brief Adds button Setting to the scene
             void _addButtonSettings();
 
+            /// @brief Adds button Credits to the scene
+            void _addButtonCredits();
+
             /// @brief Add layers of backgrounds to the scene
             void _addBackgrounds();
 
@@ -56,6 +59,8 @@ namespace rtp {
             int _chooseLvlBtnFunction();
             /// @brief fct for button multiplayer
             int _multiBtnFunction();
+            /// @brief fct for button credits
+            int _creditsBtnFunction();
         private:
     };
 }
