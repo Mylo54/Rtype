@@ -72,12 +72,16 @@ void rtp::WaitingRoom::systemRun()
     _graphic.display();
     std::vector<int> vec = {504};
     _udpClient.send(vec);
-    if (_udpClient.receive()[0] == 403) {
+    std::vector<int> res = _udpClient.receive();
+    if (res[0] == 403) {
         _level = 5;
         _sceneEvent = 2;
         _sceneNumber = 0;
     }
-    //sendData();
+    while (_nbrPlayer > _nbrPlayerDraw)
+        addPlayer(_nbrPlayerDraw + 1, 0);
+    if (res[0] == 404)
+        _nbrPlayer = res[1];
 }
 
 void rtp::WaitingRoom::_addBackgrounds()
@@ -132,16 +136,11 @@ eng::Entity rtp::WaitingRoom::addPlayer(int playerId, int syncId)
 {
     eng::Entity player = _reg.spawnEntity();
 
-    _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
-    _reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    // _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 25, 4, {60, 25}));
+    _reg.addComponent<eng::Position>(player, eng::Position(200, 180 * (playerId), 0));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
-    _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    // _reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    // _reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-    _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
 
     std::cout << "You are player " << playerId << std::endl;
+    _nbrPlayerDraw += 1;
     return player;
 }

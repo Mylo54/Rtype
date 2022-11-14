@@ -30,6 +30,8 @@ namespace rtp {
             void _addBackgrounds();
             void _addButtonStart();
             int _btnFctStart();
+            int _nbrPlayer = 0;
+            int _nbrPlayerDraw = 0;
         private:
     };
 }
