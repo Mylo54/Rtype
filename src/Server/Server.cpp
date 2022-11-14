@@ -56,6 +56,7 @@ int rtp::Server::run()
     while (_isRunning) {
         if (input == "exit")
             _isRunning = false;
+        systemLoop();
         //receiveData();
     }
     return (0);
@@ -169,13 +170,18 @@ void rtp::Server::_destroyLobbies()
     std::cout << "Done!" << std::endl;
 }
 
+bool rtp::Server::_listenReceiveData(eng::Registry &reg)
+{
+    std::vector<int> res = _udp.listen();
+    return (_waitingRoom);
+}
+
 void rtp::Server::systemLoop()
 {
     if (_waitingRoom) {
-        _udp.listen();
+        _waitingRoom = _listenReceiveData(_registry);
     } else {
         _serverSystem.receiveData(_registry);
     }
-
     _serverSystem.sendData(_registry);
 }

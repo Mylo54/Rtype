@@ -51,6 +51,7 @@ namespace rtp
             void _lobbyRun(int id);
             void _destroyLobbies();
             void _setupRegistry(eng::Registry &reg);
+            bool _listenReceiveData(eng::Registry &reg);
 
             bool _isRunning = false;
             rtp::UDPServer _udp;
