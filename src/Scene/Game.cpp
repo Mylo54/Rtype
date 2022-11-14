@@ -56,11 +56,12 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
-
+    _clientSystems.receiveData(_reg, _texture);
     //Controls
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
     _playerSystem.controlMovement(_reg, _graphic.getDeltaSeconds());
+    _clientSystems.sendInputData(_reg);
     _physic.applyGravity(_reg);
 
     _physic.applyVelocities(_reg);

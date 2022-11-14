@@ -20,6 +20,7 @@
 #include "../System/TextSystem.hpp"
 #include "../Network/TCPClient.hpp"
 #include "../Network/UDPClient.hpp"
+#include "../System/ClientSystem.hpp"
 
 namespace rtp
 {
@@ -66,6 +67,7 @@ namespace rtp
             rtp::BackgroundSystem _backgroundSystem;
             rtp::EnemySystem _enemySystem;
             rtp::TextSystem _textSystem;
+            rtp::ClientSystem _clientSystems;
             std::string _host;
         private:
     };
