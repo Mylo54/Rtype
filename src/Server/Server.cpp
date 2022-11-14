@@ -56,7 +56,10 @@ int rtp::Server::run()
     while (_isRunning) {
         if (input == "exit")
             _isRunning = false;
-        systemLoop();
+        if (_waitingRoom)
+            runWaitingRoom();
+        else
+            runGame();
         //receiveData();
     }
     return (0);
@@ -106,7 +109,6 @@ void rtp::Server::_serverIO()
         std::cin >> input;
         if (input == "exit")
             _isRunning = false;
-        systemLoop();
     }
 }
 
@@ -170,18 +172,24 @@ void rtp::Server::_destroyLobbies()
     std::cout << "Done!" << std::endl;
 }
 
-bool rtp::Server::_listenReceiveData(eng::Registry &reg)
+void rtp::Server::runWaitingRoom()
 {
     std::vector<int> res = _udp.listen();
-    return (_waitingRoom);
+    if (res[0] == 502) {
+        _waitingRoom = false;
+        std::vector<int> vec = {403};
+        _udp.sendToAll(vec);
+    }
+    else {
+        std::vector<int> vec = {404, _udp.getNumberOfClients()};
+        _udp.sendToAll(vec);
+    }
 }
 
-void rtp::Server::systemLoop()
+void rtp::Server::runGame()
 {
-    if (_waitingRoom) {
-        _waitingRoom = _listenReceiveData(_registry);
-    } else {
-        _serverSystem.receiveData(_registry);
-    }
+    _serverSystem.receiveData(_registry);
+
+
     _serverSystem.sendData(_registry);
 }
