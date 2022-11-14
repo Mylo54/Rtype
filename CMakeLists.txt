@@ -50,21 +50,16 @@ add_subdirectory(external/EngineCoreSuper)
 FILE(GLOB_RECURSE SRCS_SERVER src/Server/*.cpp)
 FILE(GLOB_RECURSE SRCS_CLIENT src/Client/*.cpp)
 FILE(GLOB_RECURSE SRCS_SCENE src/Scene/*.cpp)
+FILE(GLOB_RECURSE SRCS_SYSTEM src/System/*.cpp)
 
 #####   CLIENT
 
 add_executable(Client-Rtype
   ${SRCS_CLIENT}
   ${SRCS_SCENE}
+  ${SRCS_SYSTEM}
   src/Network/UDPClient.cpp
   src/Network/TCPClient.cpp
-  src/System/BackgroundSystem.cpp
-  src/System/ButtonSystem.cpp
-  src/System/ClientSystem.cpp
-  src/System/EnemySystem.cpp
-  src/System/KillSystem.cpp
-  src/System/PlayerSystem.cpp
-  src/System/TextSystem.cpp
 )
 
 target_include_directories(
@@ -93,13 +88,6 @@ add_executable(Server-Rtype
   ${SRCS_NETWORK}
   src/Network/UDPServer.cpp
   src/Network/TCPServer.cpp
-  src/System/BackgroundSystem.cpp
-  src/System/ButtonSystem.cpp
-  src/System/ServerSystem.cpp
-  src/System/EnemySystem.cpp
-  src/System/KillSystem.cpp
-  src/System/PlayerSystem.cpp
-  src/System/TextSystem.cpp
 )
 
 target_include_directories(
@@ -119,5 +107,27 @@ target_link_libraries(
 )
 
 # PAckaging
+
+if (MSVC)
+  set(CPACK_GENERATOR "WIX")
+  set(CPACK_START_MENU_SHORTCUTS "R-Type")
+  set(CPACK_PACKAGE_EXECUTABLES "Client_RTYPE" "Serveur_RTYPE")
+  set(CPACK_PACKAGE_NAME "R-Type")
+  set(CPACK_PACKAGE_VENDOR "SUPA")
+  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Shoot them up game")
+  configure_file("${CMAKE_SOURCE_DIR}/LICENSE" "${CMAKE_BINARY_DIR}/license.txt" COPYONLY)
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/license.txt")
+  install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION bin)
+  install(TARGETS Client-Rtype
+      RUNTIME
+      DESTINATION bin
+      COMPONENT applications
+  )
+  install(TARGETS Server-Rtype
+      RUNTIME
+      DESTINATION bin
+      COMPONENT applications
+  )
+endif (MSVC)
 
 include(CPack)
