@@ -22,7 +22,8 @@ void rtp::Game::setupScene()
     _addBackgrounds();
     _addScore();
     _addMusic();
-    addPlayer(1, 0);
+    std::cout << "Player id " << _playerId << std::endl;
+    _playerSystem.addPlayer(_reg, _texture, _playerId + 1, 0);
     if (_level == 5) _enemySystem._addBoss(_reg, _texture);
 }
 
@@ -109,39 +110,6 @@ void rtp::Game::_addMusic()
     eng::Entity music = _reg.spawnEntity();
 
     _reg.addComponent<eng::Music>(music, eng::Music("assets/music.ogg", true));
-}
-
-eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
-{
-    eng::Entity player = _reg.spawnEntity();
-    std::stringstream name;
-    name << "P" << playerId;
-
-    _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
-    _reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
-    _reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
-    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
-    _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
-    _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    _reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-    _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
-    _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
-    _reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
-    auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
-
-    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
-    smoke.setBaseSpeed(500, 1000);
-    smoke.setLifetime(5);
-    smoke.setBaseRotation(260, 280);
-    smoke.setEmittingRate(0.01);
-    smoke.setMaxNumber(100);
-    smoke.isLocal = false;
-    smoke.setParticleColorRandom(true);
-
-    std::cout << "You are player " << playerId << std::endl;
-    return player;
 }
 
 void rtp::Game::_addScore()

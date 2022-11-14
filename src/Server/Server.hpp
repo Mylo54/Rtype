@@ -46,6 +46,8 @@ namespace rtp
             void receiveData();
             void runWaitingRoom();
             void runGame();
+            void addPlayers();
+            eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
         protected:
         private:
             void _serverIO();
@@ -75,6 +77,7 @@ namespace rtp
             eng::Registry _registry;
             bool _waitingRoom;
             int _score = 0;
+            int _lastSyncId = 0;
     };
 } // namespace rtp
 

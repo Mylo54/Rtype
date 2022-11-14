@@ -31,12 +31,6 @@ namespace rtp {
             void setupScene() override;
             void setupRegistry() override;
             void systemRun() override;
-
-            /// @brief Adds a controllable player to a registry
-            /// @param playerId The player id (1, 2, 3 or 4)
-            /// @param syncId The sync component id
-            /// @return The entity containing the player
-            eng::Entity addPlayer(int playerId, int syncId);
             
         protected:
 

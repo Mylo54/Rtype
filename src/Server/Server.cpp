@@ -178,6 +178,7 @@ void rtp::Server::runWaitingRoom()
     std::vector<int> res = _udp.listen();
     if (res[0] == 502) {
         _waitingRoom = false;
+        addPlayers();
         std::vector<int> vec = {403};
         _udp.sendToAll(vec);
     }
@@ -215,4 +216,33 @@ void rtp::Server::runGame()
     _enemySystem.spawnEnemies(_registry, _enemyTimer, _level, _serverSystem.getDelta(), _textureManager);
 
     _serverSystem.sendData(_registry);
+}
+
+void rtp::Server::addPlayers()
+{
+    for (int i = 0; i < _udp.getNumberOfClients(); i++) {
+        _lastSyncId += 1;
+        addPlayer(_registry, i + 1, _lastSyncId);
+    }
+}
+
+eng::Entity rtp::Server::addPlayer(eng::Registry &reg, int playerId, int syncId)
+{
+    eng::Entity player = reg.spawnEntity();
+    std::stringstream name;
+    name << "P" << playerId;
+
+    reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
+    reg.addComponent<eng::Velocity>(player, eng::Velocity());
+    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
+    reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
+    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
+    reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
+
+    return player;
 }
