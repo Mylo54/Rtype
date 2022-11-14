@@ -20,6 +20,10 @@ void rtp::ChooseLvl::setupScene()
     setupRegistry();
     _addBackgrounds();
     _addButtons();
+    _tcpClient.connect(_host, "4000");
+    _udpClient.connect(_host, "4000");
+    std::vector<int> vec = {502};
+    _udpClient.send(vec);
     // _addEarth();
 }
 
