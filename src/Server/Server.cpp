@@ -7,9 +7,10 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(int port): _udp(port), _tcp(port)
+rtp::Server::Server(int port): _udp(port), _tcp(port), _serverSystem(_udp)
 {
     _isRunning = true;
+    _waitingRoom = true;
     init();
 }
 
@@ -31,11 +32,26 @@ void rtp::Server::receiveData()
     }
 }
 
+void rtp::Server::_setupRegistry(eng::Registry &reg)
+{
+    reg.registerComponents(eng::SparseArray<eng::Position>());
+    reg.registerComponents(eng::SparseArray<eng::Velocity>());
+    reg.registerComponents(eng::SparseArray<rtp::Controllable>());
+    reg.registerComponents(eng::SparseArray<rtp::Shooter>());
+    reg.registerComponents(eng::SparseArray<rtp::PlayerStats>());
+    reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    reg.registerComponents(eng::SparseArray<rtp::Synced>());
+    reg.registerComponents(eng::SparseArray<eng::RectCollider>());
+    reg.registerComponents(eng::SparseArray<rtp::Bullet>());
+    reg.registerComponents(eng::SparseArray<eng::RigidBody>());
+    reg.registerComponents(eng::SparseArray<rtp::Canon>());
+}
+
 int rtp::Server::run()
 {
     std::cout << "Server is up!" << std::endl;
     std::string input;
-
+    _setupRegistry(_registry);
 
     while (_isRunning) {
         if (input == "exit")
@@ -89,6 +105,7 @@ void rtp::Server::_serverIO()
         std::cin >> input;
         if (input == "exit")
             _isRunning = false;
+        systemLoop();
     }
 }
 
@@ -150,4 +167,15 @@ void rtp::Server::_destroyLobbies()
     for (int i = 0; i  < _lobbies.size(); i++)
         delete _lobbies[i];
     std::cout << "Done!" << std::endl;
+}
+
+void rtp::Server::systemLoop()
+{
+    if (_waitingRoom) {
+        _udp.listen();
+    } else {
+        _serverSystem.receiveData(_registry);
+    }
+
+    _serverSystem.sendData(_registry);
 }

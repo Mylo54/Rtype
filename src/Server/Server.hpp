@@ -9,8 +9,17 @@
 #define SERVER_HPP_
 
 #include <iostream>
-#include "../Network/UDPServer.hpp"
+#include "../GameComponent/Button.hpp"
+#include "../GameComponent/Background.hpp"
+#include "../GameComponent/Controllable.hpp"
+#include "../GameComponent/PlayerStats.hpp"
+#include "../GameComponent/Shooter.hpp"
+#include "../GameComponent/Canon.hpp"
+#include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/Synced.hpp"
+#include "../GameComponent/EnemyStats.hpp"
 #include "../Network/TCPServer.hpp"
+#include "../System/ServerSystem.hpp"
 
 namespace rtp
 {
@@ -32,6 +41,7 @@ namespace rtp
 
             void listenRequests();
             void receiveData();
+            void systemLoop();
         protected:
         private:
             void _serverIO();
@@ -40,12 +50,16 @@ namespace rtp
             void _listLobbies(int dest);
             void _lobbyRun(int id);
             void _destroyLobbies();
+            void _setupRegistry(eng::Registry &reg);
 
             bool _isRunning = false;
             rtp::UDPServer _udp;
             rtp::TCPServer _tcp;
             std::vector<lobby_data_t *> _lobbies;
             std::vector<std::thread *> _lobbyThreads;
+            rtp::ServerSystem _serverSystem;
+            eng::Registry _registry;
+            bool _waitingRoom;
     };
 } // namespace rtp
 
