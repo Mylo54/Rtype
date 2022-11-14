@@ -10,10 +10,16 @@
 
 int main(int argc, char **argv)
 {
-    rtp::Server server(4000);
-    int success = 0;
 
-    server.init();
-    success = server.run();
+    int success = 0;
+    /*rtp::TCPServer server(4000);
+
+    server.connect();
+    std::cout << "server" << std::endl;
+    server.runContext();*/
+    //std::string msg = server.receive()[0];
+    //std::cout << msg << std::endl;
+    rtp::Server s = rtp::Server(4000);
+    s.run();
     return (success);
 }

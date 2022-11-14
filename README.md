@@ -41,6 +41,14 @@ $ ./comp_linux.sh
 $ ./comp_windows.sh
 ```
 
+### Binary Packagin
+
+After having compiled on your OS, you can generate the binary package by executing :
+
+``` bash
+$ cmake --build build --target package
+```
+
 ## Execution :
 
 ### Client

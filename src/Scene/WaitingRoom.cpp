@@ -17,6 +17,8 @@ rtp::WaitingRoom::~WaitingRoom()
 
 void rtp::WaitingRoom::setupScene()
 {
+    // lancer la connection ici
+    _tcpClient.connect("127.0.0.1", "4000");
     setupRegistry();
     _addBackgrounds();
     _addButtonStart();
@@ -66,6 +68,7 @@ void rtp::WaitingRoom::systemRun()
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
     _graphic.display();
+    //sendData();
 }
 
 void rtp::WaitingRoom::_addBackgrounds()
@@ -130,4 +133,49 @@ eng::Entity rtp::WaitingRoom::addPlayer(int playerId, int syncId)
 
     std::cout << "You are player " << playerId << std::endl;
     return player;
+}
+
+
+static void addToPayload(std::vector<int> &payload,
+std::vector<int> toAdd)
+{
+    for (int i = 0; i < toAdd.size(); i++)
+        payload.push_back(toAdd[i]);
+    payload[1] += toAdd.size();
+}
+
+void rtp::WaitingRoom::sendData()
+{
+    std::vector<int> payload;
+    auto &ps = _reg.getComponents<eng::Position>();
+    auto &vs = _reg.getComponents<eng::Velocity>();
+
+    //il n'y a pas de synced ?
+    //auto &sc = _reg.getComponents<rtp::Synced>();
+
+    auto &playerStats = _reg.getComponents<PlayerStats>();
+    // Header
+    payload.push_back(1405);
+    // Body size
+    payload.push_back(0);
+    /*for (int i = 0; i < sc.size(); i++) {
+        // Entity header
+        if (sc[i].has_value()) {
+            payload.push_back(2002);
+            payload.push_back(sc[i].value().id);
+            if (i < ps.size() && ps[i].has_value()) {
+                auto &p = ps[i].value();
+                addToPayload(payload, {POSITION, (int)p.x, (int)p.y, (int)p.z, (int)p.rotation});
+            }
+            if (i < vs.size() && vs[i].has_value()) {
+                auto &v = vs[i].value();
+                addToPayload(payload, {VELOCITY, (int)v.x, (int)v.y, (int)v.angular});
+            }
+            if (i < playerStats.size() && playerStats[i].has_value()) {
+                auto &p = playerStats[i].value();
+                addToPayload(payload, {PLAYER_STATS, p.playerId, p.damage, p.lives, p.score});
+            }
+        }
+    }*/
+    this->_udpClient.send(payload);
 }

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CPACK_GENERATOR ZIP)
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -v")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
@@ -79,11 +80,6 @@ target_link_libraries(
   EngineCoreSuper
 )
 
-# target_link_libraries(
-#   Client-Rtype
-#   PUBLIC
-#   EngineCoreSuper
-# )
 
 #####    SERVER
 
@@ -110,8 +106,6 @@ target_link_libraries(
   EngineCoreSuper
 )
 
-# target_link_libraries(
-#   Server-Rtype
-#   PUBLIC
-  
-# )
+# PAckaging
+
+include(CPack)

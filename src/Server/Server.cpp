@@ -9,13 +9,39 @@
 
 rtp::Server::Server(int port): _udp(port), _tcp(port)
 {
+    _isRunning = true;
+    init();
 }
 
 rtp::Server::~Server()
 {
 }
 
+void rtp::Server::receiveData()
+{
+    std::vector<int> payloadList = _udp.receive();
+    while (!payloadList.empty()) {
+        // Dump invalid packets
+        if (payloadList.back() != 1450) {
+            payloadList.pop_back();
+            continue;
+        }
+
+        payloadList.pop_back();
+    }
+}
+
 int rtp::Server::run()
+{
+    std::cout << "Server is up!" << std::endl;
+
+    while (_isRunning) {
+        receiveData();
+    }
+    return (0);
+}
+
+int rtp::Server::runWithLobby()
 {
     _isRunning = true;
     std::cout << "Server is up!" << std::endl;

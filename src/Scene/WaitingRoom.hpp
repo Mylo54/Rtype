@@ -30,6 +30,7 @@ namespace rtp {
             void _addBackgrounds();
             void _addButtonStart();
             int _btnFctStart();
+            void sendData();
         private:
     };
 }

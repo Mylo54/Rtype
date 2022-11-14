@@ -6,7 +6,7 @@
 */
 
 #include "TCPClient.hpp"
-
+#include <iostream>
 rtp::TCPClient::TCPClient()
 {
 }
@@ -22,8 +22,11 @@ bool rtp::TCPClient::connect(std::string host, std::string service)
     boost::system::error_code errors;
     boost::asio::connect(_socket, endpoints, errors);
 
-    if (errors)
+    if (errors) {
+        std::cout << "echec connection" << std::endl;
         return false;
+    }
+    std::cout << "connect" << std::endl;
     return true;
 }
 
