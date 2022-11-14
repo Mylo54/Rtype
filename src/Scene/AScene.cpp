@@ -10,7 +10,8 @@
 rtp::AScene::AScene(scene_package_t pack) : IScene(), _reg(pack.reg),
 _graphic(pack.graphic), _physic(pack.physic), _audio(pack.audio),
 _input(pack.input), _texture(pack.texture),
-_sceneEvent(pack.sceneEvent), _sceneNumber(pack.sceneNumber), _score(pack.score), _level(pack.level), _tcpClient(pack.tcpClient)
+_sceneEvent(pack.sceneEvent), _sceneNumber(pack.sceneNumber), _score(pack.score),
+_level(pack.level), _tcpClient(pack.tcpClient), _udpClient(pack.udpClient)
 {
 }
 

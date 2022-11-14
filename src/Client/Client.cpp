@@ -40,7 +40,7 @@ std::string rtp::Client::listLobbies()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _inputs, _textures, _tcp, _sceneEvent, _sceneNumber, _score, _level};
+        _inputs, _textures, _tcp, _udp, _sceneEvent, _sceneNumber, _score, _level};
 
     return (pkg);
 }

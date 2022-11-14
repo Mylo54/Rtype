@@ -28,8 +28,10 @@ namespace rtp
 
             void init();
             int run();
+            int runWithLobby();
 
             void listenRequests();
+            void receiveData();
         protected:
         private:
             void _serverIO();
