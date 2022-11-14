@@ -174,8 +174,6 @@ void rtp::Server::_destroyLobbies()
 
 void rtp::Server::runWaitingRoom()
 {
-    std::cout << "running waitingRoom" << std::endl;
-
     std::vector<int> res = _udp.listen();
     if (res[0] == 502) {
         _waitingRoom = false;
@@ -183,15 +181,13 @@ void rtp::Server::runWaitingRoom()
         _udp.sendToAll(vec);
     }
     else {
-        std::vector<int> vec = {404};
+        std::vector<int> vec = {404, _udp.getNumberOfClients()};
         _udp.sendToAll(vec);
     }
-
 }
 
 void rtp::Server::runGame()
 {
-    std::cout << "running Game" << std::endl;
     _serverSystem.receiveData(_registry);
 
 
