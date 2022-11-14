@@ -205,21 +205,14 @@ void rtp::Server::runGame()
     _killSystem.killDeadEnemiesServer(_registry);
     _killSystem.killDeadPlayers(_registry);
     // Victory / defeat
-    _waitingRoom = _killSystem.allPlayerKilled(_registry) || (_score >= 10000);
+    _waitingRoom = _killSystem.allPlayerKilled(_registry) || (_level == 5 && _score >= 10000) || (_level >= 1 && _level <= 4 && _score >= _level * 100);
 
     // Enemy
     _enemySystem.playerBullets(_registry);
     _enemySystem.enemyCollision(_registry, _physicSystem);
-    // if (_level == 5)
-    //     _enemySystem.bossAnimation(_reg);
-    // _enemySystem.spawnEnemies(_reg, _enemyTimer, _level, _graphic.getDeltaSeconds(), _texture);
-    // // clear, draw & display
-    // _graphic.clear();
-    // _graphic.animateSystem(_reg);
-    // _graphic.drawSystem(_reg);
-    // _graphic.particleSystem(_reg);
-    // _graphic.writeSystem(_reg);
-    // _graphic.display();
+    if (_level == 5)
+        _enemySystem.bossAnimation(_registry);
+    _enemySystem.spawnEnemies(_registry, _enemyTimer, _level, _serverSystem.getDelta(), _textureManager);
 
     _serverSystem.sendData(_registry);
 }
