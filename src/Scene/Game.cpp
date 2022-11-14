@@ -74,7 +74,7 @@ void rtp::Game::systemRun()
 
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
-    _killSystem.killDeadEnemies(_reg, _score, _textSystem);
+    _killSystem.killDeadEnemies(_reg, _score, _textSystem, _graphic.getDeltaSeconds(), _texture);
     _killSystem.killDeadPlayers(_reg, _textSystem);
     // Victory / defeat
     if (_killSystem.allPlayerKilled(_reg)) {
