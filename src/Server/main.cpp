@@ -12,10 +12,12 @@ int main(int argc, char **argv)
 {
 
     int success = 0;
-    rtp::UDPServer server(4000);
+    rtp::Server server(4000);
+    /*rtp::UDPServer server(4000);
 
     while (server.getNumberOfClients() == 0) {
         server.listen();
-    }
+    }*/
+    server.run();
     return (success);
 }

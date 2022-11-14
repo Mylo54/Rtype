@@ -7,9 +7,9 @@
 
 #include "Client.hpp"
 
-rtp::Client::Client(int port): _graphics(1920, 1080, "Super R-Type"),
+rtp::Client::Client(int port, std::string host): _graphics(1920, 1080, "Super R-Type"),
 _inputs(_graphics.getRenderWindow()), _physics(_graphics.getDeltaSeconds()),
-_sceneManager(_registries), _udp(port)
+_sceneManager(_registries), _udp(port), _host(host)
 {
     std::cout << "Client has been created" << std::endl;
     _graphics.setFrameRateLimit(60);
@@ -40,7 +40,7 @@ std::string rtp::Client::listLobbies()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _inputs, _textures, _tcp, _udp, _sceneEvent, _sceneNumber, _score, _level};
+        _inputs, _textures, _tcp, _udp, _sceneEvent, _sceneNumber, _score, _level, _host};
 
     return (pkg);
 }

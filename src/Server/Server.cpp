@@ -34,9 +34,13 @@ void rtp::Server::receiveData()
 int rtp::Server::run()
 {
     std::cout << "Server is up!" << std::endl;
+    std::string input;
+
 
     while (_isRunning) {
-        receiveData();
+        if (input == "exit")
+            _isRunning = false;
+        //receiveData();
     }
     return (0);
 }

@@ -46,7 +46,7 @@ namespace rtp
 
     class Client {
         public:
-            Client(int port);
+            Client(int port, std::string host);
             ~Client();
 
             /// @brief Run the Client
@@ -83,6 +83,7 @@ namespace rtp
             rtp::ButtonSystem _buttonSystem;
             eng::SceneManager _sceneManager;
             std::stack<rtp::IScene*> _scenes;
+            std::string _host;
 
     };
 } // namespace rtp
