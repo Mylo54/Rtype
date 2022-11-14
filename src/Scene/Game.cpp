@@ -97,8 +97,8 @@ void rtp::Game::systemRun()
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
-    _graphic.particleSystem(_reg);
     _graphic.drawSystem(_reg);
+    _graphic.particleSystem(_reg);
     _graphic.writeSystem(_reg);
     _graphic.display();
 }
