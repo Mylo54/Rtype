@@ -70,12 +70,13 @@ void rtp::WaitingRoom::systemRun()
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
     _graphic.display();
+    std::vector<int> vec = {504};
+    _udpClient.send(vec);
     if (_udpClient.receive()[0] == 403) {
         _level = 5;
         _sceneEvent = 2;
         _sceneNumber = 0;
     }
-
     //sendData();
 }
 
