@@ -74,6 +74,10 @@ std::vector<int> rtp::UDPServer::listen()
         _numberOfClients++;
         _endpoints.push_back(remoteEndpoint);
     }
+    if (buffer[0] == 501) {
+        std::vector<int> data {401, getNumberOfClients()};
+        _socket.send_to(boost::asio::buffer(data), remoteEndpoint);
+    }
     return (buffer);
 }
 

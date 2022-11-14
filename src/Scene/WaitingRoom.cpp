@@ -73,6 +73,8 @@ void rtp::WaitingRoom::systemRun()
     std::vector<int> vec = {504};
     _udpClient.send(vec);
     std::vector<int> res = _udpClient.receive();
+    if (res[0] == 401)
+        _playerId = res[1];
     if (res[0] == 403) {
         _level = 5;
         _sceneEvent = 2;

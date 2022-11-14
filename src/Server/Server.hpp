@@ -56,6 +56,11 @@ namespace rtp
             void _destroyLobbies();
             void _setupRegistry(eng::Registry &reg);
 
+            /// @brief The time to wait between each enemy spawn
+            float _enemyRate;
+            /// @brief The timer until the next enemy spawns
+            float _enemyTimer;
+            int _level;
             bool _isRunning = false;
             rtp::UDPServer _udp;
             rtp::TCPServer _tcp;
@@ -66,6 +71,7 @@ namespace rtp
             eng::PhysicSystems _physicSystem;
             rtp::KillSystem _killSystem;
             rtp::EnemySystem _enemySystem;
+            eng::TextureManager _textureManager;
             eng::Registry _registry;
             bool _waitingRoom;
             int _score = 0;

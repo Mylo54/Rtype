@@ -162,11 +162,15 @@ bool toBuild, eng::TextureManager &tm)
 void rtp::ClientSystem::receiveData(eng::Registry &reg, eng::TextureManager &tm)
 {
     std::vector<int> data = _udp.receive();
+    //std::cout << data[0] << std::endl;
     int current = 0;
     bool toBuild;
 
-    if (data[0] != 25122000)
+    if (data[0] != 25122000) {
+        std::cout << data[0] << std::endl;
         return;
+    }
+    std::cout << data[0] << std::endl;
 
     auto &synceds = reg.getComponents<Synced>();    
     for (int i = 2; i < data[1]; i++) {

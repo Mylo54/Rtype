@@ -39,6 +39,7 @@ namespace rtp
         int &score;
         int &level;
         std::string host;
+        int playerId;
     };
     class AScene : public IScene {
         public:
@@ -69,6 +70,8 @@ namespace rtp
             rtp::TextSystem _textSystem;
             rtp::ClientSystem _clientSystems;
             std::string _host;
+            int _playerId;
+
         private:
     };
 } // namespace rtp
