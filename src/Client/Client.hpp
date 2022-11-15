@@ -84,7 +84,7 @@ namespace rtp
             eng::SceneManager _sceneManager;
             std::stack<rtp::IScene*> _scenes;
             std::string _host;
-
+            std::vector<int> _startGamePayload;
     };
 } // namespace rtp
 

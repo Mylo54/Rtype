@@ -26,7 +26,7 @@ namespace rtp {
         public:
 
             /// @brief Gamr object constructor
-            Game(rtp::scene_package_t pack);
+            Game(rtp::scene_package_t pack, std::vector<int> &startGamePayload);
             ~Game();
 
             void setupScene() override;
@@ -52,6 +52,7 @@ namespace rtp {
             void _addScore();
         private:
             float _enemyTimer;
+            std::vector<int> &_startGamePayload;
     };
 }
 

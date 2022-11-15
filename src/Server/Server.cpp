@@ -179,8 +179,6 @@ void rtp::Server::runWaitingRoom()
     if (res[0] == 502) {
         _waitingRoom = false;
         addPlayers();
-        std::vector<int> vec = {403};
-        _udp.sendToAll(vec);
     }
     else {
         std::vector<int> vec = {404, _udp.getNumberOfClients()};
@@ -220,10 +218,17 @@ void rtp::Server::runGame()
 
 void rtp::Server::addPlayers()
 {
+    std::vector<int> vec = {403};
     for (int i = 0; i < _udp.getNumberOfClients(); i++) {
         _lastSyncId += 1;
         addPlayer(_registry, i + 1, _lastSyncId);
+        vec.push_back(i + 1);
+        vec.push_back(_lastSyncId);
     }
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
 }
 
 eng::Entity rtp::Server::addPlayer(eng::Registry &reg, int playerId, int syncId)
