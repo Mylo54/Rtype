@@ -7,7 +7,7 @@
 
 #include "Game.hpp"
 
-rtp::Game::Game(rtp::scene_package_t pack): AScene(pack)
+rtp::Game::Game(rtp::scene_package_t pack, std::vector<int> &startGamePayload): AScene(pack), _startGamePayload(startGamePayload)
 {
     _enemyTimer = 2;
 }
@@ -22,8 +22,11 @@ void rtp::Game::setupScene()
     _addBackgrounds();
     _addScore();
     _addMusic();
+    for (int i = 1; i < _startGamePayload.size(); i += 2) {
+        if (_startGamePayload[i] == _playerId)
+            _playerSystem.addPlayer(_reg, _texture, _playerId, _startGamePayload[i + 1]);
+    }
     std::cout << "Player id " << _playerId << std::endl;
-    _playerSystem.addPlayer(_reg, _texture, _playerId + 1, 0);
     if (_level == 5) _enemySystem._addBoss(_reg, _texture);
 }
 

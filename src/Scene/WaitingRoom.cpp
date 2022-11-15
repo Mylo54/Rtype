@@ -7,7 +7,7 @@
 
 #include "WaitingRoom.hpp"
 
-rtp::WaitingRoom::WaitingRoom(rtp::scene_package_t pack): AScene(pack)
+rtp::WaitingRoom::WaitingRoom(rtp::scene_package_t pack, std::vector<int> &startGamePayload): AScene(pack), _startGamePayload(startGamePayload)
 {
 }
 
@@ -79,6 +79,7 @@ void rtp::WaitingRoom::systemRun()
         _level = 5;
         _sceneEvent = 2;
         _sceneNumber = 0;
+        _startGamePayload = res;
     }
     while (_nbrPlayer > _nbrPlayerDraw)
         addPlayer(_nbrPlayerDraw + 1, 0);

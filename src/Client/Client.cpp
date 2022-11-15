@@ -102,7 +102,7 @@ void rtp::Client::_handleSceneEvents()
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::game) {
-            _scenes.push(new rtp::Game(_makePackage()));
+            _scenes.push(new rtp::Game(_makePackage(), _startGamePayload));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::menu) {
@@ -114,7 +114,7 @@ void rtp::Client::_handleSceneEvents()
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::waiting) {
-            _scenes.push(new rtp::WaitingRoom(_makePackage()));
+            _scenes.push(new rtp::WaitingRoom(_makePackage(), _startGamePayload));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::win) {
