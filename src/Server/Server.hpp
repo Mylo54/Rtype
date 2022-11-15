@@ -48,6 +48,7 @@ namespace rtp
             void runGame();
             void addPlayers();
             eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
+            void receiveDataLoop();
         protected:
         private:
             void _serverIO();
@@ -75,6 +76,8 @@ namespace rtp
             rtp::EnemySystem _enemySystem;
             eng::TextureManager _textureManager;
             eng::Registry _registry;
+            std::vector<int> _inputList;
+            std::mutex _dataMutex;
             bool _waitingRoom;
             int _score = 0;
             int _lastSyncId = 0;
