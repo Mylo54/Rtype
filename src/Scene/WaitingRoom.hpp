@@ -19,7 +19,7 @@
 namespace rtp {
     class WaitingRoom : public AScene {
         public:
-            WaitingRoom(rtp::scene_package_t pack);
+            WaitingRoom(rtp::scene_package_t pack, std::vector<int> &startGamePayload);
             ~WaitingRoom();
             
             void setupScene() override;
@@ -32,6 +32,7 @@ namespace rtp {
             int _btnFctStart();
             int _nbrPlayer = 0;
             int _nbrPlayerDraw = 0;
+            std::vector<int> &_startGamePayload;
         private:
     };
 }

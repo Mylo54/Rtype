@@ -40,7 +40,7 @@ std::string rtp::Client::listLobbies()
 rtp::scene_package_t rtp::Client::_makePackage()
 {
     scene_package_t pkg = {_registries.getTop(), _graphics, _physics, _audio,
-        _inputs, _textures, _tcp, _udp, _sceneEvent, _sceneNumber, _score, _level, _host};
+        _inputs, _textures, _tcp, _udp, _sceneEvent, _sceneNumber, _score, _level, _host, 0};
 
     return (pkg);
 }
@@ -102,7 +102,7 @@ void rtp::Client::_handleSceneEvents()
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::game) {
-            _scenes.push(new rtp::Game(_makePackage()));
+            _scenes.push(new rtp::Game(_makePackage(), _startGamePayload));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::menu) {
@@ -114,7 +114,7 @@ void rtp::Client::_handleSceneEvents()
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::waiting) {
-            _scenes.push(new rtp::WaitingRoom(_makePackage()));
+            _scenes.push(new rtp::WaitingRoom(_makePackage(), _startGamePayload));
             _scenes.top()->setupScene();
         }
         if (_sceneNumber == rtp::sceneNumber::win) {

@@ -7,7 +7,7 @@
 
 #include "Game.hpp"
 
-rtp::Game::Game(rtp::scene_package_t pack): AScene(pack)
+rtp::Game::Game(rtp::scene_package_t pack, std::vector<int> &startGamePayload): AScene(pack), _startGamePayload(startGamePayload)
 {
     _enemyTimer = 2;
 }
@@ -22,7 +22,12 @@ void rtp::Game::setupScene()
     _addBackgrounds();
     _addScore();
     _addMusic();
-    addPlayer(1, 0);
+
+    for (int i = 1; i < _startGamePayload.size(); i += 2) {
+        if (_startGamePayload[i] == _playerId) {
+            _playerSystem.addPlayer(_reg, _texture, _playerId, _startGamePayload[i + 1]);
+        }
+    }
     if (_level == 5) _enemySystem._addBoss(_reg, _texture);
 }
 
@@ -45,6 +50,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Canon>());
     _reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     _reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    _reg.registerComponents(eng::SparseArray<rtp::Synced>());
 }
 
 void rtp::Game::systemRun()
@@ -56,11 +62,12 @@ void rtp::Game::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 2;
     }
-
+    _clientSystems.receiveData(_reg, _texture);
     //Controls
     if (_graphic.isWindowFocused())
         _playerSystem.control(_reg, _input);
-    _playerSystem.controlMovement(_reg, _input, _graphic.getDeltaSeconds());
+    _playerSystem.controlMovement(_reg, _graphic.getDeltaSeconds());
+    _clientSystems.sendInputData(_reg);
     _physic.applyGravity(_reg);
 
     _physic.applyVelocities(_reg);
@@ -75,7 +82,7 @@ void rtp::Game::systemRun()
     _killSystem.killOutOfBounds(_reg);
     _killSystem.killBullets(_reg);
     _killSystem.killDeadEnemies(_reg, _score, _textSystem, _graphic.getDeltaSeconds(), _texture);
-    _killSystem.killDeadPlayers(_reg, _textSystem);
+    _killSystem.killDeadPlayers(_reg);
     // Victory / defeat
     if (_killSystem.allPlayerKilled(_reg)) {
         _sceneEvent = 2;
@@ -108,39 +115,6 @@ void rtp::Game::_addMusic()
     eng::Entity music = _reg.spawnEntity();
 
     _reg.addComponent<eng::Music>(music, eng::Music("assets/music.ogg", true));
-}
-
-eng::Entity rtp::Game::addPlayer(int playerId, int syncId)
-{
-    eng::Entity player = _reg.spawnEntity();
-    std::stringstream name;
-    name << "P" << playerId;
-
-    _reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
-    _reg.addComponent<eng::Velocity>(player, eng::Velocity());
-    _reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
-    _reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
-    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
-    _reg.addComponent<eng::Drawable>(player, eng::Drawable(_texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
-    _reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
-    // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
-    _reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
-    _reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
-    _reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
-    _reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
-    auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
-
-    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
-    smoke.setBaseSpeed(500, 1000);
-    smoke.setLifetime(5);
-    smoke.setBaseRotation(260, 280);
-    smoke.setEmittingRate(0.01);
-    smoke.setMaxNumber(100);
-    smoke.isLocal = false;
-    smoke.setParticleColorRandom(true);
-
-    std::cout << "You are player " << playerId << std::endl;
-    return player;
 }
 
 void rtp::Game::_addScore()

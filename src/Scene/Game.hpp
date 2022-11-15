@@ -19,24 +19,19 @@
 #include "../GameComponent/Shooter.hpp"
 #include "../GameComponent/Canon.hpp"
 #include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/Synced.hpp"
 
 namespace rtp {
     class Game : public AScene {
         public:
 
             /// @brief Gamr object constructor
-            Game(rtp::scene_package_t pack);
+            Game(rtp::scene_package_t pack, std::vector<int> &startGamePayload);
             ~Game();
 
             void setupScene() override;
             void setupRegistry() override;
             void systemRun() override;
-
-            /// @brief Adds a controllable player to a registry
-            /// @param playerId The player id (1, 2, 3 or 4)
-            /// @param syncId The sync component id
-            /// @return The entity containing the player
-            eng::Entity addPlayer(int playerId, int syncId);
             
         protected:
 
@@ -55,8 +50,10 @@ namespace rtp {
             /// @brief Add a text on the screen to display the score
             /// @param reg The registry on which to add the text
             void _addScore();
+            bool _started() = false;
         private:
             float _enemyTimer;
+            std::vector<int> &_startGamePayload;
     };
 }
 

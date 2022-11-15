@@ -92,9 +92,9 @@ static int getSyncedEntity(eng::Registry &reg, int syncId)
     return (-1);
 }
 
-void rtp::ServerSystem::receiveData(eng::Registry &reg)
+void rtp::ServerSystem::receiveData(eng::Registry &reg, std::vector<int> data,
+std::mutex &dataMutex)
 {
-    std::vector<int> data = _udp.receive();
     auto &synceds = reg.getComponents<Synced>();
     auto &ctrl = reg.getComponents<Controllable>();
 
@@ -106,4 +106,7 @@ void rtp::ServerSystem::receiveData(eng::Registry &reg)
         ctrl[i].value().shoot = data[i + 3];
         ctrl[i].value().canonShoot = data[i + 4];
     }
+    dataMutex.lock();
+    data.clear();
+    dataMutex.unlock();
 }

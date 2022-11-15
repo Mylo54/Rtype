@@ -7,7 +7,7 @@
 
 #include "Server.hpp"
 
-rtp::Server::Server(int port): _udp(port), _tcp(port), _serverSystem(_udp)
+rtp::Server::Server(int port): _udp(port), _tcp(port), _serverSystem(_udp), _physicSystem(_serverSystem.getDelta())
 {
     _isRunning = true;
     _waitingRoom = true;
@@ -45,12 +45,27 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     reg.registerComponents(eng::SparseArray<eng::RigidBody>());
     reg.registerComponents(eng::SparseArray<rtp::Canon>());
+    reg.registerComponents(eng::SparseArray<eng::Drawable>());
+}
+
+void rtp::Server::receiveDataLoop()
+{
+    while (_isRunning) {
+        if (_waitingRoom)
+            continue;
+        std::vector<int> data = _udp.receive();
+        _dataMutex.lock();
+        for (int i = 0; i < data.size(); i++)
+            _inputList.push_back(data[i]);
+        _dataMutex.unlock();
+    }
 }
 
 int rtp::Server::run()
 {
     std::cout << "Server is up!" << std::endl;
     std::string input;
+    std::thread receiveDataThread(&rtp::Server::receiveDataLoop, this);
     _setupRegistry(_registry);
 
     while (_isRunning) {
@@ -62,6 +77,7 @@ int rtp::Server::run()
             runGame();
         //receiveData();
     }
+    receiveDataThread.join();
     return (0);
 }
 
@@ -177,8 +193,7 @@ void rtp::Server::runWaitingRoom()
     std::vector<int> res = _udp.listen();
     if (res[0] == 502) {
         _waitingRoom = false;
-        std::vector<int> vec = {403};
-        _udp.sendToAll(vec);
+        addPlayers();
     }
     else {
         std::vector<int> vec = {404, _udp.getNumberOfClients()};
@@ -188,8 +203,69 @@ void rtp::Server::runWaitingRoom()
 
 void rtp::Server::runGame()
 {
-    _serverSystem.receiveData(_registry);
+    _serverSystem.receiveData(_registry, _inputList, _dataMutex);
 
+    _playerSystem.controlMovement(_registry, _serverSystem.getDelta());
+    _physicSystem.applyGravity(_registry);
+
+    _physicSystem.applyVelocities(_registry);
+    _playerSystem.limitPlayer(_registry);
+    // Shooting
+    _playerSystem.controlFireSystem(_registry, _serverSystem.getDelta());
+    _playerSystem.shootSystem(_registry);
+    // Kill
+    _killSystem.killOutOfBounds(_registry);
+    _killSystem.killBullets(_registry);
+    _killSystem.killDeadEnemiesServer(_registry);
+    _killSystem.killDeadPlayers(_registry);
+    // Victory / defeat
+    _waitingRoom = _killSystem.allPlayerKilled(_registry) || (_level == 5 && _score >= 10000) || (_level >= 1 && _level <= 4 && _score >= _level * 100);
+
+    // Enemy
+    _enemySystem.playerBullets(_registry);
+    _enemySystem.enemyCollision(_registry, _physicSystem);
+    if (_level == 5)
+        _enemySystem.bossAnimation(_registry);
+    _enemySystem.spawnEnemies(_registry, _enemyTimer, _level, _serverSystem.getDelta(), _textureManager);
 
     _serverSystem.sendData(_registry);
+}
+
+void rtp::Server::addPlayers()
+{
+    std::vector<int> vec = {403};
+    for (int i = 0; i < _udp.getNumberOfClients(); i++) {
+        _lastSyncId += 1;
+        addPlayer(_registry, i + 1, _lastSyncId);
+        vec.push_back(i + 1);
+        vec.push_back(_lastSyncId);
+    }
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
+    _udp.sendToAll(vec);
+    std::cout << "Check" << std::endl;
+    for (int i = 0; i < vec.size(); i++) {
+        std::cout << vec[i] << std::endl;
+    }
+}
+
+eng::Entity rtp::Server::addPlayer(eng::Registry &reg, int playerId, int syncId)
+{
+    eng::Entity player = reg.spawnEntity();
+    std::stringstream name;
+    name << "P" << playerId;
+
+    reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
+    reg.addComponent<eng::Velocity>(player, eng::Velocity());
+    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
+    reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
+    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
+    
+    return player;
 }

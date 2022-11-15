@@ -20,6 +20,9 @@
 #include "../GameComponent/EnemyStats.hpp"
 #include "../Network/TCPServer.hpp"
 #include "../System/ServerSystem.hpp"
+#include "../System/PlayerSystem.hpp"
+#include "../System/KillSystem.hpp"
+#include "../System/EnemySystem.hpp"
 
 namespace rtp
 {
@@ -43,6 +46,9 @@ namespace rtp
             void receiveData();
             void runWaitingRoom();
             void runGame();
+            void addPlayers();
+            eng::Entity addPlayer(eng::Registry &reg, int playerId, int syncId);
+            void receiveDataLoop();
         protected:
         private:
             void _serverIO();
@@ -53,14 +59,28 @@ namespace rtp
             void _destroyLobbies();
             void _setupRegistry(eng::Registry &reg);
 
+            /// @brief The time to wait between each enemy spawn
+            float _enemyRate;
+            /// @brief The timer until the next enemy spawns
+            float _enemyTimer;
+            int _level;
             bool _isRunning = false;
             rtp::UDPServer _udp;
             rtp::TCPServer _tcp;
             std::vector<lobby_data_t *> _lobbies;
             std::vector<std::thread *> _lobbyThreads;
             rtp::ServerSystem _serverSystem;
+            rtp::PlayerSystem _playerSystem;
+            eng::PhysicSystems _physicSystem;
+            rtp::KillSystem _killSystem;
+            rtp::EnemySystem _enemySystem;
+            eng::TextureManager _textureManager;
             eng::Registry _registry;
+            std::vector<int> _inputList;
+            std::mutex _dataMutex;
             bool _waitingRoom;
+            int _score = 0;
+            int _lastSyncId = 0;
     };
 } // namespace rtp
 

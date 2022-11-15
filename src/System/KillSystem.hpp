@@ -24,7 +24,8 @@ namespace rtp
         void killOutOfBounds(eng::Registry &reg);
         void killBullets(eng::Registry &reg);
         void killDeadEnemies(eng::Registry &r, int &score, rtp::TextSystem &text, float delta, eng::TextureManager &texture);
-        void killDeadPlayers(eng::Registry &r, rtp::TextSystem &text);
+        void killDeadEnemiesServer(eng::Registry &r);
+        void killDeadPlayers(eng::Registry &r);
         bool allPlayerKilled(eng::Registry &r);
         void explosion(eng::Registry &r, eng::TextureManager &texture, float x, float y, float scale, int explosionType);
         protected:

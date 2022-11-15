@@ -20,6 +20,7 @@
 #include "../System/TextSystem.hpp"
 #include "../Network/TCPClient.hpp"
 #include "../Network/UDPClient.hpp"
+#include "../System/ClientSystem.hpp"
 
 namespace rtp
 {
@@ -38,6 +39,7 @@ namespace rtp
         int &score;
         int &level;
         std::string host;
+        int playerId;
     };
     class AScene : public IScene {
         public:
@@ -66,7 +68,10 @@ namespace rtp
             rtp::BackgroundSystem _backgroundSystem;
             rtp::EnemySystem _enemySystem;
             rtp::TextSystem _textSystem;
+            rtp::ClientSystem _clientSystems;
             std::string _host;
+            int _playerId;
+
         private:
     };
 } // namespace rtp

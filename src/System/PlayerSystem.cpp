@@ -37,7 +37,7 @@ void rtp::PlayerSystem::control(eng::Registry &reg, eng::SuperInput &input)
     }   
 }
 
-void rtp::PlayerSystem::controlMovement(eng::Registry &reg, eng::SuperInput &input, float delta)
+void rtp::PlayerSystem::controlMovement(eng::Registry &reg, float delta)
 {
     auto &velocities = reg.getComponents<eng::Velocity>();
     auto &controllables = reg.getComponents<Controllable>();
@@ -148,4 +148,37 @@ void rtp::PlayerSystem::limitPlayer(eng::Registry &r)
             position.y = (position.y < 0) ? 0 : position.y;
         }
     }
+}
+
+eng::Entity rtp::PlayerSystem::addPlayer(eng::Registry &reg, eng::TextureManager &texture, int playerId, int syncId)
+{
+    eng::Entity player = reg.spawnEntity();
+    std::stringstream name;
+    name << "P" << playerId;
+
+    reg.addComponent<eng::Position>(player, eng::Position(200, 540, 0));
+    reg.addComponent<eng::Velocity>(player, eng::Velocity());
+    reg.addComponent<rtp::Shooter>(player, rtp::Shooter("assets/bullet.png", 500, 4, {50, 15}));
+    reg.addComponent<rtp::Canon>(player, rtp::Canon("assets/missile.png", 300, 0.1, {10, -20}));
+    sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
+    reg.addComponent<eng::Drawable>(player, eng::Drawable(texture.getTextureFromFile("assets/players.png"), 1, rect, 0.10));
+    reg.addComponent<rtp::Controllable>(player, rtp::Controllable());
+    // reg.addComponent<rtp::Synced>(player, rtp::Synced(syncId));
+    reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
+    reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
+    reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
+    reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
+    auto &smoke = reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
+
+    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
+    smoke.setBaseSpeed(500, 1000);
+    smoke.setLifetime(5);
+    smoke.setBaseRotation(260, 280);
+    smoke.setEmittingRate(0.01);
+    smoke.setMaxNumber(100);
+    smoke.isLocal = false;
+    smoke.setParticleColorRandom(true);
+
+    std::cout << "You are player " << playerId << std::endl;
+    return player;
 }

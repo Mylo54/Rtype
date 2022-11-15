@@ -7,7 +7,7 @@
 
 #include "WaitingRoom.hpp"
 
-rtp::WaitingRoom::WaitingRoom(rtp::scene_package_t pack): AScene(pack)
+rtp::WaitingRoom::WaitingRoom(rtp::scene_package_t pack, std::vector<int> &startGamePayload): AScene(pack), _startGamePayload(startGamePayload)
 {
 }
 
@@ -66,17 +66,20 @@ void rtp::WaitingRoom::systemRun()
     // clear, draw & display
     _graphic.clear();
     _graphic.animateSystem(_reg);
-    _graphic.particleSystem(_reg);
     _graphic.drawSystem(_reg);
     _graphic.writeSystem(_reg);
+    _graphic.particleSystem(_reg);
     _graphic.display();
     std::vector<int> vec = {504};
     _udpClient.send(vec);
     std::vector<int> res = _udpClient.receive();
+    if (res[0] == 401)
+        _playerId = res[1];
     if (res[0] == 403) {
         _level = 5;
         _sceneEvent = 2;
         _sceneNumber = 0;
+        _startGamePayload = res;
     }
     while (_nbrPlayer > _nbrPlayerDraw)
         addPlayer(_nbrPlayerDraw + 1, 0);
@@ -136,9 +139,19 @@ eng::Entity rtp::WaitingRoom::addPlayer(int playerId, int syncId)
 {
     eng::Entity player = _reg.spawnEntity();
 
-    _reg.addComponent<eng::Position>(player, eng::Position(200, 180 * (playerId), 0));
+    _reg.addComponent<eng::Position>(player, eng::Position(350, 180 * (playerId), 0));
     sf::IntRect rect = {0, ((playerId - 1) * 49), 60, 49};
     _reg.addComponent<eng::Drawable>(player, eng::Drawable("assets/players.png", 1, rect, 0.10));
+    auto &smoke = _reg.addComponent<eng::ParticleEmitter>(player, eng::ParticleEmitter())[player.getId()].value();
+
+    smoke.setParticleTexture(eng::PARTICLE_TYPE::Sprite, "assets/smokeParticle.png");
+    smoke.setBaseSpeed(500, 1000);
+    smoke.setLifetime(5);
+    smoke.setBaseRotation(260, 280);
+    smoke.setEmittingRate(0.01);
+    smoke.setMaxNumber(100);
+    smoke.isLocal = false;
+    smoke.setParticleColorRandom(true);
 
     std::cout << "You are player " << playerId << std::endl;
     _nbrPlayerDraw += 1;
