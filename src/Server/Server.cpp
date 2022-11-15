@@ -262,7 +262,6 @@ eng::Entity rtp::Server::addPlayer(eng::Registry &reg, int playerId, int syncId)
     reg.addComponent<rtp::PlayerStats>(player, rtp::PlayerStats(playerId));
     reg.addComponent<eng::RectCollider>(player, eng::RectCollider(40, 16));
     reg.addComponent<eng::RigidBody>(player, eng::RigidBody(eng::RigidBody::RECTANGLE, false, 1.0f));
-    reg.addComponent<eng::Writable>(player, eng::Writable("Player name", name.str(), "assets/MetroidPrimeHunters.ttf", 30, sf::Color::Yellow, sf::Text::Regular, 20, -35));
-
+    
     return player;
 }
