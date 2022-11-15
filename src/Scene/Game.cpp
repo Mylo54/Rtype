@@ -46,6 +46,7 @@ void rtp::Game::setupRegistry()
     _reg.registerComponents(eng::SparseArray<rtp::Canon>());
     _reg.registerComponents(eng::SparseArray<rtp::Bullet>());
     _reg.registerComponents(eng::SparseArray<rtp::EnemyStats>());
+    _reg.registerComponents(eng::SparseArray<rtp::Synced>());
 }
 
 void rtp::Game::systemRun()

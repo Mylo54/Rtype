@@ -19,6 +19,7 @@
 #include "../GameComponent/Shooter.hpp"
 #include "../GameComponent/Canon.hpp"
 #include "../GameComponent/Bullet.hpp"
+#include "../GameComponent/Synced.hpp"
 
 namespace rtp {
     class Game : public AScene {
