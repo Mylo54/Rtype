@@ -80,11 +80,6 @@ void rtp::WaitingRoom::systemRun()
         _sceneEvent = 2;
         _sceneNumber = 0;
         _startGamePayload = res;
-        std::cout << "Check" << std::endl;
-        for (int i = 0; i < vec.size(); i++) {
-            std::cout << vec[i] << std::endl;
-        }
-        std::cout << "Check2" << std::endl;
     }
     while (_nbrPlayer > _nbrPlayerDraw)
         addPlayer(_nbrPlayerDraw + 1, 0);

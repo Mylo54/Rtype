@@ -50,6 +50,7 @@ namespace rtp {
             /// @brief Add a text on the screen to display the score
             /// @param reg The registry on which to add the text
             void _addScore();
+            bool _started() = false;
         private:
             float _enemyTimer;
             std::vector<int> &_startGamePayload;
