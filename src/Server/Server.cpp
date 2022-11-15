@@ -229,6 +229,10 @@ void rtp::Server::addPlayers()
     _udp.sendToAll(vec);
     _udp.sendToAll(vec);
     _udp.sendToAll(vec);
+    std::cout << "Check" << std::endl;
+    for (int i = 0; i < vec.size(); i++) {
+        std::cout << vec[i] << std::endl;
+    }
 }
 
 eng::Entity rtp::Server::addPlayer(eng::Registry &reg, int playerId, int syncId)
