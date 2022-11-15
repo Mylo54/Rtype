@@ -48,10 +48,24 @@ void rtp::Server::_setupRegistry(eng::Registry &reg)
     reg.registerComponents(eng::SparseArray<eng::Drawable>());
 }
 
+void rtp::Server::receiveDataLoop()
+{
+    while (_isRunning) {
+        if (_waitingRoom)
+            continue;
+        std::vector<int> data = _udp.receive();
+        _dataMutex.lock();
+        for (int i = 0; i < data.size(); i++)
+            _inputList.push_back(data[i]);
+        _dataMutex.unlock();
+    }
+}
+
 int rtp::Server::run()
 {
     std::cout << "Server is up!" << std::endl;
     std::string input;
+    std::thread receiveDataThread(&rtp::Server::receiveDataLoop, this);
     _setupRegistry(_registry);
 
     while (_isRunning) {
@@ -63,6 +77,7 @@ int rtp::Server::run()
             runGame();
         //receiveData();
     }
+    receiveDataThread.join();
     return (0);
 }
 
@@ -188,7 +203,7 @@ void rtp::Server::runWaitingRoom()
 
 void rtp::Server::runGame()
 {
-    _serverSystem.receiveData(_registry);
+    _serverSystem.receiveData(_registry, _inputList, _dataMutex);
 
     _playerSystem.controlMovement(_registry, _serverSystem.getDelta());
     _physicSystem.applyGravity(_registry);

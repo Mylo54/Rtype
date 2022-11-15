@@ -27,7 +27,8 @@ namespace rtp
             ~ServerSystem();
 
             void sendData(eng::Registry &r);
-            void receiveData(eng::Registry &r);
+            void receiveData(eng::Registry &, std::vector<int> data,
+            std::mutex &dataMutex);
             void limitTickRate();
             void setTickRate(unsigned int tps);
             float &getDelta();
